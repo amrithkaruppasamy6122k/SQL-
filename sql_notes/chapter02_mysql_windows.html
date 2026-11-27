@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2 - MySQL Installation Windows</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .chapter {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .definition-box {
+            background: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .flowchart {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .flowchart-box {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .arrow {
+            font-size: 24px;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        .step-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            position: relative;
+        }
+        .step-number {
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #f39c12;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .code-box {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .tamil-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .download-button {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #27ae60;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .nav-button {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        .nav-button:hover {
+            background: #2980b9;
+        }
+        .requirement-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .requirement-table th, .requirement-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .requirement-table th {
+            background: #3498db;
+            color: white;
+        }
+        @media print {
+            body { background: white; }
+            .chapter { box-shadow: none; }
+            .navigation { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="chapter">
+        <h1>Chapter 2: MySQL Installation on Windows</h1>
+
+        <h2>📖 Definition</h2>
+        <div class="definition-box">
+            <strong>MySQL Installation:</strong> Windows computer-la MySQL database server-a <span class="tamil-text">install panradhu</span>. <span class="tamil-text">Idhu</span> local development environment setup panradhu for <span class="tamil-text">practice and learning</span>. MySQL Community Server <span class="tamil-text">free-ya kedaikum</span>, <span class="tamil-text">yarachu download panni use panalam</span>.
+        </div>
+
+        <h2>🎯 System Requirements</h2>
+        <table class="requirement-table">
+            <tr>
+                <th>Component</th>
+                <th>Minimum Requirement</th>
+                <th><span class="tamil-text">Recommended</span></th>
+            </tr>
+            <tr>
+                <td><span class="tamil-text">Operating System</span></td>
+                <td>Windows 10</td>
+                <td>Windows 11</td>
+            </tr>
+            <tr>
+                <td>RAM</td>
+                <td>4 GB</td>
+                <td>8 GB+</td>
+            </tr>
+            <tr>
+                <td><span class="tamil-text">Hard Disk Space</span></td>
+                <td>2 GB</td>
+                <td>5 GB+</td>
+            </tr>
+            <tr>
+                <td><span class="tamil-text">Processor</span></td>
+                <td>Intel i3</td>
+                <td>Intel i5+</td>
+            </tr>
+        </table>
+
+        <h2>📊 Installation Flow Chart</h2>
+        <div class="flowchart">
+            <div class="flowchart-box"><span class="tamil-text">Download</span> MySQL</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box"><span class="tamil-text">Run</span> Installer</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box"><span class="tamil-text">Choose</span> Setup Type</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box"><span class="tamil-text">Configure</span> Server</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box"><span class="tamil-text">Set</span> Root Password</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box"><span class="tamil-text">Start</span> Service</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box"><span class="tamil-text">Test</span> Connection</div>
+        </div>
+
+        <h2>💡 Step-by-Step Installation</h2>
+
+        <div class="step-box">
+            <div class="step-number">1</div>
+            <strong><span class="tamil-text">Download MySQL Installer</span></strong><br>
+            <span class="tamil-text">Official website-ku poi</span> MySQL Community Server <span class="tamil-text">download pannum</span><br>
+            <a href="#" class="download-button">🌐 mysql.com/downloads</a>
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">2</div>
+            <strong><span class="tamil-text">Choose Installer Type</span></strong><br>
+            • <strong>mysql-installer-web-community.exe</strong> - <span class="tamil-text">Small file, internet venum</span><br>
+            • <strong>mysql-installer-community.exe</strong> - <span class="tamil-text">Full package, no internet needed</span>
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">3</div>
+            <strong><span class="tamil-text">Run the Installer</span></strong><br>
+            Downloaded file-a <span class="tamil-text">right click panni</span> "Run as Administrator" <span class="tamil-text">select pannum</span>
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">4</div>
+            <strong><span class="tamil-text">Select Setup Type</span></strong><br>
+            • <strong>Developer Default</strong> - <span class="tamil-text">Learning-ku best</span> ✅<br>
+            • <strong>Server only</strong> - <span class="tamil-text">Database server mattum</span><br>
+            • <strong>Custom</strong> - <span class="tamil-text">Advanced users-ku</span>
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">5</div>
+            <strong><span class="tamil-text">Installation Process</span></strong><br>
+            "Execute" button <span class="tamil-text">click pannum</span>. <span class="tamil-text">Download and install aagum</span> (5-10 minutes <span class="tamil-text">aagum</span>)
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">6</div>
+            <strong><span class="tamil-text">Configuration</span></strong><br>
+            • <strong>Config Type:</strong> Development Computer <span class="tamil-text">select pannum</span><br>
+            • <strong>Port:</strong> 3306 (default) <span class="tamil-text">vechukalam</span><br>
+            • <strong>Authentication:</strong> Strong Password Encryption <span class="tamil-text">recommended</span>
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">7</div>
+            <strong><span class="tamil-text">Root Password Setup</span></strong><br>
+            <span class="tamil-text">Strong password venum</span>: Minimum 8 characters, uppercase, lowercase, numbers
+            <div class="code-box">Example: MyPass123!</div>
+        </div>
+
+        <div class="warning-box">
+            ⚠️ <strong><span class="tamil-text">Important:</span></strong> Root password-a <span class="tamil-text">note down panni vechuko</span>! <span class="tamil-text">Idhu dhaan</span> main administrator password.
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">8</div>
+            <strong><span class="tamil-text">Windows Service Configuration</span></strong><br>
+            • <strong>Service Name:</strong> MySQL80 (default)<br>
+            • <strong>Start at System Startup:</strong> ✅ <span class="tamil-text">Check pannunga</span><br>
+            • <strong>Run Windows Service as:</strong> Standard System Account
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">9</div>
+            <strong><span class="tamil-text">Apply Configuration</span></strong><br>
+            "Execute" button <span class="tamil-text">click panni</span> configuration apply pannum
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">10</div>
+            <strong><span class="tamil-text">Installation Complete</span></strong><br>
+            "Finish" button <span class="tamil-text">click pannunga</span>. MySQL Workbench automatically <span class="tamil-text">open aagum</span>
+        </div>
+
+        <h2>🔧 Testing Installation</h2>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">Connection Test:</span></h4>
+            <strong>1.</strong> MySQL Workbench <span class="tamil-text">open pannum</span><br>
+            <strong>2.</strong> Local instance MySQL80 <span class="tamil-text">click pannum</span><br>
+            <strong>3.</strong> Root password <span class="tamil-text">enter pannum</span><br>
+            <strong>4.</strong> <span class="tamil-text">Connection successful-a irundha</span> installation correct!
+        </div>
+
+        <div class="code-box">
+-- Test Query
+SELECT VERSION();
+SELECT CURRENT_DATE;
+SHOW DATABASES;
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">✓</div>
+            <strong><span class="tamil-text">Query Results Explanation:</span></strong><br>
+            <strong>SELECT VERSION();</strong> - <span class="tamil-text">MySQL version</span> show pannum<br>
+            <strong>SELECT CURRENT_DATE;</strong> - <span class="tamil-text">Today date</span> show pannum<br>
+            <strong>SHOW DATABASES;</strong> - <span class="tamil-text">Available databases list</span> pannum
+        </div>
+
+        <h2>🔧 Common Use Cases</h2>
+
+        <div class="success-box">
+            <h4>1. <span class="tamil-text">Learning Environment</span></h4>
+            <strong>Purpose:</strong> <span class="tamil-text">SQL practice panradhu</span><br>
+            <strong>Usage:</strong> <span class="tamil-text">Local-la</span> database create panni queries <span class="tamil-text">try panradhu</span>
+        </div>
+
+        <div class="success-box">
+            <h4>2. <span class="tamil-text">Web Development</span></h4>
+            <strong>Purpose:</strong> <span class="tamil-text">Local web applications-ku</span> database<br>
+            <strong>Usage:</strong> PHP, Python, Node.js projects <span class="tamil-text">connect panradhu</span>
+        </div>
+
+        <div class="success-box">
+            <h4>3. <span class="tamil-text">Data Analysis</span></h4>
+            <strong>Purpose:</strong> <span class="tamil-text">Personal data analysis projects</span><br>
+            <strong>Usage:</strong> Excel data import panni <span class="tamil-text">complex queries run panradhu</span>
+        </div>
+
+        <h2>⚠️ Troubleshooting</h2>
+
+        <div class="warning-box">
+            <h4><span class="tamil-text">Common Issues:</span></h4>
+            <strong>Port 3306 busy:</strong> <span class="tamil-text">Different port use pannum</span> (3307, 3308)<br>
+            <strong>Service won't start:</strong> <span class="tamil-text">Run as administrator</span><br>
+            <strong>Connection failed:</strong> <span class="tamil-text">Password check pannum</span>, firewall disable pannum<br>
+            <strong>Workbench crash:</strong> <span class="tamil-text">Latest version download pannum</span>
+        </div>
+
+        <h2>📝 Next Steps</h2>
+        <ul>
+            <li>MySQL Workbench interface <span class="tamil-text">familiarize aagalam</span></li>
+            <li><span class="tamil-text">Sample database</span> create pannalam</li>
+            <li>Basic SQL commands <span class="tamil-text">try pannalam</span></li>
+            <li>User accounts <span class="tamil-text">setup pannalam</span></li>
+        </ul>
+
+        <div class="navigation">
+            <a href="#" class="nav-button">← <span class="tamil-text">Previous:</span> Introduction</a>
+            <div style="text-align: center; color: #7f8c8d;">
+                <strong>Chapter 2 of 40+</strong><br>
+                <span class="tamil-text">Windows Installation Complete!</span>
+            </div>
+            <a href="#" class="nav-button"><span class="tamil-text">Next:</span> Linux Installation →</a>
+        </div>
+    </div>
+</body>
+</html>

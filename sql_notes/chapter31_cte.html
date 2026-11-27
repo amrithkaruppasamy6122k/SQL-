@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 31: Common Table Expressions (CTE) - SQL Book</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .author-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .author-info a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 5px;
+        }
+        .content-box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .definition {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .flowchart {
+            text-align: center;
+            background: #f0f8ff;
+            border: 2px dashed #4682b4;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .recursive-code {
+            background: #4a1a4a;
+            color: #e6b3ff;
+        }
+        .sql-explanation {
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .use-case {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .chapter-title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .sample-chapter {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .advantages-box {
+            background: #f0fff0;
+            border: 2px solid #32cd32;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .types-box {
+            background: #fff8dc;
+            border: 2px solid #ffa500;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="chapter-title">Chapter 31: Common Table Expressions (CTE)</h1>
+        <p><strong>Author:</strong> Gowtham SB</p>
+        <div class="author-info">
+            <a href="https://linkedin.com/in/sbgowtham" target="_blank">📧 LinkedIn: sbgowtham</a>
+            <a href="https://youtube.com/@dataengineeringvideos" target="_blank">🎥 YouTube: dataengineeringvideos</a>
+            <a href="https://instagram.com/dataengineeringtamil" target="_blank">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Definition (Vilakkam)</h2>
+        <div class="definition">
+            <strong>Common Table Expression (CTE):</strong> Temporary named result set ah create pannuradhu, itha single query la use pannalam. WITH keyword use panni define pannurom. Complex queries ah readable and maintainable ah make panna CTE romba useful.<br><br>
+            <strong>Advantages:</strong> Code readability increase aagum, complex subqueries ah simple ah write pannalam, same CTE ah multiple times reference pannalam, recursive operations perform pannalam.
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Flow Chart (Otta Padal)</h2>
+        <div class="flowchart">
+            <div style="margin-bottom: 20px;">
+                <strong>SIMPLE CTE PROCESS:</strong><br>
+                WITH keyword → CTE name define → AS keyword → Subquery write → Main query la CTE use pannu
+            </div>
+            <div style="border-top: 2px solid #4682b4; padding-top: 15px; margin-bottom: 20px;">
+                <strong>RECURSIVE CTE PROCESS:</strong><br>
+                WITH RECURSIVE → Base case define → UNION ALL → Recursive case define → Main query execute
+            </div>
+            <div style="border-top: 2px solid #4682b4; padding-top: 15px;">
+                <strong>MULTIPLE CTE PROCESS:</strong><br>
+                First CTE define → Comma → Second CTE define → Multiple CTEs reference → Main query execute
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Types of CTE (Vakai Vakai)</h2>
+        <div class="types-box">
+            <h4>1. Simple CTE (Eliya CTE)</h4>
+            <p>Basic temporary result set create pannuradhu</p>
+            
+            <h4>2. Recursive CTE (Punar CTE)</h4>
+            <p>Self-referencing query, hierarchy data handle pannuradhu</p>
+            
+            <h4>3. Multiple CTE (Pala CTE)</h4>
+            <p>Orey query la multiple CTEs use pannuradhu</p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Basic Syntax (Molip Vagai)</h2>
+        
+        <div class="code-block">
+WITH cte_name AS (
+    -- CTE query
+    SELECT column1, column2 FROM table_name WHERE condition
+)
+SELECT * FROM cte_name WHERE another_condition;
+        </div>
+        <div class="sql-explanation">
+            <strong>WITH cte_name AS:</strong> CTE name define pannurom<br>
+            <strong>SELECT ... FROM table_name:</strong> Temporary result set create pannurom<br>
+            <strong>SELECT * FROM cte_name:</strong> CTE results ah main query la use pannurom
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Examples with Explanation (Udaharanangal)</h2>
+        
+        <h3>Example 1: Basic CTE - Department wise Employee Count</h3>
+        <div class="code-block">
+WITH dept_summary AS (
+    SELECT department, COUNT(*) as emp_count
+    FROM employees 
+    GROUP BY department
+)
+SELECT * FROM dept_summary WHERE emp_count > 5;
+        </div>
+        <div class="sql-explanation">
+            <strong>WITH dept_summary AS:</strong> dept_summary name la CTE create pannurom<br>
+            <strong>SELECT department, COUNT(*):</strong> Department wise employee count calculate pannurom<br>
+            <strong>FROM employees:</strong> Employees table la irundhu data edukkurom<br>
+            <strong>GROUP BY department:</strong> Department wise group pannurom<br>
+            <strong>SELECT * FROM dept_summary:</strong> CTE results ah use pannurom<br>
+            <strong>WHERE emp_count > 5:</strong> 5 ku mela employees irukka departments mattum filter pannurom
+        </div>
+
+        <h3>Example 2: CTE with JOIN Operations</h3>
+        <div class="code-block">
+WITH high_salary_emp AS (
+    SELECT emp_id, emp_name, salary
+    FROM employees 
+    WHERE salary > 50000
+)
+SELECT h.emp_name, h.salary, d.dept_name
+FROM high_salary_emp h
+JOIN departments d ON h.emp_id = d.manager_id;
+        </div>
+        <div class="sql-explanation">
+            <strong>WITH high_salary_emp AS:</strong> High salary employees ah separate pannurom<br>
+            <strong>WHERE salary > 50000:</strong> 50000 ku mela salary irukkavanga mattum<br>
+            <strong>SELECT h.emp_name, h.salary:</strong> CTE la irundhu employee details edukkurom<br>
+            <strong>JOIN departments d:</strong> Departments table ah join pannurom<br>
+            <strong>ON h.emp_id = d.manager_id:</strong> Employee ID and Manager ID match pannurom
+        </div>
+
+        <h3>Example 3: Multiple CTEs</h3>
+        <div class="code-block">
+WITH sales_summary AS (
+    SELECT product_id, SUM(quantity) as total_sold
+    FROM sales 
+    GROUP BY product_id
+),
+product_details AS (
+    SELECT product_id, product_name, price
+    FROM products
+)
+SELECT p.product_name, p.price, s.total_sold,
+       (p.price * s.total_sold) as total_revenue
+FROM product_details p
+JOIN sales_summary s ON p.product_id = s.product_id;
+        </div>
+        <div class="sql-explanation">
+            <strong>WITH sales_summary AS:</strong> First CTE - sales summary create pannurom<br>
+            <strong>SUM(quantity) as total_sold:</strong> Product wise total quantity sum pannurom<br>
+            <strong>product_details AS:</strong> Second CTE - product details ah separate pannurom<br>
+            <strong>SELECT product_id, product_name:</strong> Product information edukkurom<br>
+            <strong>JOIN sales_summary s:</strong> Rendu CTEs ah join pannurom<br>
+            <strong>(p.price * s.total_sold):</strong> Total revenue calculate pannurom
+        </div>
+
+        <h3>Example 4: Recursive CTE - Employee Hierarchy</h3>
+        <div class="code-block recursive-code">
+WITH RECURSIVE emp_hierarchy AS (
+    SELECT emp_id, emp_name, manager_id, 1 as level
+    FROM employees 
+    WHERE manager_id IS NULL
+    
+    UNION ALL
+    
+    SELECT e.emp_id, e.emp_name, e.manager_id, h.level + 1
+    FROM employees e
+    JOIN emp_hierarchy h ON e.manager_id = h.emp_id
+)
+SELECT emp_name, level FROM emp_hierarchy ORDER BY level, emp_name;
+        </div>
+        <div class="sql-explanation">
+            <strong>WITH RECURSIVE emp_hierarchy:</strong> Recursive CTE define pannurom<br>
+            <strong>WHERE manager_id IS NULL:</strong> Top level managers ah base case ah edukkurom<br>
+            <strong>1 as level:</strong> First level ah 1 ah set pannurom<br>
+            <strong>UNION ALL:</strong> Base case and recursive case ah combine pannurom<br>
+            <strong>JOIN emp_hierarchy h:</strong> CTE ah self-reference pannurom<br>
+            <strong>h.level + 1:</strong> Next level employees ku level increment pannurom<br>
+            <strong>ORDER BY level, emp_name:</strong> Level wise sort pannurom
+        </div>
+
+        <h3>Example 5: CTE with Window Functions</h3>
+        <div class="code-block">
+WITH ranked_employees AS (
+    SELECT emp_name, department, salary,
+           ROW_NUMBER() OVER(PARTITION BY department ORDER BY salary DESC) as rank_num
+    FROM employees
+)
+SELECT emp_name, department, salary
+FROM ranked_employees 
+WHERE rank_num <= 3;
+        </div>
+        <div class="sql-explanation">
+            <strong>WITH ranked_employees AS:</strong> Employee ranking CTE create pannurom<br>
+            <strong>ROW_NUMBER() OVER:</strong> Window function use panni ranking pannurom<br>
+            <strong>PARTITION BY department:</strong> Department wise separate panni rank pannurom<br>
+            <strong>ORDER BY salary DESC:</strong> Salary high to low order la arrange pannurom<br>
+            <strong>WHERE rank_num <= 3:</strong> Top 3 employees ah mattum select pannurom
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Advantages (Nanmaigal)</h2>
+        <div class="advantages-box">
+            <h4>1. Code Readability (Puridhal)</h4>
+            <p>Complex queries ah simple steps la break down pannalam</p>
+            
+            <h4>2. Reusability (Marupadiyum Payan)</h4>
+            <p>Same CTE ah multiple places la reference pannalam</p>
+            
+            <h4>3. Performance (Seyalthiran)</h4>
+            <p>Subquery alternative ah use panninaala performance better aagum</p>
+            
+            <h4>4. Recursive Operations</h4>
+            <p>Hierarchy data, tree structures handle panna easy</p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Use Cases (Payan Paadu Nilai)</h2>
+        
+        <div class="use-case">
+            <h4>1. Sales Report Generation</h4>
+            <p>Monthly sales summary, product wise performance, region wise analysis ellaam CTE use panni clear ah generate pannalam.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. Employee Management</h4>
+            <p>Department hierarchy, reporting structure, performance ranking ellaam recursive CTE use panni handle pannalam.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. E-commerce Analytics</h4>
+            <p>Customer segmentation, product recommendations, order analysis ellaam multiple CTEs use panni complex analysis pannalam.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Financial Reporting</h4>
+            <p>Quarter wise revenue, expense analysis, profit calculation ellaam step by step CTE la break down panni clear report create pannalam.</p>
+        </div>
+    </div>
+
+    <div class="sample-chapter">
+        <h2>Next Chapter Sample: Normalization and Types</h2>
+        
+        <h3>Definition (Vilakkam)</h3>
+        <div class="definition">
+            <strong>Database Normalization:</strong> Database design la redundancy (duplicate data) reduce pannuradhu and data integrity maintain pannuradhu. Itha different normal forms la organize pannurom (1NF, 2NF, 3NF, BCNF).
+        </div>
+
+        <h3>First Normal Form (1NF) Example:</h3>
+        <div class="code-block">
+-- Before 1NF (Atomic values illai)
+CREATE TABLE students_bad (
+    id INT,
+    name VARCHAR(100),
+    subjects VARCHAR(200)  -- "Math, Science, English"
+);
+
+-- After 1NF (Atomic values)
+CREATE TABLE students_good (
+    id INT,
+    name VARCHAR(100),
+    subject VARCHAR(50)
+);
+        </div>
+        <div class="sql-explanation">
+            <strong>Before 1NF:</strong> Single column la multiple values store pannurom (wrong)<br>
+            <strong>After 1NF:</strong> Each column la single atomic value mattum store pannurom<br>
+            <strong>Atomic values:</strong> Each cell la oru value mattum irukanum
+        </div>
+
+        <p><em>Full chapter la 2NF, 3NF, BCNF, denormalization ellaam detailed examples ooda irukum!</em></p>
+    </div>
+
+    <div class="header" style="margin-top: 30px; text-align: center;">
+        <p><strong>Connect with me:</strong></p>
+        <div class="author-info" style="justify-content: center;">
+            <a href="https://linkedin.com/in/sbgowtham" target="_blank">LinkedIn: sbgowtham</a>
+            <a href="https://youtube.com/@dataengineeringvideos" target="_blank">YouTube: dataengineeringvideos</a>
+            <a href="https://instagram.com/dataengineeringtamil" target="_blank">Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 34: ACID Properties - SQL Book</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .author-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .author-info a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 5px;
+        }
+        .content-box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .definition {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .flowchart {
+            text-align: center;
+            background: #f0f8ff;
+            border: 2px dashed #4682b4;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .atomicity-code {
+            background: #4d1f00;
+            color: #ffa500;
+        }
+        .consistency-code {
+            background: #1f4d00;
+            color: #90ee90;
+        }
+        .isolation-code {
+            background: #001f4d;
+            color: #87ceeb;
+        }
+        .durability-code {
+            background: #4d004d;
+            color: #ff69b4;
+        }
+        .sql-explanation {
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .use-case {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .chapter-title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .acid-overview {
+            background: #fff8dc;
+            border: 2px solid #ffa500;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .property-box {
+            background: #f0f8ff;
+            border: 2px solid #4682b4;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .real-world-scenario {
+            background: #f0fff0;
+            border: 2px solid #32cd32;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .violation-example {
+            background: #ffe6e6;
+            border: 2px solid #ff6b6b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .success-example {
+            background: #e6ffe6;
+            border: 2px solid #4CAF50;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background: #f2f2f2;
+            font-weight: bold;
+        }
+        .transaction-states {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .state-box {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .state-begin { background: #e6f3ff; border: 2px solid #0066cc; }
+        .state-active { background: #fff3cd; border: 2px solid #ffc107; }
+        .state-commit { background: #e6ffe6; border: 2px solid #4CAF50; }
+        .state-rollback { background: #ffe6e6; border: 2px solid #ff6b6b; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="chapter-title">Chapter 34: ACID Properties</h1>
+        <p><strong>Author:</strong> Gowtham SB</p>
+        <div class="author-info">
+            <a href="https://linkedin.com/in/sbgowtham" target="_blank">📧 LinkedIn: sbgowtham</a>
+            <a href="https://youtube.com/@dataengineeringvideos" target="_blank">🎥 YouTube: dataengineeringvideos</a>
+            <a href="https://instagram.com/dataengineeringtamil" target="_blank">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>ACID Properties Definition (Vilakkam)</h2>
+        <div class="definition">
+            <strong>ACID Properties:</strong> Database transactions la data integrity and reliability maintain panna follow panna veenda 4 fundamental principles. Banking, e-commerce, financial systems pola critical applications la ACID compliance mandatory aagum.<br><br>
+            
+            <strong>ACID Acronym:</strong><br>
+            • <strong>A</strong>tomicity - All or Nothing principle<br>
+            • <strong>C</strong>onsistency - Data integrity rules follow aaganum<br>
+            • <strong>I</strong>solation - Concurrent transactions interfere panna koodathu<br>
+            • <strong>D</strong>urability - Committed data permanent ah preserve aaganum<br><br>
+            
+            <strong>Yen ACID Important?</strong> Database la data corruption avoid pannuradhu, concurrent users safe ah work pannuradhu, system crash aanalum data safe ah irukuradhu ku ACID properties romba crucial.
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>ACID Properties Overview</h2>
+        <div class="acid-overview">
+            <div class="transaction-states">
+                <div class="state-box state-begin">
+                    <h4>BEGIN</h4>
+                    <p>Transaction Start</p>
+                </div>
+                <div class="state-box state-active">
+                    <h4>ACTIVE</h4>
+                    <p>Operations Execute</p>
+                </div>
+                <div class="state-box state-commit">
+                    <h4>COMMIT</h4>
+                    <p>Success State</p>
+                </div>
+                <div class="state-box state-rollback">
+                    <h4>ROLLBACK</h4>
+                    <p>Failure State</p>
+                </div>
+            </div>
+            
+            <div class="sql-explanation">
+                <strong>Transaction Lifecycle:</strong> BEGIN la start aagi, operations execute aagi, success aana COMMIT, failure aana ROLLBACK aagum. ACID properties ellaa stages layum apply aagum.
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Flow Chart (Otta Padal)</h2>
+        <div class="flowchart">
+            <div style="margin-bottom: 20px;">
+                <strong>TRANSACTION FLOW WITH ACID:</strong><br>
+                START TRANSACTION → ATOMICITY Check → CONSISTENCY Validate → ISOLATION Maintain → Operations Execute → Success? → COMMIT (DURABILITY) / ROLLBACK
+            </div>
+            <div style="border-top: 2px solid #4682b4; padding-top: 15px; margin-bottom: 20px;">
+                <strong>ACID VALIDATION PROCESS:</strong><br>
+                Each Operation → Atomicity Boundary → Consistency Rules Check → Isolation Level Apply → Durability Guarantee → Transaction Complete
+            </div>
+            <div style="border-top: 2px solid #4682b4; padding-top: 15px;">
+                <strong>FAILURE HANDLING:</strong><br>
+                Error Detect → Atomicity Rollback → Consistency Restore → Isolation Release → Durability Maintain → Clean State Return
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>A - Atomicity (All or Nothing Principle)</h2>
+        
+        <div class="property-box">
+            <h3>Atomicity Concept</h3>
+            <div class="definition">
+                <strong>Atomicity:</strong> Transaction la irukka ellaa operations um completely success aaganum illa completely fail aaganum. Partial success allow pannadhu. Itha "All or Nothing" principle nu solluvom.<br><br>
+                <strong>Example:</strong> Bank money transfer la debit and credit rendu operations um success aaganum. Debit mattum success aachu credit fail aana entire transaction rollback aaganum.
+            </div>
+        </div>
+
+        <h3>Atomicity Example 1: Bank Money Transfer</h3>
+        <div class="real-world-scenario">
+            <h4>Scenario:</h4>
+            <p>Ravi account la irundhu Priya account ku 15000 rupees transfer pannurom. Rendu operations um atomic ah nadakkanum.</p>
+        </div>
+
+        <div class="code-block atomicity-code">
+-- Bank Transfer Transaction
+CREATE TABLE bank_accounts (
+    account_number VARCHAR(20) PRIMARY KEY,
+    account_holder VARCHAR(100),
+    balance DECIMAL(12,2),
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+INSERT INTO bank_accounts VALUES
+('ACC001', 'Ravi Kumar', 50000.00, NOW()),
+('ACC002', 'Priya Sharma', 25000.00, NOW());
+        </div>
+
+        <div class="success-example">
+            <h5>Success Case - Proper Atomicity:</h5>
+            <div class="code-block atomicity-code">
+START TRANSACTION;
+
+-- Step 1: Debit from source account
+UPDATE bank_accounts 
+SET balance = balance - 15000 
+WHERE account_number = 'ACC001' AND balance >= 15000;
+
+-- Check if debit was successful
+SELECT ROW_COUNT() as rows_affected;
+
+-- Step 2: Credit to destination account  
+UPDATE bank_accounts 
+SET balance = balance + 15000 
+WHERE account_number = 'ACC002';
+
+-- If both operations successful, commit
+COMMIT;
+
+-- Verify final balances
+SELECT account_number, account_holder, balance 
+FROM bank_accounts 
+WHERE account_number IN ('ACC001', 'ACC002');
+            </div>
+            <div class="sql-explanation">
+                <strong>START TRANSACTION:</strong> Transaction boundary define pannurom<br>
+                <strong>balance >= 15000:</strong> Sufficient balance check pannurom<br>
+                <strong>ROW_COUNT():</strong> Debit operation success aagudha nu verify pannurom<br>
+                <strong>COMMIT:</strong> Rendu operations um success aana permanent ah save pannurom<br>
+                <strong>Atomicity Success:</strong> Either rendu updates um aagum illa rendu layum rollback aagum
+            </div>
+        </div>
+
+        <div class="violation-example">
+            <h5>Failure Case - Atomicity Violation Prevention:</h5>
+            <div class="code-block atomicity-code">
+START TRANSACTION;
+
+-- Insufficient balance case
+UPDATE bank_accounts 
+SET balance = balance - 25000 
+WHERE account_number = 'ACC001' AND balance >= 25000;
+
+-- Check affected rows - will be 0 due to insufficient balance
+SET @affected_rows = ROW_COUNT();
+
+IF @affected_rows = 0 THEN
+    -- Insufficient balance, rollback entire transaction
+    ROLLBACK;
+    SELECT 'Transaction Failed: Insufficient Balance' as error_message;
+ELSE
+    -- Credit to destination account
+    UPDATE bank_accounts 
+    SET balance = balance + 25000 
+    WHERE account_number = 'ACC002';
+    
+    COMMIT;
+    SELECT 'Transaction Successful' as success_message;
+END IF;
+            </div>
+            <div class="sql-explanation">
+                <strong>Insufficient Balance Check:</strong> Debit operation fail aana automatic ah detect pannurom<br>
+                <strong>@affected_rows = 0:</strong> Update successful ah illa nu check pannurom<br>
+                <strong>ROLLBACK:</strong> Any step fail aana entire transaction undo pannurom<br>
+                <strong>Atomicity Protection:</strong> Partial transaction never commit aagaadhu
+            </div>
+        </div>
+
+        <h3>Atomicity Example 2: E-commerce Order Processing</h3>
+        <div class="code-block atomicity-code">
+-- E-commerce Order Atomicity
+START TRANSACTION;
+
+-- Step 1: Create order record
+INSERT INTO orders (customer_id, order_total, order_status) 
+VALUES (101, 2500.00, 'PROCESSING');
+
+SET @order_id = LAST_INSERT_ID();
+
+-- Step 2: Update inventory  
+UPDATE inventory 
+SET quantity = quantity - 2 
+WHERE product_id = 'PROD001' AND quantity >= 2;
+
+-- Step 3: Create order items
+INSERT INTO order_items (order_id, product_id, quantity, price)
+VALUES (@order_id, 'PROD001', 2, 1250.00);
+
+-- Step 4: Update customer points
+UPDATE customers 
+SET loyalty_points = loyalty_points + 25 
+WHERE customer_id = 101;
+
+-- All steps successful, commit the transaction
+COMMIT;
+        </div>
+        <div class="sql-explanation">
+            <strong>Multiple Operations:</strong> Order create, inventory update, order items, loyalty points<br>
+            <strong>@order_id:</strong> Generated order ID use pannurom<br>
+            <strong>quantity >= 2:</strong> Stock availability check pannurom<br>
+            <strong>Atomic Guarantee:</strong> Any step fail aana complete order process rollback aagum
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>C - Consistency (Data Integrity Rules)</h2>
+        
+        <div class="property-box">
+            <h3>Consistency Concept</h3>
+            <div class="definition">
+                <strong>Consistency:</strong> Database la define panna rules, constraints, triggers ellaam transaction complete aana pinbu valid state la irukanum. Data integrity maintain aaganum.<br><br>
+                <strong>Types:</strong> Primary key constraints, foreign key constraints, check constraints, business rules ellaam consistency maintain pannurom.
+            </div>
+        </div>
+
+        <h3>Consistency Example 1: Foreign Key Constraint</h3>
+        <div class="code-block consistency-code">
+-- Customer Orders with Foreign Key Consistency
+CREATE TABLE customers (
+    customer_id INT PRIMARY KEY,
+    customer_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    phone VARCHAR(15)
+);
+
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id INT,
+    order_date DATE DEFAULT CURRENT_DATE,
+    order_total DECIMAL(10,2) CHECK (order_total > 0),
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+
+-- Insert valid customer
+INSERT INTO customers VALUES (201, 'Arjun Patel', 'arjun.patel@gmail.com', '9876543210');
+        </div>
+
+        <div class="success-example">
+            <h5>Consistency Success Case:</h5>
+            <div class="code-block consistency-code">
+START TRANSACTION;
+
+-- Valid order - customer exists
+INSERT INTO orders (customer_id, order_total) 
+VALUES (201, 1500.00);
+
+-- Consistency maintained - foreign key valid
+COMMIT;
+
+SELECT 'Order created successfully with consistency maintained' as result;
+            </div>
+        </div>
+
+        <div class="violation-example">
+            <h5>Consistency Violation Prevention:</h5>
+            <div class="code-block consistency-code">
+START TRANSACTION;
+
+-- Try to insert order for non-existent customer
+-- This will fail due to foreign key constraint
+INSERT INTO orders (customer_id, order_total) 
+VALUES (999, 2000.00);
+
+-- This will cause error: Cannot add or update a child row: 
+-- a foreign key constraint fails
+-- Transaction automatically rollback aagum
+
+ROLLBACK;  -- Explicit rollback for safety
+            </div>
+            <div class="sql-explanation">
+                <strong>Foreign Key Check:</strong> Customer 999 exist pannadhu, so consistency violation<br>
+                <strong>Automatic Rollback:</strong> Constraint violation la automatic ah rollback aagum<br>
+                <strong>Data Integrity:</strong> Invalid data enter panna mudiyaathu<br>
+                <strong>Consistency Maintained:</strong> Database valid state la maintain aagum
+            </div>
+        </div>
+
+        <h3>Consistency Example 2: Business Rule Validation</h3>
+        <div class="code-block consistency-code">
+-- Account Balance Consistency with Business Rules
+CREATE TABLE accounts (
+    account_id VARCHAR(20) PRIMARY KEY,
+    account_type ENUM('SAVINGS', 'CURRENT', 'FIXED') NOT NULL,
+    balance DECIMAL(12,2) DEFAULT 0.00,
+    min_balance DECIMAL(10,2) DEFAULT 1000.00,
+    CHECK (balance >= 0),  -- Balance should never be negative
+    CHECK (
+        (account_type = 'SAVINGS' AND balance >= min_balance) OR
+        (account_type = 'CURRENT' AND balance >= 0) OR
+        (account_type = 'FIXED' AND balance >= 25000)
+    )
+);
+
+-- Custom validation trigger for complex business rules
+DELIMITER //
+CREATE TRIGGER validate_account_balance 
+BEFORE UPDATE ON accounts
+FOR EACH ROW
+BEGIN
+    -- Savings account minimum balance check
+    IF NEW.account_type = 'SAVINGS' AND NEW.balance < NEW.min_balance THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Savings account balance below minimum required';
+    END IF;
+    
+    -- Fixed deposit minimum amount check  
+    IF NEW.account_type = 'FIXED' AND NEW.balance < 25000 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Fixed deposit requires minimum 25000 balance';
+    END IF;
+END //
+DELIMITER ;
+        </div>
+        <div class="sql-explanation">
+            <strong>CHECK Constraints:</strong> Balance negative ah irukka koodathu<br>
+            <strong>Business Rules:</strong> Account type based minimum balance rules<br>
+            <strong>Custom Trigger:</strong> Complex business logic validation<br>
+            <strong>SIGNAL SQLSTATE:</strong> Custom error throw pannurom<br>
+            <strong>Consistency Guarantee:</strong> Business rules violate panna transaction fail aagum
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>I - Isolation (Concurrent Transaction Management)</h2>
+        
+        <div class="property-box">
+            <h3>Isolation Concept</h3>
+            <div class="definition">
+                <strong>Isolation:</strong> Multiple transactions simultaneously execute aagumbodhu, oru transaction la changes vera transaction ku visible aagakoodathu until commit aagum varai. Concurrent access problems avoid pannurom.<br><br>
+                <strong>Isolation Levels:</strong> READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE nu 4 levels irukku.
+            </div>
+        </div>
+
+        <h3>Isolation Levels Comparison</h3>
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Isolation Level</th>
+                    <th>Dirty Read</th>
+                    <th>Non-Repeatable Read</th>
+                    <th>Phantom Read</th>
+                    <th>Performance</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>READ UNCOMMITTED</strong></td>
+                    <td>Possible</td>
+                    <td>Possible</td>
+                    <td>Possible</td>
+                    <td>Highest</td>
+                </tr>
+                <tr>
+                    <td><strong>READ COMMITTED</strong></td>
+                    <td>Prevented</td>
+                    <td>Possible</td>
+                    <td>Possible</td>
+                    <td>Good</td>
+                </tr>
+                <tr>
+                    <td><strong>REPEATABLE READ</strong></td>
+                    <td>Prevented</td>
+                    <td>Prevented</td>
+                    <td>Possible</td>
+                    <td>Moderate</td>
+                </tr>
+                <tr>
+                    <td><strong>SERIALIZABLE</strong></td>
+                    <td>Prevented</td>
+                    <td>Prevented</td>
+                    <td>Prevented</td>
+                    <td>Lowest</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Isolation Example 1: Dirty Read Prevention</h3>
+        <div class="real-world-scenario">
+            <h4>Scenario:</h4>
+            <p>Two transactions simultaneously account balance modify pannurom. Transaction 1 value change pannichu aana commit pannala. Transaction 2 uncommitted value read panna koodathu.</p>
+        </div>
+
+        <div class="code-block isolation-code">
+-- Session 1: Transaction A
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+START TRANSACTION;
+
+UPDATE bank_accounts 
+SET balance = balance + 5000 
+WHERE account_number = 'ACC001';
+
+-- Transaction A not committed yet
+-- Balance changed from 50000 to 55000 but not committed
+
+SELECT 'Transaction A: Balance updated but not committed' as status;
+        </div>
+
+        <div class="code-block isolation-code">
+-- Session 2: Transaction B (Different Connection)
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+START TRANSACTION;
+
+-- This will read the original committed value (50000)
+-- Not the uncommitted value (55000) from Transaction A
+SELECT account_number, balance, 'Original committed value' as note
+FROM bank_accounts 
+WHERE account_number = 'ACC001';
+
+COMMIT;
+        </div>
+        <div class="sql-explanation">
+            <strong>READ COMMITTED Level:</strong> Committed data mattum read pannalam<br>
+            <strong>Dirty Read Prevention:</strong> Uncommitted changes visible aagaadhu<br>
+            <strong>Transaction A:</strong> Update pannichu aana commit pannala<br>
+            <strong>Transaction B:</strong> Original value thaan read pannuchu<br>
+            <strong>Isolation Success:</strong> Uncommitted data interference illa
+        </div>
+
+        <h3>Isolation Example 2: Phantom Read Prevention</h3>
+        <div class="code-block isolation-code">
+-- SERIALIZABLE Isolation Level Demo
+-- Session 1: Transaction with Range Query
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+START TRANSACTION;
+
+-- Count all accounts with balance > 25000
+SELECT COUNT(*) as high_balance_accounts
+FROM bank_accounts 
+WHERE balance > 25000;
+
+-- Result: Let's say 5 accounts
+        </div>
+
+        <div class="code-block isolation-code">
+-- Session 2: Try to Insert New High Balance Account (Different Connection)
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+START TRANSACTION;
+
+-- This insert will be blocked until Session 1 commits
+-- Prevents phantom read in Session 1
+INSERT INTO bank_accounts 
+VALUES ('ACC003', 'New Customer', 30000.00, NOW());
+
+-- This will wait for Session 1 to complete
+        </div>
+        <div class="sql-explanation">
+            <strong>SERIALIZABLE Level:</strong> Highest isolation level<br>
+            <strong>Range Lock:</strong> WHERE balance > 25000 range locked<br>
+            <strong>Phantom Prevention:</strong> New records insert panna mudiyaadhu<br>
+            <strong>Session 2 Blocked:</strong> Session 1 complete aagum varai wait pannuchu<br>
+            <strong>Consistent Results:</strong> Session 1 la same count maintain aagum
+        </div>
+
+        <h3>Isolation Example 3: Deadlock Detection and Resolution</h3>
+        <div class="code-block isolation-code">
+-- Deadlock Scenario and MySQL Auto-Resolution
+-- Session 1:
+START TRANSACTION;
+UPDATE bank_accounts SET balance = balance + 1000 WHERE account_number = 'ACC001';
+-- Lock acquired on ACC001
+
+-- Now trying to lock ACC002 (will wait for Session 2)
+UPDATE bank_accounts SET balance = balance - 500 WHERE account_number = 'ACC002';
+        </div>
+
+        <div class="code-block isolation-code">
+-- Session 2 (Simultaneously):
+START TRANSACTION;
+UPDATE bank_accounts SET balance = balance + 2000 WHERE account_number = 'ACC002';
+-- Lock acquired on ACC002
+
+-- Now trying to lock ACC001 (will cause deadlock)
+UPDATE bank_accounts SET balance = balance - 1000 WHERE account_number = 'ACC001';
+-- MySQL will detect deadlock and rollback one transaction
+        </div>
+        <div class="sql-explanation">
+            <strong>Deadlock Situation:</strong> Session 1 needs ACC002, Session 2 needs ACC001<br>
+            <strong>Circular Wait:</strong> Rendu sessions um wait panni irukum<br>
+            <strong>MySQL Detection:</strong> Automatic ah deadlock detect pannuchu<br>
+            <strong>Auto Resolution:</strong> One transaction ah rollback pannuchu<br>
+            <strong>Error Message:</strong> "Deadlock found when trying to get lock" error varum
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>D - Durability (Permanent Data Storage)</h2>
+        
+        <div class="property-box">
+            <h3>Durability Concept</h3>
+            <div class="definition">
+                <strong>Durability:</strong> Transaction commit aana pinbu, system crash aanalum power failure aanalum data permanent ah preserve aaganum. Committed changes ellaam persistent storage la safe ah store aaganum.<br><br>
+                <strong>Implementation:</strong> Write-ahead logging, transaction logs, checkpoint mechanisms use panni durability ensure pannurom.
+            </div>
+        </div>
+
+        <h3>Durability Example 1: Transaction Log Verification</h3>
+        <div class="code-block durability-code">
+-- Enable MySQL General Log to verify durability
+SET GLOBAL general_log = 'ON';
+SET GLOBAL general_log_file = '/var/log/mysql/transactions.log';
+
+-- Durability Test Transaction
+START TRANSACTION;
+
+INSERT INTO bank_accounts VALUES 
+('ACC004', 'Durability Test Customer', 10000.00, NOW());
+
+UPDATE bank_accounts 
+SET balance = balance + 1000 
+WHERE account_number = 'ACC001';
+
+-- Critical: COMMIT ensures durability
+COMMIT;
+
+-- Verify transaction is logged and data persisted
+SELECT account_number, balance, 'Data committed and durable' as status
+FROM bank_accounts 
+WHERE account_number IN ('ACC004', 'ACC001');
+        </div>
+        <div class="sql-explanation">
+            <strong>general_log = 'ON':</strong> Transaction logging enable pannurom<br>
+            <strong>COMMIT:</strong> Data ah disk ku permanent ah write pannurom<br>
+            <strong>Write-ahead Logging:</strong> Commit munnadi log file la write aagum<br>
+            <strong>Crash Recovery:</strong> System restart aanalum data available irukum<br>
+            <strong>Durability Guarantee:</strong> Committed data never lose aagaadhu
+        </div>
+
+        <h3>Durability Example 2: Binary Log for Point-in-Time Recovery</h3>
+        <div class="code-block durability-code">
+-- Enable Binary Logging for Durability
+-- (Usually configured in my.cnf)
+-- log-bin=mysql-bin
+-- binlog-format=ROW
+
+-- Check binary log status
+SHOW BINARY LOGS;
+
+-- Execute critical business transaction
+START TRANSACTION;
+
+INSERT INTO critical_transactions (
+    transaction_id, 
+    transaction_type, 
+    amount, 
+    account_number,
+    timestamp
+) VALUES (
+    'TXN001', 
+    'DEPOSIT', 
+    50000.00, 
+    'ACC001',
+    NOW()
+);
+
+UPDATE bank_accounts 
+SET balance = balance + 50000 
+WHERE account_number = 'ACC001';
+
+COMMIT;
+
+-- Verify binary log entry
+SHOW BINLOG EVENTS IN 'mysql-bin.000001' 
+LIMIT 10;
+        </div>
+        <div class="sql-explanation">
+            <strong>Binary Logs:</strong> All changes binary format la record aagum<br>
+            <strong>Point-in-Time Recovery:</strong> Any point ku data restore pannalam<br>
+            <strong>SHOW BINLOG EVENTS:</strong> Transaction history verify pannalam<br>
+            <strong>Disaster Recovery:</strong> Complete database restore pannalam<br>
+            <strong>High Durability:</strong> Multiple layers of data protection
+        </div>
+
+        <h3>Durability Example 3: Crash Simulation and Recovery</h3>
+        <div class="code-block durability-code">
+-- Simulate system crash scenario
+CREATE TABLE test_durability (
+    id INT PRIMARY KEY,
+    description VARCHAR(100),
+    created_at TIMESTAMP
+);
+
+-- Transaction 1: Will be committed before "crash"
+START TRANSACTION;
+INSERT INTO test_durability VALUES (1, 'Before Crash', NOW());
+COMMIT;  -- This will survive the crash
+
+-- Transaction 2: Will be in progress during "crash"
+START TRANSACTION;  
+INSERT INTO test_durability VALUES (2, 'During Crash - Not Committed', NOW());
+-- Simulate crash here - no COMMIT executed
+-- This transaction will be rolled back during recovery
+
+-- After system restart and crash recovery:
+-- Verify durability - only committed data remains
+SELECT * FROM test_durability;
+-- Result: Only record 1 will be present
+-- Record 2 automatically rolled back during crash recovery
+        </div>
+        <div class="sql-explanation">
+            <strong>Crash Simulation:</strong> System crash before COMMIT aagudhu<br>
+            <strong>Committed Data:</strong> Record 1 crash apramum survive aagum<br>
+            <strong>Uncommitted Data:</strong> Record 2 automatic ah rollback aagum<br>
+            <strong>Crash Recovery:</strong> MySQL automatic ah inconsistent transactions remove pannum<br>
+            <strong>Durability Proof:</strong> Only committed data persist aagum
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>ACID Properties Real-World Implementation</h2>
+        
+        <h3>Complete Banking Transaction with All ACID Properties</h3>
+        <div class="real-world-scenario">
+            <h4>Comprehensive Banking Scenario:</h4>
+            <p>Multiple account types, transaction limits, audit trails, concurrent users ellaam handle panra complete banking transaction implement pannurom.</p>
+        </div>
+
+        <div class="code-block">
+-- Complete Banking System with ACID Compliance
+CREATE TABLE bank_customers (
+    customer_id INT PRIMARY KEY,
+    customer_name VARCHAR(100) NOT NULL,
+    kyc_status ENUM('PENDING', 'VERIFIED', 'REJECTED') DEFAULT 'PENDING',
+    created_date DATE DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE bank_accounts (
+    account_number VARCHAR(20) PRIMARY KEY,
+    customer_id INT,
+    account_type ENUM('SAVINGS', 'CURRENT', 'FIXED') NOT NULL,
+    balance DECIMAL(15,2) DEFAULT 0.00,
+    min_balance DECIMAL(10,2) DEFAULT 1000.00,
+    daily_limit DECIMAL(12,2) DEFAULT 100000.00,
+    status ENUM('ACTIVE', 'BLOCKED', 'CLOSED') DEFAULT 'ACTIVE',
+    created_date DATE DEFAULT CURRENT_DATE,
+    FOREIGN KEY (customer_id) REFERENCES bank_customers(customer_id),
+    CHECK (balance >= 0),
+    CHECK (daily_limit > 0)
+);
+
+CREATE TABLE transaction_log (
+    log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    transaction_ref VARCHAR(50) UNIQUE,
+    from_account VARCHAR(20),
+    to_account VARCHAR(20), 
+    transaction_type ENUM('DEPOSIT', 'WITHDRAWAL', 'TRANSFER'),
+    amount DECIMAL(15,2),
+    balance_before DECIMAL(15,2),
+    balance_after DECIMAL(15,2),
+    transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('SUCCESS', 'FAILED', 'PENDING') DEFAULT 'PENDING',
+    failure_reason TEXT,
+    created_by VARCHAR(50) DEFAULT USER()
+);
+
+CREATE TABLE daily_transaction_limits (
+    account_number VARCHAR(20),
+    transaction_date DATE,
+    total_debited DECIMAL(15,2) DEFAULT 0.00,
+    transaction_count INT DEFAULT 0,
+    PRIMARY KEY (account_number, transaction_date),
+    FOREIGN KEY (account_number) REFERENCES bank_accounts(account_number)
+);
+        </div>
+        <div class="sql-explanation">
+            <strong>Complete Schema:</strong> Customers, accounts, transactions, limits ellaam track pannurom<br>
+            <strong>ENUM Constraints:</strong> Valid values mattum allow pannurom<br>
+            <strong>CHECK Constraints:</strong> Business rules database level la enforce pannurom<br>
+            <strong>Foreign Keys:</strong> Data integrity maintain pannurom<br>
+            <strong>Audit Trail:</strong> Every transaction log pannurom
+        </div>
+
+        <div class="code-block">
+-- Comprehensive Money Transfer with Full ACID Compliance
+DELIMITER //
+
+CREATE PROCEDURE CompleteMoneyTransfer(
+    IN p_from_account VARCHAR(20),
+    IN p_to_account VARCHAR(20),
+    IN p_amount DECIMAL(15,2),
+    IN p_transaction_ref VARCHAR(50),
+    OUT p_result VARCHAR(100)
+)
+BEGIN
+    DECLARE v_from_balance DECIMAL(15,2) DEFAULT 0;
+    DECLARE v_to_balance DECIMAL(15,2) DEFAULT 0;
+    DECLARE v_min_balance DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_daily_limit DECIMAL(12,2) DEFAULT 0;
+    DECLARE v_daily_used DECIMAL(15,2) DEFAULT 0;
+    DECLARE v_from_status VARCHAR(20) DEFAULT '';
+    DECLARE v_to_status VARCHAR(20) DEFAULT '';
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        -- Atomicity: Any error aana complete rollback
+        ROLLBACK;
+        SET p_result = 'Transaction failed due to system error';
+        
+        INSERT INTO transaction_log 
+        (transaction_ref, from_account, to_account, amount, status, failure_reason)
+        VALUES 
+        (p_transaction_ref, p_from_account, p_to_account, p_amount, 'FAILED', 'System error occurred');
+    END;
+
+    -- Start transaction for Atomicity
+    START TRANSACTION;
+    
+    -- Set isolation level for consistency
+    SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+    
+    -- Validate input parameters
+    IF p_amount <= 0 THEN
+        SET p_result = 'Invalid amount: Amount must be positive';
+        ROLLBACK;
+        LEAVE;
+    END IF;
+    
+    -- Check if accounts exist and are active (Consistency)
+    SELECT balance, min_balance, daily_limit, status 
+    INTO v_from_balance, v_min_balance, v_daily_limit, v_from_status
+    FROM bank_accounts 
+    WHERE account_number = p_from_account FOR UPDATE;
+    
+    IF v_from_status != 'ACTIVE' THEN
+        SET p_result = 'Source account is not active';
+        ROLLBACK;
+        LEAVE;
+    END IF;
+    
+    SELECT balance, status
+    INTO v_to_balance, v_to_status  
+    FROM bank_accounts
+    WHERE account_number = p_to_account FOR UPDATE;
+    
+    IF v_to_status != 'ACTIVE' THEN
+        SET p_result = 'Destination account is not active';
+        ROLLBACK;
+        LEAVE;
+    END IF;
+    
+    -- Check minimum balance constraint (Consistency)
+    IF (v_from_balance - p_amount) < v_min_balance THEN
+        SET p_result = 'Insufficient balance: Would breach minimum balance requirement';
+        ROLLBACK;
+        LEAVE;
+    END IF;
+    
+    -- Check daily transaction limit (Business Rule Consistency)
+    SELECT COALESCE(total_debited, 0) INTO v_daily_used
+    FROM daily_transaction_limits 
+    WHERE account_number = p_from_account AND transaction_date = CURDATE();
+    
+    IF (v_daily_used + p_amount) > v_daily_limit THEN
+        SET p_result = 'Daily transaction limit exceeded';
+        ROLLBACK;
+        LEAVE;
+    END IF;
+    
+    -- All validations passed, execute the transfer (Atomicity)
+    
+    -- Debit from source account
+    UPDATE bank_accounts 
+    SET balance = balance - p_amount
+    WHERE account_number = p_from_account;
+    
+    -- Credit to destination account  
+    UPDATE bank_accounts
+    SET balance = balance + p_amount
+    WHERE account_number = p_to_account;
+    
+    -- Update daily transaction tracking
+    INSERT INTO daily_transaction_limits 
+    (account_number, transaction_date, total_debited, transaction_count)
+    VALUES 
+    (p_from_account, CURDATE(), p_amount, 1)
+    ON DUPLICATE KEY UPDATE 
+    total_debited = total_debited + p_amount,
+    transaction_count = transaction_count + 1;
+    
+    -- Create transaction log entries for audit trail
+    INSERT INTO transaction_log 
+    (transaction_ref, from_account, to_account, transaction_type, amount, 
+     balance_before, balance_after, status)
+    VALUES 
+    (p_transaction_ref, p_from_account, p_to_account, 'TRANSFER', p_amount,
+     v_from_balance, v_from_balance - p_amount, 'SUCCESS'),
+    (CONCAT(p_transaction_ref, '_CREDIT'), p_to_account, p_from_account, 'DEPOSIT', p_amount,
+     v_to_balance, v_to_balance + p_amount, 'SUCCESS');
+    
+    -- Commit transaction for Durability
+    COMMIT;
+    
+    SET p_result = 'Transaction completed successfully';
+    
+END //
+
+DELIMITER ;
+        </div>
+        <div class="sql-explanation">
+            <strong>ACID Implementation:</strong><br>
+            <strong>Atomicity:</strong> EXIT HANDLER use panni any error la complete rollback<br>
+            <strong>Consistency:</strong> All business rules, constraints validate pannurom<br>
+            <strong>Isolation:</strong> FOR UPDATE locks use panni concurrent access control<br>
+            <strong>Durability:</strong> COMMIT successful aana data permanent ah save aagum<br>
+            <strong>Complete Validation:</strong> Amount, account status, limits ellaam check pannurom<br>
+            <strong>Audit Trail:</strong> Every transaction detailed log maintain pannurom
+        </div>
+
+        <div class="code-block">
+-- Test the Complete ACID-Compliant Transfer
+-- Setup test data
+INSERT INTO bank_customers VALUES 
+(1001, 'Rajesh Kumar', 'VERIFIED', '2024-01-15'),
+(1002, 'Priya Sharma', 'VERIFIED', '2024-01-20');
+
+INSERT INTO bank_accounts VALUES
+('ACC001', 1001, 'SAVINGS', 75000.00, 5000.00, 50000.00, 'ACTIVE', '2024-01-15'),
+('ACC002', 1002, 'CURRENT', 45000.00, 0.00, 100000.00, 'ACTIVE', '2024-01-20');
+
+-- Execute transfer with full ACID compliance
+CALL CompleteMoneyTransfer('ACC001', 'ACC002', 25000.00, 'TXN20240415001', @result);
+SELECT @result as transaction_result;
+
+-- Verify results
+SELECT account_number, balance, 'After Transfer' as status
+FROM bank_accounts 
+WHERE account_number IN ('ACC001', 'ACC002');
+
+-- Check transaction logs
+SELECT transaction_ref, from_account, to_account, amount, status, transaction_date
+FROM transaction_log 
+WHERE transaction_ref LIKE 'TXN20240415001%'
+ORDER BY log_id;
+
+-- Verify daily limits tracking
+SELECT * FROM daily_transaction_limits 
+WHERE account_number = 'ACC001' AND transaction_date = CURDATE();
+        </div>
+        <div class="sql-explanation">
+            <strong>Complete Test:</strong> Real banking scenario test pannurom<br>
+            <strong>Result Verification:</strong> Transfer successful ah aagudha check pannurom<br>
+            <strong>Balance Check:</strong> Accounts balance correct ah update aagudha verify<br>
+            <strong>Audit Verification:</strong> Transaction logs proper ah create aagudha check<br>
+            <strong>Limit Tracking:</strong> Daily limits correct ah track aagudha ensure
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>ACID Violations and Prevention</h2>
+        
+        <div class="violation-example">
+            <h4>Common ACID Violations:</h4>
+            
+            <h5>1. Atomicity Violation - Partial Transaction</h5>
+            <div class="code-block">
+-- Wrong way - No transaction boundary
+UPDATE accounts SET balance = balance - 5000 WHERE id = 1;
+-- If system crashes here, money debited but not credited
+UPDATE accounts SET balance = balance + 5000 WHERE id = 2;
+
+-- Correct way - Proper transaction boundary
+START TRANSACTION;
+UPDATE accounts SET balance = balance - 5000 WHERE id = 1;
+UPDATE accounts SET balance = balance + 5000 WHERE id = 2;
+COMMIT;
+            </div>
+            
+            <h5>2. Consistency Violation - Business Rule Breach</h5>
+            <div class="code-block">
+-- Wrong way - No validation
+UPDATE bank_accounts SET balance = -5000 WHERE account_number = 'ACC001';
+
+-- Correct way - Proper validation  
+UPDATE bank_accounts 
+SET balance = balance - 5000 
+WHERE account_number = 'ACC001' 
+  AND balance >= 5000 
+  AND (balance - 5000) >= min_balance;
+            </div>
+            
+            <h5>3. Isolation Violation - Dirty Read</h5>
+            <div class="code-block">
+-- Wrong way - Reading uncommitted data
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+-- This allows dirty reads
+
+-- Correct way - Proper isolation level
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+-- Or higher based on requirements
+            </div>
+            
+            <h5>4. Durability Violation - No Proper Commit</h5>
+            <div class="code-block">
+-- Wrong way - No explicit commit in critical operations
+START TRANSACTION;
+UPDATE critical_data SET value = 'important_change';
+-- Connection closes without COMMIT - changes lost
+
+-- Correct way - Explicit commit
+START TRANSACTION;
+UPDATE critical_data SET value = 'important_change';
+COMMIT;  -- Ensures durability
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Industry-Specific ACID Use Cases</h2>
+        
+        <div class="use-case">
+            <h4>1. Banking and Financial Services</h4>
+            <p><strong>Critical Need:</strong> Money transfers, loan processing, interest calculations<br>
+            <strong>ACID Requirements:</strong> Complete transaction integrity, no partial transfers, concurrent user safety, crash recovery capability</p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. E-commerce Platforms</h4>
+            <p><strong>Critical Need:</strong> Order processing, inventory management, payment processing<br>
+            <strong>ACID Requirements:</strong> Stock levels accuracy, payment consistency, order completion guarantee</p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Healthcare Systems</h4>
+            <p><strong>Critical Need:</strong> Patient records, prescription management, billing<br>
+            <strong>ACID Requirements:</strong> Medical data integrity, concurrent doctor access, audit trail maintenance</p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Manufacturing and Supply Chain</h4>
+            <p><strong>Critical Need:</strong> Inventory tracking, production planning, quality control<br>
+            <strong>ACID Requirements:</strong> Material tracking accuracy, production consistency, multi-location synchronization</p>
+        </div>
+
+        <div class="use-case">
+            <h4>5. Airlines and Booking Systems</h4>
+            <p><strong>Critical Need:</strong> Seat reservations, ticket booking, schedule management<br>
+            <strong>ACID Requirements:</strong> No double booking, consistent pricing, reservation confirmation</p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>ACID vs BASE Comparison</h2>
+        
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>Aspect</th>
+                    <th>ACID (Traditional RDBMS)</th>
+                    <th>BASE (NoSQL/Distributed)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Consistency</strong></td>
+                    <td>Strong Consistency</td>
+                    <td>Eventual Consistency</td>
+                </tr>
+                <tr>
+                    <td><strong>Availability</strong></td>
+                    <td>May sacrifice availability for consistency</td>
+                    <td>High availability priority</td>
+                </tr>
+                <tr>
+                    <td><strong>Partition Tolerance</strong></td>
+                    <td>Limited in distributed systems</td>
+                    <td>Better partition tolerance</td>
+                </tr>
+                <tr>
+                    <td><strong>Use Cases</strong></td>
+                    <td>Financial, Banking, Critical transactions</td>
+                    <td>Social media, Big data, Web applications</td>
+                </tr>
+                <tr>
+                    <td><strong>Performance</strong></td>
+                    <td>Lower throughput, higher latency</td>
+                    <td>Higher throughput, lower latency</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="sql-explanation">
+            <strong>ACID:</strong> Financial systems pola critical applications ku suitable<br>
+            <strong>BASE:</strong> Web applications, social media pola systems ku better<br>
+            <strong>Choice Depends:</strong> Application requirements and business needs<br>
+            <strong>Hybrid Approach:</strong> Some systems ACID and BASE rendu layum use pannurom
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Best Practices for ACID Compliance</h2>
+        
+        <div class="success-example">
+            <h4>ACID Implementation Best Practices:</h4>
+            
+            <h5>1. Transaction Design</h5>
+            <ul>
+                <li>Keep transactions as short as possible</li>
+                <li>Avoid user interaction inside transactions</li>
+                <li>Use appropriate isolation levels</li>
+                <li>Handle exceptions properly</li>
+            </ul>
+            
+            <h5>2. Error Handling</h5>
+            <div class="code-block">
+-- Proper error handling pattern
+DELIMITER //
+CREATE PROCEDURE SafeTransaction()
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;  -- Re-throw the error
+    END;
+    
+    START TRANSACTION;
+    -- Your operations here
+    COMMIT;
+END //
+DELIMITER ;
+            </div>
+            
+            <h5>3. Performance Optimization</h5>
+            <ul>
+                <li>Use indexes for frequently accessed columns</li>
+                <li>Minimize lock duration</li>
+                <li>Choose optimal isolation levels</li>
+                <li>Monitor deadlock occurrences</li>
+            </ul>
+            
+            <h5>4. Monitoring and Maintenance</h5>
+            <ul>
+                <li>Enable transaction logging</li>
+                <li>Monitor long-running transactions</li>
+                <li>Regular backup and recovery testing</li>
+                <li>Performance metrics tracking</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="header" style="margin-top: 30px; text-align: center; background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+        <h2 style="color: white; margin-bottom: 15px;">🎉 SQL Book Complete! 🎉</h2>
+        <p style="color: white; font-size: 18px; margin-bottom: 15px;">
+            <strong>Congratulations! You have completed all 34 chapters of comprehensive SQL learning!</strong>
+        </p>
+        <p style="color: white; margin-bottom: 10px;">From basic SELECT statements to advanced ACID properties, you've mastered:</p>
+        <p style="color: white; font-size: 14px;">
+            ✅ SQL Fundamentals ✅ Advanced Queries ✅ Database Design ✅ Performance Optimization<br>
+            ✅ Stored Procedures ✅ Triggers ✅ Indexes ✅ Normalization ✅ SCD ✅ ACID Properties
+        </p>
+        <div class="author-info" style="justify-content: center; margin-top: 20px;">
+            <p style="color: white; margin-bottom: 10px;"><strong>Connect with me for more learning:</strong></p>
+            <a href="https://linkedin.com/in/sbgowtham" target="_blank">LinkedIn: sbgowtham</a>
+            <a href="https://youtube.com/@dataengineeringvideos" target="_blank">YouTube: dataengineeringvideos</a>
+            <a href="https://instagram.com/dataengineeringtamil" target="_blank">Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+</body>
+</html>

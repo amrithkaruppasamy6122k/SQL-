@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 18: String Handling - SQL Book</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .author-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .social-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .content-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .flowchart {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .code-explanation {
+            background: #e6fffa;
+            padding: 10px;
+            border-left: 4px solid #38b2ac;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f56565;
+            margin: 15px 0;
+        }
+        .diagram {
+            text-align: center;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .function-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .function-table th, .function-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .function-table th {
+            background-color: #667eea;
+            color: white;
+        }
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 SQL Complete Guide</h1>
+        <h2>Chapter 18: String Handling</h2>
+        <p><em>MySQL Flavour la String Functions ah Master Panalam!</em></p>
+    </div>
+
+    <div class="author-info">
+        <h3 style="text-align: center; margin-bottom: 15px;">👨‍💻 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#">📺 YouTube: dataengineeringvideos</a>
+            <a href="#">💼 LinkedIn: sbgowtham</a>
+            <a href="#">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📖 Definition (String Handling enna?)</h2>
+        <p><strong>String Handling</strong> na database la irukra text data va manipulate panna, modify panna, extract panna use pandra functions collection thaan.</p>
+        <p>MySQL la namma string functions use panni:</p>
+        <ul>
+            <li>Text ah uppercase/lowercase ku convert panalam</li>
+            <li>String length find panalam</li>
+            <li>Substring extract panalam</li>
+            <li>Characters ah replace panalam</li>
+            <li>Multiple strings ah concatenate panalam</li>
+        </ul>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🏛️ Standard (MySQL String Functions Standard)</h2>
+        <p>MySQL la string handling ku different categories la functions irukku:</p>
+        
+        <table class="function-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Functions</th>
+                    <th>Purpose</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Case Conversion</td>
+                    <td>UPPER(), LOWER(), INITCAP()</td>
+                    <td>Text case ah change panna</td>
+                </tr>
+                <tr>
+                    <td>Length & Position</td>
+                    <td>LENGTH(), CHAR_LENGTH(), LOCATE()</td>
+                    <td>String size and position find panna</td>
+                </tr>
+                <tr>
+                    <td>Substring Operations</td>
+                    <td>SUBSTRING(), LEFT(), RIGHT()</td>
+                    <td>String la irundhu part ah extract panna</td>
+                </tr>
+                <tr>
+                    <td>String Manipulation</td>
+                    <td>CONCAT(), REPLACE(), TRIM()</td>
+                    <td>String ah modify and clean panna</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📊 Flow Chart</h2>
+        <div class="flowchart">
+            <div class="diagram">
+                <h3>String Handling Process Flow</h3>
+                <pre style="font-family: monospace; text-align: left; background: white; padding: 15px; border-radius: 5px;">
+Start
+  ↓
+Input String Data
+  ↓
+Choose String Function
+  ↓
+┌─────────────────────────────────────────────┐
+│  Case Conversion?                           │
+│  → UPPER() / LOWER() / INITCAP()           │
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  Length Calculation?                        │
+│  → LENGTH() / CHAR_LENGTH()                 │
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  Substring Extraction?                      │
+│  → SUBSTRING() / LEFT() / RIGHT()           │
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  String Concatenation?                      │
+│  → CONCAT() / CONCAT_WS()                   │
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  String Replacement?                        │
+│  → REPLACE() / TRIM()                       │
+└─────────────────────────────────────────────┘
+  ↓
+Apply Function
+  ↓
+Get Modified String
+  ↓
+End
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🎯 Examples with Detailed Explanation</h2>
+        
+        <h3>1. UPPER() Function - String ah uppercase ku convert panna</h3>
+        <div class="code-block">
+SELECT UPPER('data engineering') AS uppercase_text;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>SELECT</code> - Data ah retrieve panna use pandrom<br>
+            • <code>UPPER('data engineering')</code> - 'data engineering' text ah uppercase letters la convert pannum<br>
+            • <code>AS uppercase_text</code> - Result column ku 'uppercase_text' nu alias name kudukrom<br>
+            • <strong>Output:</strong> DATA ENGINEERING
+        </div>
+
+        <h3>2. CONCAT() Function - Multiple strings ah join panna</h3>
+        <div class="code-block">
+SELECT CONCAT('Hello', ' ', 'World', '!') AS joined_string;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>SELECT</code> - Data retrieve panna<br>
+            • <code>CONCAT('Hello', ' ', 'World', '!')</code> - Naalu strings ah join panni oru string aakkum<br>
+            • <code>AS joined_string</code> - Result ku alias name<br>
+            • <strong>Output:</strong> Hello World!
+        </div>
+
+        <h3>3. SUBSTRING() Function - String la irundhu part ah extract panna</h3>
+        <div class="code-block">
+SELECT SUBSTRING('MySQL Database', 1, 5) AS extracted_part;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>SELECT</code> - Data retrieve panna<br>
+            • <code>SUBSTRING('MySQL Database', 1, 5)</code> - 'MySQL Database' la irundhu 1st position la irundhu 5 characters extract pannum<br>
+            • <code>AS extracted_part</code> - Result column name<br>
+            • <strong>Output:</strong> MySQL
+        </div>
+
+        <h3>4. LENGTH() Function - String length find panna</h3>
+        <div class="code-block">
+SELECT LENGTH('Data Engineering Tamil') AS string_length;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>SELECT</code> - Data retrieve panna<br>
+            • <code>LENGTH('Data Engineering Tamil')</code> - String la evlo characters irukku nu count pannum<br>
+            • <code>AS string_length</code> - Result column alias<br>
+            • <strong>Output:</strong> 22
+        </div>
+
+        <h3>5. REPLACE() Function - String la characters ah replace panna</h3>
+        <div class="code-block">
+SELECT REPLACE('SQL Server Database', 'Server', 'MySQL') AS replaced_string;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>SELECT</code> - Data retrieve panna<br>
+            • <code>REPLACE('SQL Server Database', 'Server', 'MySQL')</code> - Original string la 'Server' ah find panni 'MySQL' nu replace pannum<br>
+            • <code>AS replaced_string</code> - Result column alias<br>
+            • <strong>Output:</strong> SQL MySQL Database
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🛠️ Use Cases (Real-world Applications)</h2>
+        
+        <div class="use-case">
+            <h4>1. E-commerce Product Names Standardization</h4>
+            <p><strong>Scenario:</strong> Online shopping site la product names inconsistent ah irukku (some lowercase, some uppercase)</p>
+            <div class="code-block">
+SELECT 
+    product_id,
+    INITCAP(LOWER(product_name)) AS standardized_name
+FROM 
+    products;
+            </div>
+            <p><strong>Benefit:</strong> Ella product names um consistent format la irukum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. User Email Validation and Cleaning</h4>
+            <p><strong>Scenario:</strong> User registration time la email addresses la extra spaces irukalam</p>
+            <div class="code-block">
+SELECT 
+    user_id,
+    TRIM(LOWER(email_address)) AS cleaned_email
+FROM 
+    users;
+            </div>
+            <p><strong>Benefit:</strong> Clean and consistent email addresses store panalam</p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Search Functionality Implementation</h4>
+            <p><strong>Scenario:</strong> Users product search panranga, case-insensitive search venum</p>
+            <div class="code-block">
+SELECT 
+    *
+FROM 
+    products
+WHERE 
+    UPPER(product_name) LIKE UPPER('%laptop%');
+            </div>
+            <p><strong>Benefit:</strong> User 'LAPTOP', 'laptop', 'Laptop' nu type pannalum results kidaikum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Report Generation with Formatted Names</h4>
+            <p><strong>Scenario:</strong> Customer report la full name format panna venum</p>
+            <div class="code-block">
+SELECT 
+    customer_id,
+    CONCAT(first_name, ' ', last_name) AS full_name,
+    CONCAT('Customer ID: ', customer_id) AS formatted_id
+FROM 
+    customers;
+            </div>
+            <p><strong>Benefit:</strong> Professional looking reports generate panalam</p>
+        </div>
+
+        <div class="use-case">
+            <h4>5. Data Migration and Text Processing</h4>
+            <p><strong>Scenario:</strong> Old system la irundhu data migrate panranga, text cleanup venum</p>
+            <div class="code-block">
+SELECT 
+    record_id,
+    REPLACE(REPLACE(description, '  ', ' '), '\n', ' ') AS cleaned_description
+FROM 
+    legacy_data;
+            </div>
+            <p><strong>Benefit:</strong> Clean data new system la store panalam</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>📚 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#" style="color: #64ffda;">📺 YouTube: dataengineeringvideos</a> |
+            <a href="#" style="color: #64ffda;">💼 LinkedIn: sbgowtham</a> |
+            <a href="#" style="color: #64ffda;">📸 Instagram: dataengineeringtamil</a>
+        </div>
+        <p style="margin-top: 15px;"><em>Happy Learning! SQL mastery oda namma data engineering journey continue panalam! 🚀</em></p>
+    </div>
+</body>
+</html>

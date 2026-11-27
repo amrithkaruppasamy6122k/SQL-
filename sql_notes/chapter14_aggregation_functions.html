@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 14 - Aggregation Functions</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .author-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .author-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.9em;
+        }
+        .social-link {
+            color: #74b9ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .social-link:hover {
+            color: #0984e3;
+        }
+        .chapter {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .definition-box {
+            background: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .function-card {
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .function-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .count-card { background: #e8f5e8; border-color: #27ae60; }
+        .sum-card { background: #e8f0ff; border-color: #3498db; }
+        .avg-card { background: #fff8e8; border-color: #f39c12; }
+        .minmax-card { background: #ffe8e8; border-color: #e74c3c; }
+        .advanced-card { background: #f3e5f5; border-color: #9b59b6; }
+        .sql-code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .sql-keyword {
+            color: #3498db;
+            font-weight: bold;
+        }
+        .sql-string {
+            color: #e74c3c;
+        }
+        .sql-comment {
+            color: #95a5a6;
+            font-style: italic;
+        }
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .data-table th {
+            background: #3498db;
+            color: white;
+        }
+        .data-table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .result-highlight {
+            background: #d4edda !important;
+            font-weight: bold;
+        }
+        .function-syntax {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            font-weight: bold;
+            color: #495057;
+        }
+        .flowchart {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+        .flowchart-box {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #3498db;
+            color: white;
+            border-radius: 8px;
+            margin: 8px;
+            min-width: 140px;
+        }
+        .arrow {
+            font-size: 24px;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .tamil-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .author-footer {
+            background: #2d3436;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .footer-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #74b9ff;
+        }
+        @media print {
+            body { background: white; }
+            .chapter { box-shadow: none; }
+            .author-footer { background: #f8f9fa; color: #2c3e50; }
+        }
+        @media (max-width: 768px) {
+            .functions-grid { grid-template-columns: 1fr; }
+            .social-links { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="author-header">
+        <div class="author-name">📚 SQL Complete Course - By Gowtham SB</div>
+        <div class="social-links">
+            <span>📱 Instagram: <a href="#" class="social-link">@dataengineeringtamil</a></span>
+            <span>💼 LinkedIn: <a href="#" class="social-link">sbgowtham</a></span>
+            <span>🎥 YouTube: <a href="#" class="social-link">dataengineeringvideos</a></span>
+        </div>
+    </div>
+
+    <div class="chapter">
+        <h1>Chapter 14: Aggregation Functions Complete Guide</h1>
+
+        <h2>📖 Definition</h2>
+        <div class="definition-box">
+            <strong>Aggregation Functions:</strong> Aggregation functions <span class="tamil-text">use panni</span> multiple rows-la irukura data-va single result-a <span class="tamil-text">convert pannalam</span>. <span class="tamil-text">Example:</span> 100 students-oda marks irundha, <span class="tamil-text">average marks kandu pudikalam, total students count pannalam, highest marks find pannalam</span>. <span class="tamil-text">Data analysis and reporting-ku</span> aggregation functions <span class="tamil-text">romba important</span>.
+        </div>
+
+        <h2>🎯 Main Aggregation Functions</h2>
+        <div class="functions-grid">
+            <div class="function-card count-card">
+                <h3>📊 COUNT</h3>
+                <h4><span class="tamil-text">Records Count panradhu</span></h4>
+                <div class="function-syntax">COUNT(*) | COUNT(column)</div>
+                <p><span class="tamil-text">Total number of rows or non-null values</span></p>
+            </div>
+            
+            <div class="function-card sum-card">
+                <h3>➕ SUM</h3>
+                <h4><span class="tamil-text">Total Add panradhu</span></h4>
+                <div class="function-syntax">SUM(column)</div>
+                <p><span class="tamil-text">Add all numeric values in a column</span></p>
+            </div>
+            
+            <div class="function-card avg-card">
+                <h3>📈 AVG</h3>
+                <h4><span class="tamil-text">Average Calculate panradhu</span></h4>
+                <div class="function-syntax">AVG(column)</div>
+                <p><span class="tamil-text">Mathematical average of numeric values</span></p>
+            </div>
+            
+            <div class="function-card minmax-card">
+                <h3>🔍 MIN/MAX</h3>
+                <h4><span class="tamil-text">Smallest/Largest Value</span></h4>
+                <div class="function-syntax">MIN(column) | MAX(column)</div>
+                <p><span class="tamil-text">Find minimum or maximum value</span></p>
+            </div>
+        </div>
+
+        <h2>📊 Sample Database Setup</h2>
+        <div class="sql-code">
+<span class="sql-comment">-- Create sample sales database</span>
+<span class="sql-keyword">CREATE TABLE</span> sales_data (
+    sale_id <span class="sql-keyword">INT</span> <span class="sql-keyword">AUTO_INCREMENT</span> <span class="sql-keyword">PRIMARY KEY</span>,
+    product_name <span class="sql-keyword">VARCHAR</span>(100) <span class="sql-keyword">NOT NULL</span>,
+    category <span class="sql-keyword">VARCHAR</span>(50) <span class="sql-keyword">NOT NULL</span>,
+    sale_amount <span class="sql-keyword">DECIMAL</span>(10,2) <span class="sql-keyword">NOT NULL</span>,
+    quantity_sold <span class="sql-keyword">INT</span> <span class="sql-keyword">NOT NULL</span>,
+    sale_date <span class="sql-keyword">DATE</span> <span class="sql-keyword">NOT NULL</span>,
+    sales_person <span class="sql-keyword">VARCHAR</span>(50),
+    region <span class="sql-keyword">VARCHAR</span>(50) <span class="sql-keyword">NOT NULL</span>
+);
+
+<span class="sql-comment">-- Insert sample data (using generic, safe data)</span>
+<span class="sql-keyword">INSERT INTO</span> sales_data 
+    (product_name, category, sale_amount, quantity_sold, sale_date, sales_person, region) 
+<span class="sql-keyword">VALUES</span>
+    (<span class="sql-string">'Product_A'</span>, <span class="sql-string">'Electronics'</span>, 15000.00, 2, <span class="sql-string">'2024-01-15'</span>, <span class="sql-string">'Sales_Person_1'</span>, <span class="sql-string">'North'</span>),
+    (<span class="sql-string">'Product_B'</span>, <span class="sql-string">'Clothing'</span>, 2500.00, 5, <span class="sql-string">'2024-01-16'</span>, <span class="sql-string">'Sales_Person_2'</span>, <span class="sql-string">'South'</span>),
+    (<span class="sql-string">'Product_C'</span>, <span class="sql-string">'Electronics'</span>, 8000.00, 1, <span class="sql-string">'2024-01-17'</span>, <span class="sql-string">'Sales_Person_1'</span>, <span class="sql-string">'North'</span>),
+    (<span class="sql-string">'Product_D'</span>, <span class="sql-string">'Books'</span>, 1200.00, 10, <span class="sql-string">'2024-01-18'</span>, <span class="sql-string">'Sales_Person_3'</span>, <span class="sql-string">'East'</span>),
+    (<span class="sql-string">'Product_E'</span>, <span class="sql-string">'Clothing'</span>, 3500.00, 3, <span class="sql-string">'2024-01-19'</span>, <span class="sql-string">'Sales_Person_2'</span>, <span class="sql-string">'South'</span>),
+    (<span class="sql-string">'Product_F'</span>, <span class="sql-string">'Electronics'</span>, 12000.00, 1, <span class="sql-string">'2024-01-20'</span>, <span class="sql-string">'Sales_Person_4'</span>, <span class="sql-string">'West'</span>),
+    (<span class="sql-string">'Product_G'</span>, <span class="sql-string">'Books'</span>, 800.00, 8, <span class="sql-string">'2024-01-21'</span>, <span class="sql-string">'Sales_Person_3'</span>, <span class="sql-string">'East'</span>);
+        </div>
+
+        <h4><span class="tamil-text">Sample Data Preview:</span></h4>
+        <table class="data-table">
+            <tr>
+                <th>sale_id</th>
+                <th>product_name</th>
+                <th>category</th>
+                <th>sale_amount</th>
+                <th>quantity_sold</th>
+                <th>sale_date</th>
+                <th>region</th>
+            </tr>
+            <tr><td>1</td><td>Product_A</td><td>Electronics</td><td>15000.00</td><td>2</td><td>2024-01-15</td><td>North</td></tr>
+            <tr><td>2</td><td>Product_B</td><td>Clothing</td><td>2500.00</td><td>5</td><td>2024-01-16</td><td>South</td></tr>
+            <tr><td>3</td><td>Product_C</td><td>Electronics</td><td>8000.00</td><td>1</td><td>2024-01-17</td><td>North</td></tr>
+            <tr><td>4</td><td>Product_D</td><td>Books</td><td>1200.00</td><td>10</td><td>2024-01-18</td><td>East</td></tr>
+            <tr><td>5</td><td>Product_E</td><td>Clothing</td><td>3500.00</td><td>3</td><td>2024-01-19</td><td>South</td></tr>
+            <tr><td>6</td><td>Product_F</td><td>Electronics</td><td>12000.00</td><td>1</td><td>2024-01-20</td><td>West</td></tr>
+            <tr><td>7</td><td>Product_G</td><td>Books</td><td>800.00</td><td>8</td><td>2024-01-21</td><td>East</td></tr>
+        </table>
+
+        <h2>📊 COUNT Function</h2>
+
+        <div class="sql-code">
+<span class="sql-comment">-- Basic COUNT examples</span>
+
+<span class="sql-comment">-- Count total number of sales records</span>
+<span class="sql-keyword">SELECT</span> <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">AS</span> total_sales
+<span class="sql-keyword">FROM</span> sales_data;
+
+<span class="sql-comment">-- Count non-null sales_person entries</span>
+<span class="sql-keyword">SELECT</span> <span class="sql-keyword">COUNT</span>(sales_person) <span class="sql-keyword">AS</span> sales_with_person
+<span class="sql-keyword">FROM</span> sales_data;
+
+<span class="sql-comment">-- Count distinct categories</span>
+<span class="sql-keyword">SELECT</span> <span class="sql-keyword">COUNT</span>(<span class="sql-keyword">DISTINCT</span> category) <span class="sql-keyword">AS</span> unique_categories
+<span class="sql-keyword">FROM</span> sales_data;
+
+<span class="sql-comment">-- Count sales by category</span>
+<span class="sql-keyword">SELECT</span> 
+    category,
+    <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">AS</span> sales_count
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">GROUP BY</span> category
+<span class="sql-keyword">ORDER BY</span> sales_count <span class="sql-keyword">DESC</span>;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">COUNT Function Explanation:</span></strong><br>
+            <strong>COUNT(*)</strong> - <span class="tamil-text">Total rows count pannum, NULL values um include aagum</span><br>
+            <strong>COUNT(sales_person)</strong> - <span class="tamil-text">NULL illa-na entries mattum count pannum</span><br>
+            <strong>COUNT(DISTINCT category)</strong> - <span class="tamil-text">Unique categories mattum count pannum</span><br>
+            <strong>GROUP BY category</strong> - <span class="tamil-text">Each category-ku separate count kudukum</span>
+        </div>
+
+        <h4><span class="tamil-text">COUNT Results:</span></h4>
+        <table class="data-table">
+            <tr><th>Query</th><th>Result</th></tr>
+            <tr><td>COUNT(*)</td><td class="result-highlight">7</td></tr>
+            <tr><td>COUNT(DISTINCT category)</td><td class="result-highlight">3</td></tr>
+            <tr><td>Electronics sales count</td><td class="result-highlight">3</td></tr>
+            <tr><td>Clothing sales count</td><td class="result-highlight">2</td></tr>
+            <tr><td>Books sales count</td><td class="result-highlight">2</td></tr>
+        </table>
+
+        <h2>➕ SUM Function</h2>
+
+        <div class="sql-code">
+<span class="sql-comment">-- Basic SUM examples</span>
+
+<span class="sql-comment">-- Total revenue from all sales</span>
+<span class="sql-keyword">SELECT</span> <span class="sql-keyword">SUM</span>(sale_amount) <span class="sql-keyword">AS</span> total_revenue
+<span class="sql-keyword">FROM</span> sales_data;
+
+<span class="sql-comment">-- Total quantity sold</span>
+<span class="sql-keyword">SELECT</span> <span class="sql-keyword">SUM</span>(quantity_sold) <span class="sql-keyword">AS</span> total_quantity
+<span class="sql-keyword">FROM</span> sales_data;
+
+<span class="sql-comment">-- Revenue by category</span>
+<span class="sql-keyword">SELECT</span> 
+    category,
+    <span class="sql-keyword">SUM</span>(sale_amount) <span class="sql-keyword">AS</span> category_revenue,
+    <span class="sql-keyword">SUM</span>(quantity_sold) <span class="sql-keyword">AS</span> category_quantity
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">GROUP BY</span> category
+<span class="sql-keyword">ORDER BY</span> category_revenue <span class="sql-keyword">DESC</span>;
+
+<span class="sql-comment">-- Revenue by region with formatting</span>
+<span class="sql-keyword">SELECT</span> 
+    region,
+    <span class="sql-keyword">SUM</span>(sale_amount) <span class="sql-keyword">AS</span> total_revenue,
+    <span class="sql-keyword">CONCAT</span>(<span class="sql-string">'₹'</span>, <span class="sql-keyword">FORMAT</span>(<span class="sql-keyword">SUM</span>(sale_amount), 2)) <span class="sql-keyword">AS</span> formatted_revenue
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">GROUP BY</span> region
+<span class="sql-keyword">ORDER BY</span> total_revenue <span class="sql-keyword">DESC</span>;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">SUM Function Explanation:</span></strong><br>
+            <strong>SUM(sale_amount)</strong> - <span class="tamil-text">All sale amounts add panni total revenue calculate pannum</span><br>
+            <strong>SUM(quantity_sold)</strong> - <span class="tamil-text">Total products sold quantity sum pannum</span><br>
+            <strong>GROUP BY category</strong> - <span class="tamil-text">Each category-ku separate sum calculate pannum</span><br>
+            <strong>FORMAT(SUM(amount), 2)</strong> - <span class="tamil-text">Sum result-a 2 decimal places-oda format pannum</span>
+        </div>
+
+        <h4><span class="tamil-text">SUM Results:</span></h4>
+        <table class="data-table">
+            <tr><th>Category</th><th>Revenue</th><th>Quantity</th></tr>
+            <tr><td>Electronics</td><td class="result-highlight">₹35,000.00</td><td>4</td></tr>
+            <tr><td>Clothing</td><td class="result-highlight">₹6,000.00</td><td>8</td></tr>
+            <tr><td>Books</td><td class="result-highlight">₹2,000.00</td><td>18</td></tr>
+            <tr><td><strong>TOTAL</strong></td><td class="result-highlight"><strong>₹43,000.00</strong></td><td><strong>30</strong></td></tr>
+        </table>
+
+        <h2>📈 AVG (Average) Function</h2>
+
+        <div class="sql-code">
+<span class="sql-comment">-- Basic AVG examples</span>
+
+<span class="sql-comment">-- Average sale amount</span>
+<span class="sql-keyword">SELECT</span> 
+    <span class="sql-keyword">AVG</span>(sale_amount) <span class="sql-keyword">AS</span> average_sale_amount,
+    <span class="sql-keyword">ROUND</span>(<span class="sql-keyword">AVG</span>(sale_amount), 2) <span class="sql-keyword">AS</span> rounded_average
+<span class="sql-keyword">FROM</span> sales_data;
+
+<span class="sql-comment">-- Average quantity per sale</span>
+<span class="sql-keyword">SELECT</span> 
+    <span class="sql-keyword">AVG</span>(quantity_sold) <span class="sql-keyword">AS</span> avg_quantity_per_sale
+<span class="sql-keyword">FROM</span> sales_data;
+
+<span class="sql-comment">-- Average sale amount by category</span>
+<span class="sql-keyword">SELECT</span> 
+    category,
+    <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">AS</span> total_sales,
+    <span class="sql-keyword">AVG</span>(sale_amount) <span class="sql-keyword">AS</span> avg_amount,
+    <span class="sql-keyword">ROUND</span>(<span class="sql-keyword">AVG</span>(sale_amount), 2) <span class="sql-keyword">AS</span> rounded_avg
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">GROUP BY</span> category
+<span class="sql-keyword">ORDER BY</span> avg_amount <span class="sql-keyword">DESC</span>;
+
+<span class="sql-comment">-- Compare individual sales with category average</span>
+<span class="sql-keyword">SELECT</span> 
+    product_name,
+    category,
+    sale_amount,
+    <span class="sql-keyword">ROUND</span>(<span class="sql-keyword">AVG</span>(sale_amount) <span class="sql-keyword">OVER</span> (<span class="sql-keyword">PARTITION BY</span> category), 2) <span class="sql-keyword">AS</span> category_avg,
+    <span class="sql-keyword">CASE</span>
+        <span class="sql-keyword">WHEN</span> sale_amount > <span class="sql-keyword">AVG</span>(sale_amount) <span class="sql-keyword">OVER</span> (<span class="sql-keyword">PARTITION BY</span> category) 
+        <span class="sql-keyword">THEN</span> <span class="sql-string">'Above Average'</span>
+        <span class="sql-keyword">ELSE</span> <span class="sql-string">'Below Average'</span>
+    <span class="sql-keyword">END</span> <span class="sql-keyword">AS</span> performance
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">ORDER BY</span> category, sale_amount <span class="sql-keyword">DESC</span>;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">AVG Function Explanation:</span></strong><br>
+            <strong>AVG(sale_amount)</strong> - <span class="tamil-text">All sale amounts-oda mathematical average calculate pannum</span><br>
+            <strong>ROUND(AVG(amount), 2)</strong> - <span class="tamil-text">Average-a 2 decimal places-ku round pannum</span><br>
+            <strong>AVG() OVER (PARTITION BY category)</strong> - <span class="tamil-text">Window function use panni each category average calculate pannum</span><br>
+            <strong>CASE WHEN with AVG</strong> - <span class="tamil-text">Average-oda compare panni condition check pannum</span>
+        </div>
+
+        <h2>🔍 MIN and MAX Functions</h2>
+
+        <div class="sql-code">
+<span class="sql-comment">-- Basic MIN and MAX examples</span>
+
+<span class="sql-comment">-- Find highest and lowest sale amounts</span>
+<span class="sql-keyword">SELECT</span> 
+    <span class="sql-keyword">MIN</span>(sale_amount) <span class="sql-keyword">AS</span> lowest_sale,
+    <span class="sql-keyword">MAX</span>(sale_amount) <span class="sql-keyword">AS</span> highest_sale,
+    <span class="sql-keyword">MAX</span>(sale_amount) - <span class="sql-keyword">MIN</span>(sale_amount) <span class="sql-keyword">AS</span> sale_range
+<span class="sql-keyword">FROM</span> sales_data;
+
+<span class="sql-comment">-- Find earliest and latest sale dates</span>
+<span class="sql-keyword">SELECT</span> 
+    <span class="sql-keyword">MIN</span>(sale_date) <span class="sql-keyword">AS</span> first_sale_date,
+    <span class="sql-keyword">MAX</span>(sale_date) <span class="sql-keyword">AS</span> last_sale_date,
+    <span class="sql-keyword">DATEDIFF</span>(<span class="sql-keyword">MAX</span>(sale_date), <span class="sql-keyword">MIN</span>(sale_date)) <span class="sql-keyword">AS</span> sales_period_days
+<span class="sql-keyword">FROM</span> sales_data;
+
+<span class="sql-comment">-- MIN and MAX by category</span>
+<span class="sql-keyword">SELECT</span> 
+    category,
+    <span class="sql-keyword">MIN</span>(sale_amount) <span class="sql-keyword">AS</span> min_sale,
+    <span class="sql-keyword">MAX</span>(sale_amount) <span class="sql-keyword">AS</span> max_sale,
+    <span class="sql-keyword">AVG</span>(sale_amount) <span class="sql-keyword">AS</span> avg_sale,
+    <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">AS</span> total_sales
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">GROUP BY</span> category
+<span class="sql-keyword">ORDER BY</span> max_sale <span class="sql-keyword">DESC</span>;
+
+<span class="sql-comment">-- Find products with highest and lowest sales</span>
+<span class="sql-keyword">SELECT</span> 
+    product_name,
+    category,
+    sale_amount,
+    <span class="sql-string">'Highest Sale'</span> <span class="sql-keyword">AS</span> sale_type
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">WHERE</span> sale_amount = (<span class="sql-keyword">SELECT</span> <span class="sql-keyword">MAX</span>(sale_amount) <span class="sql-keyword">FROM</span> sales_data)
+
+<span class="sql-keyword">UNION ALL</span>
+
+<span class="sql-keyword">SELECT</span> 
+    product_name,
+    category,
+    sale_amount,
+    <span class="sql-string">'Lowest Sale'</span> <span class="sql-keyword">AS</span> sale_type
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">WHERE</span> sale_amount = (<span class="sql-keyword">SELECT</span> <span class="sql-keyword">MIN</span>(sale_amount) <span class="sql-keyword">FROM</span> sales_data)
+<span class="sql-keyword">ORDER BY</span> sale_amount <span class="sql-keyword">DESC</span>;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">MIN/MAX Function Explanation:</span></strong><br>
+            <strong>MIN(sale_amount)</strong> - <span class="tamil-text">Column-la irukura smallest value return pannum</span><br>
+            <strong>MAX(sale_amount)</strong> - <span class="tamil-text">Column-la irukura largest value return pannum</span><br>
+            <strong>MAX() - MIN()</strong> - <span class="tamil-text">Range calculate panna use pannalam</span><br>
+            <strong>DATEDIFF(MAX(date), MIN(date))</strong> - <span class="tamil-text">Date range days-la calculate pannum</span><br>
+            <strong>Subquery with MIN/MAX</strong> - <span class="tamil-text">Specific records find panna use pannalam</span>
+        </div>
+
+        <h2>🔀 Advanced Aggregation Combinations</h2>
+
+        <div class="sql-code">
+<span class="sql-comment">-- Complex aggregation with multiple functions</span>
+<span class="sql-keyword">SELECT</span> 
+    region,
+    <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">AS</span> total_sales,
+    <span class="sql-keyword">SUM</span>(sale_amount) <span class="sql-keyword">AS</span> total_revenue,
+    <span class="sql-keyword">AVG</span>(sale_amount) <span class="sql-keyword">AS</span> avg_sale,
+    <span class="sql-keyword">MIN</span>(sale_amount) <span class="sql-keyword">AS</span> min_sale,
+    <span class="sql-keyword">MAX</span>(sale_amount) <span class="sql-keyword">AS</span> max_sale,
+    <span class="sql-keyword">SUM</span>(quantity_sold) <span class="sql-keyword">AS</span> total_quantity,
+    <span class="sql-keyword">ROUND</span>(<span class="sql-keyword">SUM</span>(sale_amount) / <span class="sql-keyword">SUM</span>(quantity_sold), 2) <span class="sql-keyword">AS</span> avg_price_per_unit
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">GROUP BY</span> region
+<span class="sql-keyword">ORDER BY</span> total_revenue <span class="sql-keyword">DESC</span>;
+
+<span class="sql-comment">-- Sales performance analysis</span>
+<span class="sql-keyword">SELECT</span> 
+    sales_person,
+    <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">AS</span> sales_count,
+    <span class="sql-keyword">SUM</span>(sale_amount) <span class="sql-keyword">AS</span> total_sales,
+    <span class="sql-keyword">ROUND</span>(<span class="sql-keyword">AVG</span>(sale_amount), 2) <span class="sql-keyword">AS</span> avg_sale_amount,
+    <span class="sql-keyword">MAX</span>(sale_amount) <span class="sql-keyword">AS</span> best_sale,
+    <span class="sql-keyword">ROUND</span>(<span class="sql-keyword">SUM</span>(sale_amount) / <span class="sql-keyword">COUNT</span>(*), 2) <span class="sql-keyword">AS</span> performance_ratio
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">WHERE</span> sales_person <span class="sql-keyword">IS NOT NULL</span>
+<span class="sql-keyword">GROUP BY</span> sales_person
+<span class="sql-keyword">HAVING</span> <span class="sql-keyword">COUNT</span>(*) >= 2  <span class="sql-comment">-- Only persons with 2+ sales</span>
+<span class="sql-keyword">ORDER BY</span> total_sales <span class="sql-keyword">DESC</span>;
+
+<span class="sql-comment">-- Monthly aggregation (if we had monthly data)</span>
+<span class="sql-keyword">SELECT</span> 
+    <span class="sql-keyword">YEAR</span>(sale_date) <span class="sql-keyword">AS</span> sale_year,
+    <span class="sql-keyword">MONTH</span>(sale_date) <span class="sql-keyword">AS</span> sale_month,
+    <span class="sql-keyword">MONTHNAME</span>(sale_date) <span class="sql-keyword">AS</span> month_name,
+    <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">AS</span> monthly_sales_count,
+    <span class="sql-keyword">SUM</span>(sale_amount) <span class="sql-keyword">AS</span> monthly_revenue,
+    <span class="sql-keyword">ROUND</span>(<span class="sql-keyword">AVG</span>(sale_amount), 2) <span class="sql-keyword">AS</span> monthly_avg_sale
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">GROUP BY</span> <span class="sql-keyword">YEAR</span>(sale_date), <span class="sql-keyword">MONTH</span>(sale_date)
+<span class="sql-keyword">ORDER BY</span> sale_year, sale_month;
+        </div>
+
+        <h2>📊 Aggregation with Conditional Logic</h2>
+
+        <div class="sql-code">
+<span class="sql-comment">-- Conditional aggregation using CASE</span>
+<span class="sql-keyword">SELECT</span> 
+    category,
+    <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">AS</span> total_sales,
+    <span class="sql-keyword">SUM</span>(<span class="sql-keyword">CASE</span> 
+        <span class="sql-keyword">WHEN</span> sale_amount >= 10000 <span class="sql-keyword">THEN</span> 1 
+        <span class="sql-keyword">ELSE</span> 0 
+    <span class="sql-keyword">END</span>) <span class="sql-keyword">AS</span> high_value_sales,
+    <span class="sql-keyword">SUM</span>(<span class="sql-keyword">CASE</span> 
+        <span class="sql-keyword">WHEN</span> sale_amount < 5000 <span class="sql-keyword">THEN</span> 1 
+        <span class="sql-keyword">ELSE</span> 0 
+    <span class="sql-keyword">END</span>) <span class="sql-keyword">AS</span> low_value_sales,
+    <span class="sql-keyword">ROUND</span>(
+        (<span class="sql-keyword">SUM</span>(<span class="sql-keyword">CASE</span> 
+            <span class="sql-keyword">WHEN</span> sale_amount >= 10000 <span class="sql-keyword">THEN</span> 1 
+            <span class="sql-keyword">ELSE</span> 0 
+        <span class="sql-keyword">END</span>) * 100.0) / <span class="sql-keyword">COUNT</span>(*), 2
+    ) <span class="sql-keyword">AS</span> high_value_percentage
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">GROUP BY</span> category;
+
+<span class="sql-comment">-- Revenue analysis with conditional sums</span>
+<span class="sql-keyword">SELECT</span> 
+    region,
+    <span class="sql-keyword">SUM</span>(sale_amount) <span class="sql-keyword">AS</span> total_revenue,
+    <span class="sql-keyword">SUM</span>(<span class="sql-keyword">CASE</span> 
+        <span class="sql-keyword">WHEN</span> category = <span class="sql-string">'Electronics'</span> <span class="sql-keyword">THEN</span> sale_amount 
+        <span class="sql-keyword">ELSE</span> 0 
+    <span class="sql-keyword">END</span>) <span class="sql-keyword">AS</span> electronics_revenue,
+    <span class="sql-keyword">SUM</span>(<span class="sql-keyword">CASE</span> 
+        <span class="sql-keyword">WHEN</span> category = <span class="sql-string">'Clothing'</span> <span class="sql-keyword">THEN</span> sale_amount 
+        <span class="sql-keyword">ELSE</span> 0 
+    <span class="sql-keyword">END</span>) <span class="sql-keyword">AS</span> clothing_revenue,
+    <span class="sql-keyword">SUM</span>(<span class="sql-keyword">CASE</span> 
+        <span class="sql-keyword">WHEN</span> category = <span class="sql-string">'Books'</span> <span class="sql-keyword">THEN</span> sale_amount 
+        <span class="sql-keyword">ELSE</span> 0 
+    <span class="sql-keyword">END</span>) <span class="sql-keyword">AS</span> books_revenue
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">GROUP BY</span> region
+<span class="sql-keyword">ORDER BY</span> total_revenue <span class="sql-keyword">DESC</span>;
+        </div>
+
+        <h2>🔧 Use Cases</h2>
+
+        <div class="use-case">
+            <h4>1. <span class="tamil-text">E-commerce Dashboard</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Management-ku daily sales summary venum</span><br>
+            <div class="sql-code">
+<span class="sql-keyword">SELECT</span> 
+    <span class="sql-keyword">DATE</span>(sale_date) <span class="sql-keyword">AS</span> sale_date,
+    <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">AS</span> total_orders,
+    <span class="sql-keyword">SUM</span>(sale_amount) <span class="sql-keyword">AS</span> daily_revenue,
+    <span class="sql-keyword">AVG</span>(sale_amount) <span class="sql-keyword">AS</span> avg_order_value,
+    <span class="sql-keyword">MAX</span>(sale_amount) <span class="sql-keyword">AS</span> highest_order
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">GROUP BY</span> <span class="sql-keyword">DATE</span>(sale_date)
+<span class="sql-keyword">ORDER BY</span> sale_date <span class="sql-keyword">DESC</span>;
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>2. <span class="tamil-text">Inventory Management</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Product categories performance analysis</span><br>
+            <div class="sql-code">
+<span class="sql-keyword">SELECT</span> 
+    category,
+    <span class="sql-keyword">COUNT</span>(<span class="sql-keyword">DISTINCT</span> product_name) <span class="sql-keyword">AS</span> unique_products,
+    <span class="sql-keyword">SUM</span>(quantity_sold) <span class="sql-keyword">AS</span> total_units_sold,
+    <span class="sql-keyword">AVG</span>(quantity_sold) <span class="sql-keyword">AS</span> avg_units_per_sale,
+    <span class="sql-keyword">SUM</span>(sale_amount) / <span class="sql-keyword">SUM</span>(quantity_sold) <span class="sql-keyword">AS</span> avg_price_per_unit
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">GROUP BY</span> category;
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>3. <span class="tamil-text">Sales Team Performance</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Sales person rankings and targets</span><br>
+            <div class="sql-code">
+<span class="sql-keyword">SELECT</span> 
+    sales_person,
+    <span class="sql-keyword">COUNT</span>(*) <span class="sql-keyword">AS</span> sales_made,
+    <span class="sql-keyword">SUM</span>(sale_amount) <span class="sql-keyword">AS</span> total_revenue,
+    <span class="sql-keyword">ROUND</span>(<span class="sql-keyword">AVG</span>(sale_amount), 2) <span class="sql-keyword">AS</span> avg_sale_value,
+    <span class="sql-keyword">CASE</span>
+        <span class="sql-keyword">WHEN</span> <span class="sql-keyword">SUM</span>(sale_amount) >= 20000 <span class="sql-keyword">THEN</span> <span class="sql-string">'Excellent'</span>
+        <span class="sql-keyword">WHEN</span> <span class="sql-keyword">SUM</span>(sale_amount) >= 10000 <span class="sql-keyword">THEN</span> <span class="sql-string">'Good'</span>
+        <span class="sql-keyword">ELSE</span> <span class="sql-string">'Needs Improvement'</span>
+    <span class="sql-keyword">END</span> <span class="sql-keyword">AS</span> performance_rating
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">WHERE</span> sales_person <span class="sql-keyword">IS NOT NULL</span>
+<span class="sql-keyword">GROUP BY</span> sales_person
+<span class="sql-keyword">ORDER BY</span> total_revenue <span class="sql-keyword">DESC</span>;
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>4. <span class="tamil-text">Financial Reporting</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Regional revenue comparison</span><br>
+            <div class="sql-code">
+<span class="sql-keyword">SELECT</span> 
+    region,
+    <span class="sql-keyword">SUM</span>(sale_amount) <span class="sql-keyword">AS</span> region_revenue,
+    <span class="sql-keyword">ROUND</span>(
+        (<span class="sql-keyword">SUM</span>(sale_amount) * 100.0) / 
+        (<span class="sql-keyword">SELECT</span> <span class="sql-keyword">SUM</span>(sale_amount) <span class="sql-keyword">FROM</span> sales_data), 2
+    ) <span class="sql-keyword">AS</span> revenue_percentage,
+    <span class="sql-keyword">RANK</span>() <span class="sql-keyword">OVER</span> (<span class="sql-keyword">ORDER BY</span> <span class="sql-keyword">SUM</span>(sale_amount) <span class="sql-keyword">DESC</span>) <span class="sql-keyword">AS</span> revenue_rank
+<span class="sql-keyword">FROM</span> sales_data
+<span class="sql-keyword">GROUP BY</span> region;
+            </div>
+        </div>
+
+        <h2>⚠️ Common Mistakes & Best Practices</h2>
+
+        <div class="warning-box">
+            <h4><span class="tamil-text">Common Mistakes to Avoid:</span></h4>
+            ❌ <strong><span class="tamil-text">NULL Values:</span></strong> <span class="tamil-text">SUM, AVG, MIN, MAX functions NULL values ignore pannum - data accuracy check pannunga</span><br>
+            ❌ <strong><span class="tamil-text">Wrong GROUP BY:</span></strong> <span class="tamil-text">Non-aggregate columns GROUP BY-la mention pannama irunga</span><br>
+            ❌ <strong><span class="tamil-text">COUNT vs COUNT(*):</span></strong> <span class="tamil-text">COUNT(column) NULL values count panna, COUNT(*) all rows count pannum</span><br>
+            ❌ <strong><span class="tamil-text">Division by Zero:</span></strong> <span class="tamil-text">AVG calculation-la zero values check pannunga</span><br>
+            ❌ <strong><span class="tamil-text">Data Types:</span></strong> <span class="tamil-text">Text columns-la SUM use pannakoodadhu</span>
+        </div>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">Best Practices:</span></h4>
+            ✅ <strong><span class="tamil-text">Use ROUND():</span></strong> <span class="tamil-text">Decimal results-a appropriate precision-ku round pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Handle NULLs:</span></strong> <span class="tamil-text">COALESCE() or IFNULL() use panni NULL values handle pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Use HAVING:</span></strong> <span class="tamil-text">Aggregated results filter panna HAVING clause use pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Meaningful Aliases:</span></strong> <span class="tamil-text">Result columns-ku descriptive names kudunga</span><br>
+            ✅ <strong><span class="tamil-text">Test with Sample Data:</span></strong> <span class="tamil-text">Large datasets-ku munadi small data-la test pannunga</span>
+        </div>
+
+        <h2>📊 Performance Tips</h2>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">Optimization Techniques:</span></h4>
+            ⚡ <strong><span class="tamil-text">Indexes:</span></strong> <span class="tamil-text">GROUP BY columns-ku index create pannunga</span><br>
+            ⚡ <strong><span class="tamil-text">WHERE First:</span></strong> <span class="tamil-text">GROUP BY-ku munadi WHERE clause use panni data reduce pannunga</span><br>
+            ⚡ <strong><span class="tamil-text">LIMIT Results:</span></strong> <span class="tamil-text">Top N results-ku mattum LIMIT use pannunga</span><br>
+            ⚡ <strong><span class="tamil-text">Avoid SELECT *:</span></strong> <span class="tamil-text">Required columns mattum select pannunga</span><br>
+            ⚡ <strong><span class="tamil-text">Use EXPLAIN:</span></strong> <span class="tamil-text">Query execution plan analyze pannunga</span>
+        </div>
+
+        <h2>📚 Quick Reference</h2>
+        <ul>
+            <li><strong>COUNT(*):</strong> <span class="tamil-text">Total rows count (including NULL)</span></li>
+            <li><strong>COUNT(column):</strong> <span class="tamil-text">Non-NULL values count</span></li>
+            <li><strong>SUM(column):</strong> <span class="tamil-text">Add all numeric values</span></li>
+            <li><strong>AVG(column):</strong> <span class="tamil-text">Mathematical average</span></li>
+            <li><strong>MIN/MAX(column):</strong> <span class="tamil-text">Smallest/Largest value</span></li>
+            <li><strong>GROUP BY:</strong> <span class="tamil-text">Aggregate by categories</span></li>
+            <li><strong>HAVING:</strong> <span class="tamil-text">Filter aggregated results</span></li>
+            <li><strong>ROUND(value, 2):</strong> <span class="tamil-text">Round to 2 decimal places</span></li>
+        </ul>
+    </div>
+
+    <div class="author-footer">
+        <div class="footer-title">📘 Master Data Analytics with Gowtham SB</div>
+        <div class="social-links">
+            <span>🎥 Advanced SQL Analytics: <strong>YouTube/dataengineeringvideos</strong></span><br>
+            <span>📱 Daily SQL Tips: <strong>Instagram/@dataengineeringtamil</strong></span><br>
+            <span>💼 Connect for Career Guidance: <strong>LinkedIn/sbgowtham</strong></span>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 16 - CASE WHEN Statements</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .author-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .author-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.9em;
+        }
+        .social-link {
+            color: #74b9ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .social-link:hover {
+            color: #0984e3;
+        }
+        .chapter {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .definition-box {
+            background: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .case-types-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .case-card {
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .simple-card { background: #e8f5e8; border-color: #27ae60; }
+        .searched-card { background: #e8f0ff; border-color: #3498db; }
+        .nested-card { background: #fff8e8; border-color: #f39c12; }
+        .aggregate-card { background: #ffe8e8; border-color: #e74c3c; }
+        .sql-code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .data-table th {
+            background: #3498db;
+            color: white;
+        }
+        .data-table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .result-highlight {
+            background: #d4edda !important;
+            font-weight: bold;
+        }
+        .syntax-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .flowchart {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+        .flowchart-box {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #3498db;
+            color: white;
+            border-radius: 8px;
+            margin: 8px;
+            min-width: 140px;
+        }
+        .arrow {
+            font-size: 24px;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .tamil-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+        }
+        .author-footer {
+            background: #2d3436;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .footer-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #74b9ff;
+        }
+        @media print {
+            body { background: white; }
+            .chapter { box-shadow: none; }
+            .author-footer { background: #f8f9fa; color: #2c3e50; }
+        }
+        @media (max-width: 768px) {
+            .case-types-grid { grid-template-columns: 1fr; }
+            .social-links { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="author-header">
+        <div class="author-name">📚 SQL Complete Course - By Gowtham SB</div>
+        <div class="social-links">
+            <span>📱 Instagram: <a href="#" class="social-link">@dataengineeringtamil</a></span>
+            <span>💼 LinkedIn: <a href="#" class="social-link">sbgowtham</a></span>
+            <span>🎥 YouTube: <a href="#" class="social-link">dataengineeringvideos</a></span>
+        </div>
+    </div>
+
+    <div class="chapter">
+        <h1>Chapter 16: CASE WHEN Statements Complete Guide</h1>
+
+        <h2>📖 Definition</h2>
+        <div class="definition-box">
+            <strong>CASE WHEN Statement:</strong> CASE WHEN statement <span class="tamil-text">SQL-la conditional logic implement panna</span> use panrom. <span class="tamil-text">Programming languages-la IF-ELSE statements madhiri</span> database queries-la conditional decisions pannalam. <span class="tamil-text">Different conditions based-on</span> different values return pannalam, data categorization and transformation-ku <span class="tamil-text">romba useful</span>.
+        </div>
+
+        <h2>🎯 CASE Statement Types</h2>
+        <div class="case-types-grid">
+            <div class="case-card simple-card">
+                <h3>🟢 Simple CASE</h3>
+                <h4><span class="tamil-text">Direct Value Matching</span></h4>
+                <p><span class="tamil-text">Single column value against multiple options check pannum</span></p>
+                <div style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 12px;">
+                    CASE column<br>
+                    WHEN value1 THEN result1<br>
+                    WHEN value2 THEN result2<br>
+                    END
+                </div>
+            </div>
+            
+            <div class="case-card searched-card">
+                <h3>🔍 Searched CASE</h3>
+                <h4><span class="tamil-text">Complex Conditions</span></h4>
+                <p><span class="tamil-text">Multiple complex conditions with Boolean expressions</span></p>
+                <div style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 12px;">
+                    CASE<br>
+                    WHEN condition1 THEN result1<br>
+                    WHEN condition2 THEN result2<br>
+                    END
+                </div>
+            </div>
+            
+            <div class="case-card nested-card">
+                <h3>🔗 Nested CASE</h3>
+                <h4><span class="tamil-text">CASE inside CASE</span></h4>
+                <p><span class="tamil-text">Complex hierarchical conditions create pannum</span></p>
+                <div style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 12px;">
+                    CASE<br>
+                    WHEN condition1 THEN<br>
+                    &nbsp;&nbsp;CASE WHEN... END<br>
+                    END
+                </div>
+            </div>
+            
+            <div class="case-card aggregate-card">
+                <h3>📊 CASE with Aggregation</h3>
+                <h4><span class="tamil-text">Conditional Aggregation</span></h4>
+                <p><span class="tamil-text">SUM, COUNT functions-oda combine panni use pannum</span></p>
+                <div style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 12px;">
+                    SUM(CASE WHEN condition<br>
+                    THEN value ELSE 0 END)
+                </div>
+            </div>
+        </div>
+
+        <h2>📝 Basic Syntax</h2>
+        <div class="syntax-box">
+<strong>Searched CASE (Most Common):</strong>
+CASE 
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    WHEN condition3 THEN result3
+    ELSE default_result
+END
+
+<strong>Simple CASE:</strong>
+CASE column_name
+    WHEN value1 THEN result1
+    WHEN value2 THEN result2
+    ELSE default_result
+END
+        </div>
+
+        <h2>📊 Sample Database Setup</h2>
+        <div class="sql-code">-- Create student grades database for examples
+CREATE TABLE student_grades (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_name VARCHAR(100) NOT NULL,
+    subject VARCHAR(50) NOT NULL,
+    marks INT NOT NULL,
+    attendance_percentage DECIMAL(5,2),
+    semester VARCHAR(10) NOT NULL,
+    year INT NOT NULL
+);
+
+-- Insert sample data (using generic, safe patterns)
+INSERT INTO student_grades 
+    (student_name, subject, marks, attendance_percentage, semester, year) 
+VALUES
+    ('Student_A', 'Mathematics', 95, 92.5, 'Spring', 2024),
+    ('Student_A', 'Physics', 87, 90.0, 'Spring', 2024),
+    ('Student_A', 'Chemistry', 76, 88.5, 'Spring', 2024),
+    ('Student_B', 'Mathematics', 82, 85.0, 'Spring', 2024),
+    ('Student_B', 'Physics', 74, 78.0, 'Spring', 2024),
+    ('Student_B', 'Chemistry', 89, 91.0, 'Spring', 2024),
+    ('Student_C', 'Mathematics', 45, 65.0, 'Spring', 2024),
+    ('Student_C', 'Physics', 52, 70.0, 'Spring', 2024),
+    ('Student_C', 'Chemistry', 38, 62.5, 'Spring', 2024),
+    ('Student_D', 'Mathematics', 68, 82.0, 'Spring', 2024),
+    ('Student_D', 'Physics', 71, 85.5, 'Spring', 2024),
+    ('Student_D', 'Chemistry', 65, 80.0, 'Spring', 2024);
+        </div>
+
+        <h4><span class="tamil-text">Sample Data Preview:</span></h4>
+        <table class="data-table">
+            <tr>
+                <th>student_name</th>
+                <th>subject</th>
+                <th>marks</th>
+                <th>attendance_%</th>
+                <th>semester</th>
+            </tr>
+            <tr><td>Student_A</td><td>Mathematics</td><td>95</td><td>92.5</td><td>Spring</td></tr>
+            <tr><td>Student_A</td><td>Physics</td><td>87</td><td>90.0</td><td>Spring</td></tr>
+            <tr><td>Student_B</td><td>Mathematics</td><td>82</td><td>85.0</td><td>Spring</td></tr>
+            <tr><td>Student_C</td><td>Mathematics</td><td>45</td><td>65.0</td><td>Spring</td></tr>
+            <tr><td>Student_D</td><td>Physics</td><td>71</td><td>85.5</td><td>Spring</td></tr>
+        </table>
+
+        <h2>🔍 Basic CASE WHEN Examples</h2>
+
+        <div class="sql-code">-- Simple grade classification using CASE WHEN
+SELECT 
+    student_name,
+    subject,
+    marks,
+    CASE 
+        WHEN marks >= 90 THEN 'A+'
+        WHEN marks >= 80 THEN 'A'
+        WHEN marks >= 70 THEN 'B'
+        WHEN marks >= 60 THEN 'C'
+        WHEN marks >= 50 THEN 'D'
+        ELSE 'F'
+    END AS grade,
+    
+    CASE 
+        WHEN marks >= 90 THEN 'Excellent'
+        WHEN marks >= 80 THEN 'Very Good'
+        WHEN marks >= 70 THEN 'Good'
+        WHEN marks >= 60 THEN 'Satisfactory'
+        WHEN marks >= 50 THEN 'Pass'
+        ELSE 'Fail'
+    END AS performance_status
+    
+FROM student_grades
+ORDER BY student_name, marks DESC;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Basic CASE Explanation:</span></strong><br>
+            <strong>WHEN marks >= 90 THEN 'A+'</strong> - <span class="tamil-text">Marks 90 or above-na A+ grade assign pannum</span><br>
+            <strong>WHEN marks >= 80 THEN 'A'</strong> - <span class="tamil-text">80-89 range-la A grade kudukum</span><br>
+            <strong>ELSE 'F'</strong> - <span class="tamil-text">Yaaru conditions-um match aagala-na default value</span><br>
+            <strong>Multiple CASE columns</strong> - <span class="tamil-text">Oru query-la multiple CASE statements use pannalam</span>
+        </div>
+
+        <h2>🎯 Advanced CASE with Multiple Conditions</h2>
+
+        <div class="sql-code">-- Complex CASE with multiple conditions
+SELECT 
+    student_name,
+    subject,
+    marks,
+    attendance_percentage,
+    
+    -- Grade based on marks and attendance
+    CASE 
+        WHEN marks >= 90 AND attendance_percentage >= 90 THEN 'A+ (Excellent)'
+        WHEN marks >= 80 AND attendance_percentage >= 80 THEN 'A (Very Good)'
+        WHEN marks >= 70 AND attendance_percentage >= 75 THEN 'B (Good)'
+        WHEN marks >= 60 AND attendance_percentage >= 70 THEN 'C (Satisfactory)'
+        WHEN marks >= 50 AND attendance_percentage >= 65 THEN 'D (Pass)'
+        WHEN marks >= 50 OR attendance_percentage >= 80 THEN 'D (Conditional Pass)'
+        ELSE 'F (Fail)'
+    END AS final_grade,
+    
+    -- Student category classification
+    CASE 
+        WHEN marks >= 85 AND attendance_percentage >= 90 THEN 'Star Student'
+        WHEN marks >= 75 AND attendance_percentage >= 85 THEN 'Regular Student'
+        WHEN marks >= 50 AND attendance_percentage >= 70 THEN 'Average Student'
+        WHEN marks < 50 OR attendance_percentage < 70 THEN 'Needs Attention'
+        ELSE 'Review Required'
+    END AS student_category,
+    
+    -- Scholarship eligibility
+    CASE 
+        WHEN marks >= 90 AND attendance_percentage >= 95 THEN 'Full Scholarship'
+        WHEN marks >= 85 AND attendance_percentage >= 90 THEN 'Partial Scholarship'
+        WHEN marks >= 80 AND attendance_percentage >= 85 THEN 'Merit Certificate'
+        ELSE 'Not Eligible'
+    END AS scholarship_status
+    
+FROM student_grades
+ORDER BY marks DESC, attendance_percentage DESC;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Advanced CASE Explanation:</span></strong><br>
+            <strong>marks >= 90 AND attendance_percentage >= 90</strong> - <span class="tamil-text">Multiple conditions combine panni complex logic create pannum</span><br>
+            <strong>marks >= 50 OR attendance_percentage >= 80</strong> - <span class="tamil-text">OR conditions use panni flexible criteria set pannum</span><br>
+            <strong>Multiple CASE expressions</strong> - <span class="tamil-text">Different business logic-ku separate CASE statements</span><br>
+            <strong>Nested conditions</strong> - <span class="tamil-text">Priority order maintain panni conditions arrange pannum</span>
+        </div>
+
+        <h2>📊 CASE with Aggregation Functions</h2>
+
+        <div class="sql-code">-- Conditional aggregation using CASE
+SELECT 
+    student_name,
+    
+    -- Count subjects by performance level
+    COUNT(*) AS total_subjects,
+    
+    SUM(CASE 
+        WHEN marks >= 90 THEN 1 
+        ELSE 0 
+    END) AS excellent_subjects,
+    
+    SUM(CASE 
+        WHEN marks >= 80 AND marks < 90 THEN 1 
+        ELSE 0 
+    END) AS very_good_subjects,
+    
+    SUM(CASE 
+        WHEN marks >= 70 AND marks < 80 THEN 1 
+        ELSE 0 
+    END) AS good_subjects,
+    
+    SUM(CASE 
+        WHEN marks < 50 THEN 1 
+        ELSE 0 
+    END) AS failed_subjects,
+    
+    -- Average marks calculation with conditional logic
+    ROUND(AVG(marks), 2) AS average_marks,
+    
+    -- Conditional average (exclude failed subjects)
+    ROUND(AVG(CASE 
+        WHEN marks >= 50 THEN marks 
+        ELSE NULL 
+    END), 2) AS average_passing_marks,
+    
+    -- Overall performance status
+    CASE 
+        WHEN AVG(marks) >= 85 THEN 'Outstanding'
+        WHEN AVG(marks) >= 75 THEN 'Very Good'
+        WHEN AVG(marks) >= 65 THEN 'Good'
+        WHEN AVG(marks) >= 50 THEN 'Satisfactory'
+        ELSE 'Needs Improvement'
+    END AS overall_performance
+    
+FROM student_grades
+GROUP BY student_name
+ORDER BY average_marks DESC;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Aggregation with CASE Explanation:</span></strong><br>
+            <strong>SUM(CASE WHEN marks >= 90 THEN 1 ELSE 0 END)</strong> - <span class="tamil-text">Condition satisfy aana 1 add pannum, illa-na 0 - count madhiri work aagum</span><br>
+            <strong>AVG(CASE WHEN marks >= 50 THEN marks ELSE NULL END)</strong> - <span class="tamil-text">Failed subjects exclude panni average calculate pannum</span><br>
+            <strong>GROUP BY with CASE</strong> - <span class="tamil-text">Student-wise aggregated results-ku CASE conditions apply pannum</span><br>
+            <strong>Nested aggregation</strong> - <span class="tamil-text">Aggregation result-a CASE condition-la use pannalam</span>
+        </div>
+
+        <h2>🔗 Nested CASE Statements</h2>
+
+        <div class="sql-code">-- Nested CASE for complex business logic
+SELECT 
+    student_name,
+    subject,
+    marks,
+    attendance_percentage,
+    
+    -- Nested CASE for detailed grading system
+    CASE 
+        WHEN marks >= 80 THEN
+            CASE 
+                WHEN attendance_percentage >= 95 THEN 'A+ with Perfect Attendance'
+                WHEN attendance_percentage >= 90 THEN 'A+ with Excellent Attendance'
+                WHEN attendance_percentage >= 85 THEN 'A+ with Good Attendance'
+                ELSE 'A+ with Average Attendance'
+            END
+        WHEN marks >= 70 THEN
+            CASE 
+                WHEN attendance_percentage >= 90 THEN 'A with Excellent Attendance'
+                WHEN attendance_percentage >= 80 THEN 'A with Good Attendance'
+                ELSE 'A with Average Attendance'
+            END
+        WHEN marks >= 60 THEN
+            CASE 
+                WHEN attendance_percentage >= 85 THEN 'B with Good Attendance'
+                WHEN attendance_percentage >= 75 THEN 'B with Average Attendance'
+                ELSE 'B with Poor Attendance'
+            END
+        ELSE
+            CASE 
+                WHEN attendance_percentage >= 80 THEN 'Poor Marks but Good Attendance'
+                ELSE 'Needs Immediate Attention'
+            END
+    END AS detailed_assessment,
+    
+    -- Action recommendations using nested CASE
+    CASE 
+        WHEN marks < 50 THEN
+            CASE 
+                WHEN attendance_percentage < 70 THEN 'Counseling Required + Extra Classes'
+                WHEN attendance_percentage < 80 THEN 'Extra Tutoring Needed'
+                ELSE 'Study Method Review Required'
+            END
+        WHEN marks < 70 THEN
+            CASE 
+                WHEN attendance_percentage < 75 THEN 'Improve Attendance + Study Support'
+                ELSE 'Additional Practice Recommended'
+            END
+        ELSE 'Continue Current Approach'
+    END AS recommendation
+    
+FROM student_grades
+ORDER BY student_name, subject;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Nested CASE Explanation:</span></strong><br>
+            <strong>Outer CASE (marks >= 80)</strong> - <span class="tamil-text">First level condition-a check pannum</span><br>
+            <strong>Inner CASE (attendance_percentage >= 95)</strong> - <span class="tamil-text">Outer condition true aana inner conditions check pannum</span><br>
+            <strong>Multiple nesting levels</strong> - <span class="tamil-text">Complex hierarchical decisions create pannalam</span><br>
+            <strong>Business logic separation</strong> - <span class="tamil-text">Different aspects-ku separate nested logic use pannalam</span>
+        </div>
+
+        <h2>📈 CASE in Different Contexts</h2>
+
+        <div class="sql-code">-- CASE in WHERE clause for dynamic filtering
+SELECT 
+    student_name,
+    subject,
+    marks,
+    attendance_percentage
+FROM student_grades
+WHERE 
+    CASE 
+        WHEN subject = 'Mathematics' THEN marks >= 70
+        WHEN subject = 'Physics' THEN marks >= 65
+        WHEN subject = 'Chemistry' THEN marks >= 60
+        ELSE marks >= 50
+    END = TRUE
+ORDER BY student_name, marks DESC;
+
+-- CASE in ORDER BY for custom sorting
+SELECT 
+    student_name,
+    subject,
+    marks,
+    CASE 
+        WHEN marks >= 90 THEN 'A+'
+        WHEN marks >= 80 THEN 'A'
+        WHEN marks >= 70 THEN 'B'
+        ELSE 'C'
+    END AS grade
+FROM student_grades
+ORDER BY 
+    CASE 
+        WHEN marks >= 90 THEN 1
+        WHEN marks >= 80 THEN 2
+        WHEN marks >= 70 THEN 3
+        ELSE 4
+    END,
+    marks DESC,
+    student_name;
+
+-- CASE for data transformation and cleanup
+SELECT 
+    student_name,
+    UPPER(CASE 
+        WHEN subject = 'Mathematics' THEN 'MATH'
+        WHEN subject = 'Physics' THEN 'PHY'
+        WHEN subject = 'Chemistry' THEN 'CHEM'
+        ELSE 'OTHER'
+    END) AS subject_code,
+    marks,
+    
+    -- Normalize marks to different scale
+    CASE 
+        WHEN marks >= 90 THEN 10.0
+        WHEN marks >= 80 THEN ROUND((marks - 80) / 10.0 + 8.0, 1)
+        WHEN marks >= 70 THEN ROUND((marks - 70) / 10.0 + 7.0, 1)
+        WHEN marks >= 60 THEN ROUND((marks - 60) / 10.0 + 6.0, 1)
+        WHEN marks >= 50 THEN ROUND((marks - 50) / 10.0 + 5.0, 1)
+        ELSE ROUND(marks / 10.0, 1)
+    END AS normalized_score_out_of_10
+    
+FROM student_grades
+ORDER BY student_name, subject;
+        </div>
+
+        <h2>🔧 Use Cases</h2>
+
+        <div class="use-case">
+            <h4>1. <span class="tamil-text">E-commerce Order Status Management</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Order status based on multiple factors determine pannum</span><br>
+            <div class="sql-code">-- Order status classification
+SELECT 
+    order_id,
+    customer_name,
+    total_amount,
+    days_since_order,
+    payment_status,
+    
+    CASE 
+        WHEN payment_status = 'Paid' AND days_since_order <= 1 THEN 'Processing'
+        WHEN payment_status = 'Paid' AND days_since_order <= 3 THEN 'Shipped'
+        WHEN payment_status = 'Paid' AND days_since_order <= 7 THEN 'In Transit'
+        WHEN payment_status = 'Paid' AND days_since_order > 7 THEN 'Delivered'
+        WHEN payment_status = 'Pending' AND days_since_order > 2 THEN 'Payment Follow-up'
+        ELSE 'Review Required'
+    END AS order_status,
+    
+    CASE 
+        WHEN total_amount > 10000 THEN 'Premium'
+        WHEN total_amount > 5000 THEN 'Standard'
+        ELSE 'Basic'
+    END AS customer_tier
+    
+FROM orders;
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>2. <span class="tamil-text">Employee Salary Grade and Bonus Calculation</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Performance and salary based on bonus calculate pannum</span><br>
+            <div class="sql-code">-- Employee bonus calculation with CASE
+SELECT 
+    employee_name,
+    department,
+    current_salary,
+    performance_rating,
+    years_of_experience,
+    
+    -- Salary grade classification
+    CASE 
+        WHEN current_salary >= 80000 THEN 'Senior Level'
+        WHEN current_salary >= 60000 THEN 'Mid Level'
+        WHEN current_salary >= 40000 THEN 'Junior Level'
+        ELSE 'Entry Level'
+    END AS salary_grade,
+    
+    -- Bonus calculation based on multiple factors
+    CASE 
+        WHEN performance_rating >= 4.5 AND years_of_experience >= 5 THEN current_salary * 0.20
+        WHEN performance_rating >= 4.0 AND years_of_experience >= 3 THEN current_salary * 0.15
+        WHEN performance_rating >= 3.5 AND years_of_experience >= 2 THEN current_salary * 0.10
+        WHEN performance_rating >= 3.0 THEN current_salary * 0.05
+        ELSE 0
+    END AS bonus_amount,
+    
+    -- Promotion eligibility
+    CASE 
+        WHEN performance_rating >= 4.0 AND years_of_experience >= 3 
+             AND current_salary < 100000 THEN 'Eligible for Promotion'
+        WHEN performance_rating >= 3.5 AND years_of_experience >= 5 THEN 'Review for Promotion'
+        ELSE 'Not Eligible'
+    END AS promotion_status
+    
+FROM employees
+WHERE is_active = TRUE;
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>3. <span class="tamil-text">Healthcare Patient Risk Assessment</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Patient age, symptoms, medical history based on risk level determine pannum</span><br>
+            <div class="sql-code">-- Patient risk level assessment
+SELECT 
+    patient_id,
+    patient_name,
+    age,
+    blood_pressure_systolic,
+    blood_pressure_diastolic,
+    has_diabetes,
+    has_heart_condition,
+    bmi_value,
+    
+    -- Risk level assessment
+    CASE 
+        WHEN age >= 65 AND (has_diabetes = TRUE OR has_heart_condition = TRUE) 
+             AND blood_pressure_systolic >= 140 THEN 'Critical Risk'
+        WHEN age >= 50 AND blood_pressure_systolic >= 130 
+             AND (has_diabetes = TRUE OR bmi_value >= 30) THEN 'High Risk'
+        WHEN age >= 40 AND (blood_pressure_systolic >= 120 OR bmi_value >= 25) THEN 'Medium Risk'
+        WHEN age >= 30 AND bmi_value >= 25 THEN 'Low Risk'
+        ELSE 'Minimal Risk'
+    END AS risk_level,
+    
+    -- Treatment priority
+    CASE 
+        WHEN age >= 65 AND has_heart_condition = TRUE THEN 1
+        WHEN has_diabetes = TRUE AND blood_pressure_systolic >= 140 THEN 2
+        WHEN age >= 50 AND bmi_value >= 30 THEN 3
+        ELSE 4
+    END AS treatment_priority,
+    
+    -- Recommended checkup frequency
+    CASE 
+        WHEN age >= 65 OR has_diabetes = TRUE OR has_heart_condition = TRUE THEN 'Monthly'
+        WHEN age >= 50 OR bmi_value >= 30 THEN 'Quarterly'
+        WHEN age >= 40 THEN 'Bi-Annual'
+        ELSE 'Annual'
+    END AS checkup_frequency
+    
+FROM patients
+WHERE is_active_patient = TRUE;
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>4. <span class="tamil-text">Financial Investment Portfolio Analysis</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Investment amount and risk tolerance based on portfolio recommend pannum</span><br>
+            <div class="sql-code">-- Investment recommendation system
+SELECT 
+    customer_id,
+    customer_name,
+    age,
+    annual_income,
+    investment_amount,
+    risk_tolerance,
+    investment_horizon_years,
+    
+    -- Investment category
+    CASE 
+        WHEN investment_amount >= 1000000 THEN 'Ultra High Net Worth'
+        WHEN investment_amount >= 500000 THEN 'High Net Worth'
+        WHEN investment_amount >= 100000 THEN 'Affluent'
+        WHEN investment_amount >= 25000 THEN 'Mass Market'
+        ELSE 'Entry Level'
+    END AS investor_category,
+    
+    -- Portfolio allocation recommendation
+    CASE 
+        WHEN age <= 30 AND risk_tolerance = 'High' AND investment_horizon_years >= 10 THEN '70% Equity, 20% Bonds, 10% Alternative'
+        WHEN age <= 40 AND risk_tolerance IN ('High', 'Medium') THEN '60% Equity, 30% Bonds, 10% Cash'
+        WHEN age <= 50 AND risk_tolerance = 'Medium' THEN '50% Equity, 40% Bonds, 10% Cash'
+        WHEN age <= 60 OR risk_tolerance = 'Low' THEN '30% Equity, 60% Bonds, 10% Cash'
+        ELSE '20% Equity, 70% Bonds, 10% Cash'
+    END AS portfolio_allocation,
+    
+    -- Expected annual return
+    CASE 
+        WHEN age <= 35 AND risk_tolerance = 'High' THEN '10-12%'
+        WHEN age <= 45 AND risk_tolerance IN ('High', 'Medium') THEN '8-10%'
+        WHEN age <= 55 AND risk_tolerance = 'Medium' THEN '6-8%'
+        ELSE '4-6%'
+    END AS expected_return_range
+    
+FROM investment_customers
+WHERE is_active = TRUE
+ORDER BY investment_amount DESC;
+            </div>
+        </div>
+
+        <h2>⚠️ Common Mistakes & Best Practices</h2>
+
+        <div class="warning-box">
+            <h4><span class="tamil-text">Common Mistakes to Avoid:</span></h4>
+            ❌ <strong><span class="tamil-text">Missing ELSE clause:</span></strong> <span class="tamil-text">ELSE illa-na conditions match aagala records-ku NULL return aagum</span><br>
+            ❌ <strong><span class="tamil-text">Wrong condition order:</span></strong> <span class="tamil-text">CASE sequential-a check pannum, specific conditions first venum</span><br>
+            ❌ <strong><span class="tamil-text">Data type mismatch:</span></strong> <span class="tamil-text">THEN clauses-la different data types return panna koodadhu</span><br>
+            ❌ <strong><span class="tamil-text">Too many nested CASE:</span></strong> <span class="tamil-text">Complex nesting readability reduce pannum</span><br>
+            ❌ <strong><span class="tamil-text">Performance issues:</span></strong> <span class="tamil-text">SELECT list-la complex CASE statements performance affect pannalam</span>
+        </div>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">Best Practices:</span></h4>
+            ✅ <strong><span class="tamil-text">Always include ELSE:</span></strong> <span class="tamil-text">Default value kudunga unexpected NULL values avoid panna</span><br>
+            ✅ <strong><span class="tamil-text">Order conditions properly:</span></strong> <span class="tamil-text">Most specific conditions first, general conditions last</span><br>
+            ✅ <strong><span class="tamil-text">Consistent data types:</span></strong> <span class="tamil-text">All THEN clauses same data type return pannanum</span><br>
+            ✅ <strong><span class="tamil-text">Use meaningful aliases:</span></strong> <span class="tamil-text">CASE expressions-ku descriptive column names kudunga</span><br>
+            ✅ <strong><span class="tamil-text">Comment complex logic:</span></strong> <span class="tamil-text">Business logic explain panna comments add pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Test all conditions:</span></strong> <span class="tamil-text">Edge cases and boundary values test pannunga</span>
+        </div>
+
+        <h2>📊 Performance Optimization</h2>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">Optimization Techniques:</span></h4>
+            ⚡ <strong><span class="tamil-text">Index usage:</span></strong> <span class="tamil-text">CASE conditions-la use aagura columns-ku index create pannunga</span><br>
+            ⚡ <strong><span class="tamil-text">Avoid functions in CASE:</span></strong> <span class="tamil-text">CASE conditions-la heavy functions avoid pannunga</span><br>
+            ⚡ <strong><span class="tamil-text">Use computed columns:</span></strong> <span class="tamil-text">Repeated CASE logic-ku computed columns consider pannunga</span><br>
+            ⚡ <strong><span class="tamil-text">Limit nesting:</span></strong> <span class="tamil-text">Deep nesting bajama multiple simple CASE statements use pannunga</span><br>
+            ⚡ <strong><span class="tamil-text">WHERE before CASE:</span></strong> <span class="tamil-text">Data filter pannitu CASE apply pannunga</span>
+        </div>
+
+        <h2>🔄 Advanced Techniques</h2>
+
+        <div class="sql-code">-- CASE with window functions
+SELECT 
+    student_name,
+    subject,
+    marks,
+    
+    -- Compare with average marks of the subject
+    CASE 
+        WHEN marks > AVG(marks) OVER (PARTITION BY subject) THEN 'Above Average'
+        WHEN marks = AVG(marks) OVER (PARTITION BY subject) THEN 'Average'
+        ELSE 'Below Average'
+    END AS performance_vs_average,
+    
+    -- Rank-based classification
+    CASE 
+        WHEN ROW_NUMBER() OVER (PARTITION BY subject ORDER BY marks DESC) <= 2 THEN 'Top Performer'
+        WHEN PERCENT_RANK() OVER (PARTITION BY subject ORDER BY marks DESC) <= 0.25 THEN 'High Performer'
+        WHEN PERCENT_RANK() OVER (PARTITION BY subject ORDER BY marks DESC) <= 0.75 THEN 'Average Performer'
+        ELSE 'Needs Improvement'
+    END AS rank_based_category
+    
+FROM student_grades
+ORDER BY subject, marks DESC;
+
+-- CASE with subqueries for complex business logic
+SELECT 
+    s.student_name,
+    s.subject,
+    s.marks,
+    
+    -- Compare with class topper
+    CASE 
+        WHEN s.marks = (SELECT MAX(marks) FROM student_grades sg WHERE sg.subject = s.subject) 
+        THEN 'Subject Topper'
+        WHEN s.marks >= (SELECT AVG(marks) FROM student_grades sg WHERE sg.subject = s.subject) * 1.2 
+        THEN 'Excellent Performance'
+        WHEN s.marks >= (SELECT AVG(marks) FROM student_grades sg WHERE sg.subject = s.subject) 
+        THEN 'Good Performance'
+        ELSE 'Below Average Performance'
+    END AS detailed_performance_analysis,
+    
+    -- Improvement needed based on subject difficulty
+    CASE 
+        WHEN s.subject IN (SELECT subject FROM student_grades GROUP BY subject HAVING AVG(marks) < 70) 
+             AND s.marks < 60 THEN 'Urgent Attention Required'
+        WHEN s.subject IN (SELECT subject FROM student_grades GROUP BY subject HAVING AVG(marks) >= 70) 
+             AND s.marks < 50 THEN 'Extra Support Needed'
+        ELSE 'On Track'
+    END AS support_requirement
+    
+FROM student_grades s
+ORDER BY s.student_name, s.marks DESC;
+
+-- Dynamic CASE for flexible reporting
+SELECT 
+    student_name,
+    
+    -- Dynamic subject performance summary
+    MAX(CASE WHEN subject = 'Mathematics' THEN marks END) AS math_marks,
+    MAX(CASE WHEN subject = 'Physics' THEN marks END) AS physics_marks,
+    MAX(CASE WHEN subject = 'Chemistry' THEN marks END) AS chemistry_marks,
+    
+    -- Grade for each subject
+    MAX(CASE WHEN subject = 'Mathematics' THEN 
+        CASE 
+            WHEN marks >= 90 THEN 'A+'
+            WHEN marks >= 80 THEN 'A'
+            WHEN marks >= 70 THEN 'B'
+            ELSE 'C'
+        END 
+    END) AS math_grade,
+    
+    MAX(CASE WHEN subject = 'Physics' THEN 
+        CASE 
+            WHEN marks >= 90 THEN 'A+'
+            WHEN marks >= 80 THEN 'A'
+            WHEN marks >= 70 THEN 'B'
+            ELSE 'C'
+        END 
+    END) AS physics_grade,
+    
+    MAX(CASE WHEN subject = 'Chemistry' THEN 
+        CASE 
+            WHEN marks >= 90 THEN 'A+'
+            WHEN marks >= 80 THEN 'A'
+            WHEN marks >= 70 THEN 'B'
+            ELSE 'C'
+        END 
+    END) AS chemistry_grade,
+    
+    -- Overall performance
+    CASE 
+        WHEN AVG(marks) >= 85 THEN 'Outstanding Student'
+        WHEN AVG(marks) >= 75 THEN 'Excellent Student'
+        WHEN AVG(marks) >= 65 THEN 'Good Student'
+        ELSE 'Average Student'
+    END AS overall_rating
+    
+FROM student_grades
+GROUP BY student_name
+ORDER BY AVG(marks) DESC;
+        </div>
+
+        <h2>📚 Quick Reference</h2>
+        <ul>
+            <li><strong>Basic CASE:</strong> <span class="tamil-text">CASE WHEN condition THEN result ELSE default END</span></li>
+            <li><strong>Simple CASE:</strong> <span class="tamil-text">CASE column WHEN value THEN result END</span></li>
+            <li><strong>Multiple conditions:</strong> <span class="tamil-text">AND, OR operators use pannalam</span></li>
+            <li><strong>Nesting:</strong> <span class="tamil-text">CASE inside CASE possible but limit pannunga</span></li>
+            <li><strong>Aggregation:</strong> <span class="tamil-text">SUM(CASE...), COUNT(CASE...) conditional aggregation</span></li>
+            <li><strong>NULL handling:</strong> <span class="tamil-text">ELSE clause NULL values prevent pannum</span></li>
+            <li><strong>Data types:</strong> <span class="tamil-text">All THEN clauses same type return pannanum</span></li>
+            <li><strong>Performance:</strong> <span class="tamil-text">Specific conditions first, general conditions last</span></li>
+        </ul>
+
+        <h2>🎯 Summary</h2>
+        <div class="success-box">
+            <h4><span class="tamil-text">Key Takeaways:</span></h4>
+            🎯 <strong><span class="tamil-text">CASE WHEN</span></strong> SQL-la conditional logic implement panna powerful tool<br>
+            🎯 <strong><span class="tamil-text">Multiple types</span></strong> different scenarios-ku use pannalam<br>
+            🎯 <strong><span class="tamil-text">Aggregation functions</span></strong> oda combine panni complex analysis pannalam<br>
+            🎯 <strong><span class="tamil-text">Nesting possible</span></strong> but readability maintain pannanum<br>
+            🎯 <strong><span class="tamil-text">Performance impact</span></strong> consider panni optimize pannanum<br>
+            🎯 <strong><span class="tamil-text">Business logic</span></strong> database level-la implement panna useful<br>
+            🎯 <strong><span class="tamil-text">Data transformation</span></strong> and categorization-ku ideal
+        </div>
+    </div>
+
+    <div class="author-footer">
+        <div class="footer-title">📘 Master Conditional Logic with Gowtham SB</div>
+        <div class="social-links">
+            <span>🎥 Advanced CASE WHEN Tutorials: <strong>YouTube/dataengineeringvideos</strong></span><br>
+            <span>📱 Daily SQL Tips: <strong>Instagram/@dataengineeringtamil</strong></span><br>
+            <span>💼 Connect for Career Guidance: <strong>LinkedIn/sbgowtham</strong></span>
+        </div>
+    </div>
+</body>
+</html> 

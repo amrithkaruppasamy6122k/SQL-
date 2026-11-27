@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 12 - Natural Key vs Surrogate Key</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .author-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .author-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.9em;
+        }
+        .social-link {
+            color: #74b9ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .social-link:hover {
+            color: #0984e3;
+        }
+        .chapter {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .definition-box {
+            background: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 30px 0;
+        }
+        .key-comparison-card {
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+        }
+        .key-comparison-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .natural-card { 
+            background: linear-gradient(135deg, #e8f5e8, #d4edda); 
+            border-color: #27ae60; 
+        }
+        .surrogate-card { 
+            background: linear-gradient(135deg, #e8f0ff, #d6eaf8); 
+            border-color: #3498db; 
+        }
+        .vs-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        .vs-circle {
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .sql-code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .pros-cons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .pros-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .cons-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .data-table th {
+            background: #3498db;
+            color: white;
+        }
+        .data-table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .highlight-natural {
+            background: #d4edda !important;
+            font-weight: bold;
+        }
+        .highlight-surrogate {
+            background: #d6eaf8 !important;
+            font-weight: bold;
+        }
+        .decision-flowchart {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+        .decision-box {
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 8px;
+            border-radius: 8px;
+            min-width: 140px;
+        }
+        .decision-question { background: #f39c12; color: white; }
+        .decision-natural { background: #27ae60; color: white; }
+        .decision-surrogate { background: #3498db; color: white; }
+        .arrow {
+            font-size: 24px;
+            color: #666;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .tamil-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .author-footer {
+            background: #2d3436;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .footer-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #74b9ff;
+        }
+        @media print {
+            body { background: white; }
+            .chapter { box-shadow: none; }
+            .author-footer { background: #f8f9fa; color: #2c3e50; }
+        }
+        @media (max-width: 768px) {
+            .comparison-grid { grid-template-columns: 1fr; }
+            .pros-cons { grid-template-columns: 1fr; }
+            .social-links { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="author-header">
+        <div class="author-name">📚 SQL Complete Course - By Gowtham SB</div>
+        <div class="social-links">
+            <span>📱 Instagram: <a href="#" class="social-link">@dataengineeringtamil</a></span>
+            <span>💼 LinkedIn: <a href="#" class="social-link">sbgowtham</a></span>
+            <span>🎥 YouTube: <a href="#" class="social-link">dataengineeringvideos</a></span>
+        </div>
+    </div>
+
+    <div class="chapter">
+        <h1>Chapter 12: Natural Key vs Surrogate Key</h1>
+
+        <h2>📖 Definition</h2>
+        <div class="definition-box">
+            <strong>Natural vs Surrogate Keys:</strong> Database design-la <span class="tamil-text">two main types of primary keys iruku</span>. <strong>Natural Key</strong> <span class="tamil-text">ennanagra</span> business data-la irundhu vaira meaningful value (example: PAN number, vehicle registration number). <strong>Surrogate Key</strong> <span class="tamil-text">ennanagra</span> database system <span class="tamil-text">automatically generate panra</span> artificial value (example: AUTO_INCREMENT ID). <span class="tamil-text">Each approach-ku advantages and disadvantages iruku</span>.
+        </div>
+
+        <div class="comparison-grid">
+            <div class="key-comparison-card natural-card">
+                <h3>🌿 Natural Key</h3>
+                <h4><span class="tamil-text">Business Meaningful</span></h4>
+                <ul>
+                    <li><span class="tamil-text">Real-world data from business</span></li>
+                    <li><span class="tamil-text">Human readable and meaningful</span></li>
+                    <li><span class="tamil-text">Direct business relevance</span></li>
+                    <li><span class="tamil-text">No extra column needed</span></li>
+                </ul>
+                <strong><span class="tamil-text">Examples:</span></strong> License number, Social security number, Product code
+            </div>
+            
+            <div class="key-comparison-card surrogate-card">
+                <h3>🤖 Surrogate Key</h3>
+                <h4><span class="tamil-text">System Generated</span></h4>
+                <ul>
+                    <li><span class="tamil-text">Database automatically creates</span></li>
+                    <li><span class="tamil-text">No business meaning</span></li>
+                    <li><span class="tamil-text">Never changes</span></li>
+                    <li><span class="tamil-text">Guaranteed uniqueness</span></li>
+                </ul>
+                <strong><span class="tamil-text">Examples:</span></strong> AUTO_INCREMENT ID, UUID, Sequence numbers
+            </div>
+        </div>
+
+        <div class="vs-divider">
+            <div class="vs-circle">VS</div>
+        </div>
+
+        <h2>🌿 Natural Key Examples</h2>
+
+        <div class="sql-code">
+-- Example 1: Vehicle Registration System (Natural Key)
+CREATE TABLE vehicles (
+    registration_number VARCHAR(15) PRIMARY KEY,  -- Natural key
+    owner_name VARCHAR(100) NOT NULL,
+    vehicle_type VARCHAR(50) NOT NULL,
+    model VARCHAR(50),
+    year_manufactured INT,
+    engine_number VARCHAR(50),
+    registration_date DATE DEFAULT (CURDATE())
+);
+
+-- Sample data with generic patterns
+INSERT INTO vehicles VALUES
+('ABC1234', 'Owner_A', 'Car', 'ModelX', 2020, 'ENG001', '2020-03-15'),
+('XYZ5678', 'Owner_B', 'Bike', 'ModelY', 2021, 'ENG002', '2021-05-20'),
+('DEF9012', 'Owner_C', 'Car', 'ModelZ', 2019, 'ENG003', '2019-08-10');
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Natural Key Benefits:</span></strong><br>
+            <strong>registration_number VARCHAR(15) PRIMARY KEY</strong> - <span class="tamil-text">Business-layae meaningful, human readable</span><br>
+            <strong>No extra ID column needed</strong> - <span class="tamil-text">Storage space save aagum</span><br>
+            <strong>Direct business value</strong> - <span class="tamil-text">Users can easily understand and remember</span><br>
+            <strong>Joins are meaningful</strong> - <span class="tamil-text">Other tables-la reference pannum pothu meaningful irukum</span>
+        </div>
+
+        <div class="sql-code">
+-- Example 2: Product Catalog (Natural Key)
+CREATE TABLE products (
+    product_code VARCHAR(20) PRIMARY KEY,  -- Natural key
+    product_name VARCHAR(200) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    brand VARCHAR(50),
+    price DECIMAL(10,2) NOT NULL,
+    description TEXT,
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO products VALUES
+('ELEC_LAP_001', 'Laptop Computer', 'Electronics', 'BrandA', 45000.00, 'High performance laptop', NOW()),
+('CLOTH_SHIRT_002', 'Cotton Shirt', 'Clothing', 'BrandB', 1200.00, 'Premium cotton shirt', NOW()),
+('BOOK_TECH_003', 'SQL Learning Book', 'Books', 'BrandC', 800.00, 'Complete SQL guide', NOW());
+        </div>
+
+        <h2>🤖 Surrogate Key Examples</h2>
+
+        <div class="sql-code">
+-- Example 1: Customer Management (Surrogate Key)
+CREATE TABLE customers (
+    customer_id INT AUTO_INCREMENT PRIMARY KEY,  -- Surrogate key
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    contact_number VARCHAR(15),
+    address TEXT,
+    city VARCHAR(50),
+    registration_date DATE DEFAULT (CURDATE()),
+    
+    -- Additional indexes for searching
+    INDEX idx_name (first_name, last_name),
+    INDEX idx_city (city)
+);
+
+INSERT INTO customers (first_name, last_name, contact_number, city) VALUES
+('Customer', 'Alpha', '9876543210', 'Chennai'),
+('Customer', 'Beta', '9876543211', 'Mumbai'),
+('Customer', 'Gamma', '9876543212', 'Delhi');
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Surrogate Key Benefits:</span></strong><br>
+            <strong>customer_id INT AUTO_INCREMENT PRIMARY KEY</strong> - <span class="tamil-text">Database automatic-a unique number generate pannum</span><br>
+            <strong>Never changes</strong> - <span class="tamil-text">Customer details change aanalum ID constant-a irukum</span><br>
+            <strong>No business dependency</strong> - <span class="tamil-text">Business rules change aanalum ID affect aagadhu</span><br>
+            <strong>Performance optimized</strong> - <span class="tamil-text">Integer keys fast joins and indexing provide pannum</span>
+        </div>
+
+        <div class="sql-code">
+-- Example 2: Order Management (Surrogate Key)
+CREATE TABLE orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,  -- Surrogate key
+    customer_id INT NOT NULL,
+    order_date DATE DEFAULT (CURDATE()),
+    total_amount DECIMAL(10,2) NOT NULL,
+    status ENUM('Pending', 'Processing', 'Shipped', 'Delivered') DEFAULT 'Pending',
+    shipping_address TEXT,
+    
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id),
+    INDEX idx_customer (customer_id),
+    INDEX idx_date (order_date),
+    INDEX idx_status (status)
+);
+        </div>
+
+        <h2>⚖️ Detailed Comparison</h2>
+
+        <div class="pros-cons">
+            <div class="pros-box">
+                <h4>✅ <span class="tamil-text">Natural Key Advantages</span></h4>
+                <ul>
+                    <li><span class="tamil-text">Business meaningful and readable</span></li>
+                    <li><span class="tamil-text">No extra storage space needed</span></li>
+                    <li><span class="tamil-text">Direct business value</span></li>
+                    <li><span class="tamil-text">Users can understand easily</span></li>
+                    <li><span class="tamil-text">Self-documenting</span></li>
+                    <li><span class="tamil-text">Reduced joins in some queries</span></li>
+                </ul>
+            </div>
+            
+            <div class="cons-box">
+                <h4>❌ <span class="tamil-text">Natural Key Disadvantages</span></h4>
+                <ul>
+                    <li><span class="tamil-text">May change over time</span></li>
+                    <li><span class="tamil-text">Longer key values = slower performance</span></li>
+                    <li><span class="tamil-text">Business rules dependency</span></li>
+                    <li><span class="tamil-text">May not always be available</span></li>
+                    <li><span class="tamil-text">Privacy/security concerns</span></li>
+                    <li><span class="tamil-text">Complex composite keys possible</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="pros-cons">
+            <div class="pros-box">
+                <h4>✅ <span class="tamil-text">Surrogate Key Advantages</span></h4>
+                <ul>
+                    <li><span class="tamil-text">Never changes - stable references</span></li>
+                    <li><span class="tamil-text">Optimal performance (integers)</span></li>
+                    <li><span class="tamil-text">No business logic dependency</span></li>
+                    <li><span class="tamil-text">Always available and unique</span></li>
+                    <li><span class="tamil-text">Privacy friendly</span></li>
+                    <li><span class="tamil-text">Simple single column</span></li>
+                </ul>
+            </div>
+            
+            <div class="cons-box">
+                <h4>❌ <span class="tamil-text">Surrogate Key Disadvantages</span></h4>
+                <ul>
+                    <li><span class="tamil-text">No business meaning</span></li>
+                    <li><span class="tamil-text">Extra storage space required</span></li>
+                    <li><span class="tamil-text">Additional complexity</span></li>
+                    <li><span class="tamil-text">Not human readable</span></li>
+                    <li><span class="tamil-text">Requires additional unique constraints</span></li>
+                    <li><span class="tamil-text">Potential for duplicate business data</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>🎯 When to Use Which Key?</h2>
+
+        <div class="decision-flowchart">
+            <div class="decision-box decision-question"><span class="tamil-text">Business data</span><br>stable & unique?</div>
+            <div class="arrow">↓</div>
+            <div style="display: flex; justify-content: center; gap: 40px;">
+                <div>
+                    <div class="decision-box decision-natural">✅ <span class="tamil-text">YES</span><br>Natural Key</div>
+                </div>
+                <div>
+                    <div class="decision-box decision-surrogate">❌ <span class="tamil-text">NO</span><br>Surrogate Key</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">Decision Guidelines:</span></h4>
+            <strong>🌿 Choose Natural Key when:</strong><br>
+            • <span class="tamil-text">Business data never changes (License numbers, Product codes)</span><br>
+            • <span class="tamil-text">Human readability important</span><br>
+            • <span class="tamil-text">Strong business meaning required</span><br>
+            • <span class="tamil-text">Small, stable datasets</span><br><br>
+            
+            <strong>🤖 Choose Surrogate Key when:</strong><br>
+            • <span class="tamil-text">Business data might change</span><br>
+            • <span class="tamil-text">Performance is critical</span><br>
+            • <span class="tamil-text">Large datasets with frequent joins</span><br>
+            • <span class="tamil-text">Privacy/security requirements</span><br>
+            • <span class="tamil-text">No stable natural identifier available</span>
+        </div>
+
+        <h2>💡 Hybrid Approach Example</h2>
+
+        <div class="sql-code">
+-- Best of both worlds: Surrogate + Natural
+CREATE TABLE employees (
+    emp_id INT AUTO_INCREMENT PRIMARY KEY,     -- Surrogate key for performance
+    employee_code VARCHAR(20) UNIQUE NOT NULL, -- Natural key for business
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    department VARCHAR(50),
+    hire_date DATE DEFAULT (CURDATE()),
+    salary DECIMAL(10,2),
+    
+    -- Indexes on both keys
+    INDEX idx_emp_code (employee_code),
+    INDEX idx_name (first_name, last_name),
+    INDEX idx_department (department)
+);
+
+-- Using surrogate key for relationships (fast joins)
+CREATE TABLE employee_projects (
+    project_assignment_id INT AUTO_INCREMENT PRIMARY KEY,
+    emp_id INT NOT NULL,  -- Fast integer join
+    project_code VARCHAR(20) NOT NULL,
+    start_date DATE DEFAULT (CURDATE()),
+    end_date DATE,
+    role VARCHAR(50),
+    
+    FOREIGN KEY (emp_id) REFERENCES employees(emp_id),
+    INDEX idx_emp (emp_id),
+    INDEX idx_project (project_code)
+);
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Hybrid Approach Benefits:</span></strong><br>
+            <strong>emp_id (Surrogate):</strong> <span class="tamil-text">Fast joins, stable references, optimal performance</span><br>
+            <strong>employee_code (Natural):</strong> <span class="tamil-text">Human readable, business meaningful</span><br>
+            <strong>Best Practice:</strong> <span class="tamil-text">Internal system surrogate use, external interfaces natural use</span><br>
+            <strong>Flexibility:</strong> <span class="tamil-text">Performance and business requirements rendu satisfy aagum</span>
+        </div>
+
+        <h2>🔧 Use Cases Comparison</h2>
+
+        <div class="use-case">
+            <h4>1. <span class="tamil-text">Government ID Systems - Natural Key Perfect</span></h4>
+            <strong>Why Natural:</strong> <span class="tamil-text">Citizen ID numbers government fixed, never change</span><br>
+            <strong>Example:</strong> Aadhaar numbers, PAN numbers, Passport numbers<br>
+            <div class="sql-code">
+CREATE TABLE citizens (
+    aadhaar_number VARCHAR(12) PRIMARY KEY,  -- Natural key
+    full_name VARCHAR(200) NOT NULL,
+    date_of_birth DATE NOT NULL,
+    address TEXT
+);
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>2. <span class="tamil-text">Social Media Platform - Surrogate Key Better</span></h4>
+            <strong>Why Surrogate:</strong> <span class="tamil-text">Username change aagalam, email change aagalam</span><br>
+            <strong>Example:</strong> User profiles, posts, comments<br>
+            <div class="sql-code">
+CREATE TABLE users (
+    user_id BIGINT AUTO_INCREMENT PRIMARY KEY,  -- Surrogate key
+    username VARCHAR(50) UNIQUE NOT NULL,        -- Can change
+    display_name VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>3. <span class="tamil-text">Inventory Management - Hybrid Approach</span></h4>
+            <strong>Why Hybrid:</strong> <span class="tamil-text">Product codes business important, but performance venum</span><br>
+            <strong>Example:</strong> Products with both system ID and product code<br>
+            <div class="sql-code">
+CREATE TABLE inventory_items (
+    item_id BIGINT AUTO_INCREMENT PRIMARY KEY,  -- Fast joins
+    product_code VARCHAR(50) UNIQUE NOT NULL,   -- Business reference
+    item_name VARCHAR(200) NOT NULL,
+    quantity INT DEFAULT 0
+);
+            </div>
+        </div>
+
+        <h2>⚠️ Common Mistakes to Avoid</h2>
+
+        <div class="warning-box">
+            <h4><span class="tamil-text">Natural Key Mistakes:</span></h4>
+            ❌ <strong><span class="tamil-text">Using changing data:</span></strong> <span class="tamil-text">Email, phone number-a primary key panna koodadhu</span><br>
+            ❌ <strong><span class="tamil-text">Exposing sensitive data:</span></strong> <span class="tamil-text">Personal identifiers public APIs-la expose panna koodadhu</span><br>
+            ❌ <strong><span class="tamil-text">Complex composite keys:</span></strong> <span class="tamil-text">Too many columns primary key-a make panna performance problem</span><br><br>
+            
+            <h4><span class="tamil-text">Surrogate Key Mistakes:</span></h4>
+            ❌ <strong><span class="tamil-text">No business key constraint:</span></strong> <span class="tamil-text">Natural unique constraint-a miss panna duplicate business data varum</span><br>
+            ❌ <strong><span class="tamil-text">Exposing surrogate keys:</span></strong> <span class="tamil-text">URL-la surrogate ID show panna security risk</span><br>
+            ❌ <strong><span class="tamil-text">Wrong data type:</span></strong> <span class="tamil-text">VARCHAR surrogate key use panna performance problem</span>
+        </div>
+
+        <h2>📝 Best Practices Summary</h2>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">Key Selection Best Practices:</span></h4>
+            ✅ <strong><span class="tamil-text">Analyze Business Requirements:</span></strong> <span class="tamil-text">Data stability, change frequency evaluate pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Consider Performance Impact:</span></strong> <span class="tamil-text">Join frequency and data volume consider pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Plan for Scale:</span></strong> <span class="tamil-text">Future growth-ku ready aagura approach choose pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Security First:</span></strong> <span class="tamil-text">Sensitive data exposure avoid pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Hybrid When Needed:</span></strong> <span class="tamil-text">Best of both worlds approach consider pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Document Decisions:</span></strong> <span class="tamil-text">Key choice rationale document pannunga</span>
+        </div>
+
+        <h2>📚 Quick Reference</h2>
+        <ul>
+            <li><strong><span class="tamil-text">Natural Key:</span></strong> Business meaningful, human readable, stable business data</li>
+            <li><strong><span class="tamil-text">Surrogate Key:</span></strong> System generated, no business meaning, optimal performance</li>
+            <li><strong><span class="tamil-text">MySQL Surrogate:</span></strong> INT AUTO_INCREMENT PRIMARY KEY</li>
+            <li><strong><span class="tamil-text">MySQL Natural:</span></strong> VARCHAR/INT PRIMARY KEY (business value)</li>
+            <li><strong><span class="tamil-text">Hybrid:</span></strong> Surrogate for performance + Natural for business</li>
+            <li><strong><span class="tamil-text">Decision Factor:</span></strong> Data stability, performance needs, business requirements</li>
+        </ul>
+    </div>
+
+    <div class="author-footer">
+        <div class="footer-title">📘 Master Key Design Strategies with Gowtham SB</div>
+        <div class="social-links">
+            <span>🎥 Database Design Best Practices: <strong>YouTube/dataengineeringvideos</strong></span><br>
+            <span>📱 Daily SQL Tips: <strong>Instagram/@dataengineeringtamil</strong></span><br>
+            <span>💼 Connect for Career Guidance: <strong>LinkedIn/sbgowtham</strong></span>
+        </div>
+    </div>
+</body>
+</html>

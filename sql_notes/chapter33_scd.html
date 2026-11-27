@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 33: SCD (Slowly Changing Dimensions) - SQL Book</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .author-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .author-info a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 5px;
+        }
+        .content-box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .definition {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .flowchart {
+            text-align: center;
+            background: #f0f8ff;
+            border: 2px dashed #4682b4;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .type1-code {
+            background: #4d1f00;
+            color: #ffa500;
+        }
+        .type2-code {
+            background: #1f4d00;
+            color: #90ee90;
+        }
+        .type3-code {
+            background: #001f4d;
+            color: #87ceeb;
+        }
+        .sql-explanation {
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .use-case {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .chapter-title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .sample-chapter {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .warehouse-basics {
+            background: #e6f3ff;
+            border: 2px solid #0066cc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .scd-types-box {
+            background: #fff8dc;
+            border: 2px solid #ffa500;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .before-after {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        .before-box, .after-box {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .before-box {
+            background: #ffe6e6;
+            border: 2px solid #ff6b6b;
+        }
+        .after-box {
+            background: #e6ffe6;
+            border: 2px solid #4CAF50;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background: #f2f2f2;
+            font-weight: bold;
+        }
+        .real-world-example {
+            background: #f0fff0;
+            border: 2px solid #32cd32;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .advanced-concept {
+            background: #fff0f5;
+            border: 2px solid #ff69b4;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="chapter-title">Chapter 33: SCD - Slowly Changing Dimensions</h1>
+        <p><strong>Author:</strong> Gowtham SB</p>
+        <div class="author-info">
+            <a href="https://linkedin.com/in/sbgowtham" target="_blank">📧 LinkedIn: sbgowtham</a>
+            <a href="https://youtube.com/@dataengineeringvideos" target="_blank">🎥 YouTube: dataengineeringvideos</a>
+            <a href="https://instagram.com/dataengineeringtamil" target="_blank">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Data Warehouse Basics (Vilakkam)</h2>
+        <div class="warehouse-basics">
+            <h3>Dimension Table Yenna?</h3>
+            <div class="definition">
+                <strong>Dimension Table:</strong> Business entities pathi describe panra table. Customer details, product details, employee details, time details pola descriptive information store pannurom. Itha "Who, What, Where, When" questions ku answer panra table nu nenachukalam.<br><br>
+                <strong>Example:</strong> Customer dimension la customer_id, name, address, phone_number, city, state pola columns irukum.
+            </div>
+
+            <div class="code-block">
+-- Customer Dimension Table
+CREATE TABLE dim_customer (
+    customer_id INT PRIMARY KEY,
+    customer_name VARCHAR(100),
+    address VARCHAR(200),
+    city VARCHAR(50),
+    state VARCHAR(50),
+    phone_number VARCHAR(15)
+);
+            </div>
+
+            <h3>Fact Table Yenna?</h3>
+            <div class="definition">
+                <strong>Fact Table:</strong> Business transactions and events la numerical measures store panra table. Sales amount, quantity, profit, revenue pola measurable data irukum. Itha "How much, How many" questions ku answer panra table.<br><br>
+                <strong>Example:</strong> Sales fact table la order_id, customer_id, product_id, sales_amount, quantity pola columns irukum.
+            </div>
+
+            <div class="code-block">
+-- Sales Fact Table  
+CREATE TABLE fact_sales (
+    sale_id INT PRIMARY KEY,
+    customer_id INT,
+    product_id INT,
+    sale_date DATE,
+    quantity INT,
+    unit_price DECIMAL(10,2),
+    total_amount DECIMAL(10,2),
+    FOREIGN KEY (customer_id) REFERENCES dim_customer(customer_id)
+);
+            </div>
+
+            <h3>Dimension vs Fact - Simple ah Purinjukalam</h3>
+            <div class="sql-explanation">
+                <strong>Dimension Table:</strong> "Yaaru, Yenna, Enga" pola descriptive data<br>
+                <strong>Fact Table:</strong> "Evalavu, Ettanai" pola numerical measurements<br>
+                <strong>Relationship:</strong> Fact table dimension tables ah foreign key through connect pannum<br>
+                <strong>Purpose:</strong> Analysis and reporting ku use pannurom
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>SCD Definition (Mukkiya Vilakkam)</h2>
+        <div class="definition">
+            <strong>Slowly Changing Dimensions (SCD):</strong> Data warehousing la dimension table la data slowly change aagumbodhu adha handle panna techniques. Customer address change pannuradhu, employee designation change aagradhu, product category maararadhu pola scenarios la use pannurom.<br><br>
+            
+            <strong>Yen SCD Mukiyam?</strong><br>
+            • Historical data ah preserve pannanum<br>
+            • Current data accurate ah maintain pannanum<br>
+            • Business analysis ku historical trends venum<br>
+            • Audit and compliance requirements meet pannanum<br><br>
+            
+            <strong>SCD Types:</strong> Type 0, Type 1, Type 2, Type 3, Type 4, Type 6 nu different strategies irukku. Real projects la mostly Type 1, Type 2, Type 3 ah thaan use pannurom.
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Flow Chart (Otta Padal)</h2>
+        <div class="flowchart">
+            <div style="margin-bottom: 20px;">
+                <strong>SCD IMPLEMENTATION PROCESS:</strong><br>
+                Data Change Detect → History Required Check → SCD Type Select → Implementation Strategy → Data Validation → Historical Analysis Enable
+            </div>
+            <div style="border-top: 2px solid #4682b4; padding-top: 15px; margin-bottom: 20px;">
+                <strong>TYPE 2 DETAILED PROCESS:</strong><br>
+                New Data Arrive → Current Record Find → Values Compare → Different Ah? → Yes: Current Record Close → New Record Insert → Effective Dates Update
+            </div>
+            <div style="border-top: 2px solid #4682b4; padding-top: 15px;">
+                <strong>QUERY STRATEGY:</strong><br>
+                Current Data Query → Active Records Filter → Historical Analysis → Time Range Apply → Business Logic Execute
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>SCD Types Detailed Explanation</h2>
+        <div class="scd-types-box">
+            <h4>Type 0 - Retain Original (Static Data)</h4>
+            <p><strong>Concept:</strong> Data ah kabadiyum change pannakoodathu. Birth date, SSN pola permanent data ku use pannurom.<br>
+            <strong>Implementation:</strong> Table la constraints vachtu update block pannurom.</p>
+            
+            <h4>Type 1 - Overwrite (Current State)</h4>
+            <p><strong>Concept:</strong> Pudhiya data vandhaale pazhaya data completely replace pannurom.<br>
+            <strong>Pros:</strong> Simple, storage less<br>
+            <strong>Cons:</strong> History lose aagum</p>
+            
+            <h4>Type 2 - Add New Record (Full History)</h4>
+            <p><strong>Concept:</strong> Every change ku pudhiya record create pannurom.<br>
+            <strong>Pros:</strong> Complete history maintain aagum<br>
+            <strong>Cons:</strong> Storage adhigam, queries complex</p>
+            
+            <h4>Type 3 - Add New Attribute (Limited History)</h4>
+            <p><strong>Concept:</strong> Previous value store panna separate column add pannurom.<br>
+            <strong>Pros:</strong> Current & previous value rendu theriyum<br>
+            <strong>Cons:</strong> Only one previous value maintain aagum</p>
+            
+            <h4>Type 4 - History Table (Separate Archive)</h4>
+            <p><strong>Concept:</strong> Current and historical data separate tables la maintain pannurom.<br>
+            <strong>Use Case:</strong> Performance important places la use pannurom</p>
+            
+            <h4>Type 6 - Hybrid Approach (Type 1+2+3)</h4>
+            <p><strong>Concept:</strong> Multiple SCD techniques combine pannurom.<br>
+            <strong>Use Case:</strong> Complex business requirements ku</p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Detailed Examples with Real Scenarios</h2>
+        
+        <h3>Example 1: Type 1 SCD - Customer Address Update</h3>
+        
+        <div class="real-world-example">
+            <h4>Real World Scenario:</h4>
+            <p>Customer address change pannuradhu. Current address mattum maintain pannanum, previous address history venam.</p>
+        </div>
+
+        <div class="code-block type1-code">
+-- Initial Customer Data
+CREATE TABLE customers_type1 (
+    customer_id INT PRIMARY KEY,
+    customer_name VARCHAR(100),
+    address VARCHAR(200),
+    city VARCHAR(50),
+    state VARCHAR(50),
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+INSERT INTO customers_type1 VALUES
+(101, 'Ravi Kumar', '123 Anna Nagar', 'Chennai', 'Tamil Nadu', '2024-01-15 10:30:00'),
+(102, 'Priya Sharma', '456 Gandhi Road', 'Coimbatore', 'Tamil Nadu', '2024-01-20 14:20:00');
+        </div>
+        <div class="sql-explanation">
+            <strong>customer_id:</strong> Unique identifier for customer<br>
+            <strong>address, city, state:</strong> Location details store pannurom<br>
+            <strong>last_updated:</strong> Timestamp automatic ah update aagum<br>
+            <strong>ON UPDATE CURRENT_TIMESTAMP:</strong> Update aagum bodhu time automatic ah change aagum
+        </div>
+
+        <div class="before-after">
+            <div class="before-box">
+                <h5>Before Update</h5>
+                <div class="code-block type1-code">
+SELECT * FROM customers_type1 WHERE customer_id = 101;
+-- Result:
+-- 101 | Ravi Kumar | 123 Anna Nagar | Chennai | Tamil Nadu | 2024-01-15 10:30:00
+                </div>
+            </div>
+            <div class="after-box">
+                <h5>After Update</h5>
+                <div class="code-block type1-code">
+SELECT * FROM customers_type1 WHERE customer_id = 101;
+-- Result:
+-- 101 | Ravi Kumar | 789 T Nagar | Chennai | Tamil Nadu | 2024-03-15 16:45:00
+                </div>
+            </div>
+        </div>
+
+        <div class="code-block type1-code">
+-- Type 1 Implementation
+UPDATE customers_type1 
+SET address = '789 T Nagar',
+    city = 'Chennai'
+WHERE customer_id = 101;
+
+-- Verification Query
+SELECT customer_id, customer_name, address, city, last_updated
+FROM customers_type1 
+WHERE customer_id = 101;
+        </div>
+        <div class="sql-explanation">
+            <strong>UPDATE customers_type1:</strong> Customer table la data update pannurom<br>
+            <strong>SET address = '789 T Nagar':</strong> New address set pannurom<br>
+            <strong>WHERE customer_id = 101:</strong> Specific customer select pannurom<br>
+            <strong>last_updated:</strong> Automatic ah current timestamp ku change aagum<br>
+            <strong>Result:</strong> Previous address (123 Anna Nagar) completely lose aagum
+        </div>
+
+        <h3>Example 2: Type 2 SCD - Employee Career Tracking</h3>
+        
+        <div class="real-world-example">
+            <h4>Real World Scenario:</h4>
+            <p>Employee designation change, salary hike, department transfer pola changes ellaam track pannanum. HR analysis ku full career history venum.</p>
+        </div>
+
+        <div class="code-block type2-code">
+-- Type 2 Employee Dimension
+CREATE TABLE dim_employee_type2 (
+    employee_key INT AUTO_INCREMENT PRIMARY KEY,  -- Surrogate Key
+    employee_id INT NOT NULL,                     -- Business Key  
+    employee_name VARCHAR(100),
+    designation VARCHAR(50),
+    department VARCHAR(50),
+    salary DECIMAL(10,2),
+    manager_id INT,
+    effective_date DATE,
+    expiry_date DATE,
+    is_current_record CHAR(1) DEFAULT 'Y',
+    created_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_emp_current (employee_id, is_current_record),
+    INDEX idx_effective_date (effective_date, expiry_date)
+);
+        </div>
+        <div class="sql-explanation">
+            <strong>employee_key:</strong> Database internal ah use panra auto increment key<br>
+            <strong>employee_id:</strong> Business la use panra actual employee ID<br>
+            <strong>effective_date:</strong> Record eppo start aagudhu<br>
+            <strong>expiry_date:</strong> Record eppo end aagudhu (9999-12-31 = active)<br>
+            <strong>is_current_record:</strong> Current record ah check panna flag<br>
+            <strong>INDEX:</strong> Query performance ku indexes create pannurom
+        </div>
+
+        <div class="code-block type2-code">
+-- Initial Employee Records
+INSERT INTO dim_employee_type2 
+(employee_id, employee_name, designation, department, salary, manager_id, effective_date, expiry_date)
+VALUES
+(201, 'Anand Kumar', 'Junior Developer', 'IT', 45000.00, 301, '2023-06-01', '9999-12-31'),
+(202, 'Meera Devi', 'Business Analyst', 'IT', 50000.00, 301, '2023-07-15', '9999-12-31');
+        </div>
+
+        <div class="before-after">
+            <div class="before-box">
+                <h5>Before Promotion (Initial State)</h5>
+                <div class="code-block type2-code">
+-- employee_key | employee_id | name | designation | salary | effective_date | expiry_date | is_current
+-- 1 | 201 | Anand Kumar | Junior Developer | 45000 | 2023-06-01 | 9999-12-31 | Y
+-- 2 | 202 | Meera Devi | Business Analyst | 50000 | 2023-07-15 | 9999-12-31 | Y
+                </div>
+            </div>
+            <div class="after-box">
+                <h5>After Promotion (Updated State)</h5>
+                <div class="code-block type2-code">
+-- employee_key | employee_id | name | designation | salary | effective_date | expiry_date | is_current
+-- 1 | 201 | Anand Kumar | Junior Developer | 45000 | 2023-06-01 | 2024-03-31 | N
+-- 2 | 202 | Meera Devi | Business Analyst | 50000 | 2023-07-15 | 9999-12-31 | Y
+-- 3 | 201 | Anand Kumar | Senior Developer | 65000 | 2024-04-01 | 9999-12-31 | Y
+                </div>
+            </div>
+        </div>
+
+        <div class="code-block type2-code">
+-- Step 1: Close Current Record (Anand got promoted)
+UPDATE dim_employee_type2 
+SET expiry_date = '2024-03-31',
+    is_current_record = 'N'
+WHERE employee_id = 201 AND is_current_record = 'Y';
+
+-- Step 2: Insert New Record with Updated Details
+INSERT INTO dim_employee_type2 
+(employee_id, employee_name, designation, department, salary, manager_id, effective_date, expiry_date)
+VALUES
+(201, 'Anand Kumar', 'Senior Developer', 'IT', 65000.00, 301, '2024-04-01', '9999-12-31');
+        </div>
+        <div class="sql-explanation">
+            <strong>Step 1:</strong> Current record ah inactive ah mark pannurom<br>
+            <strong>expiry_date = '2024-03-31':</strong> Previous record end date set pannurom<br>
+            <strong>is_current_record = 'N':</strong> Previous record ah inactive status<br>
+            <strong>Step 2:</strong> Pudhiya designation and salary ooda new record insert pannurom<br>
+            <strong>effective_date = '2024-04-01':</strong> New record start date<br>
+            <strong>Complete History:</strong> Junior to Senior developer transition track aagum
+        </div>
+
+        <div class="code-block type2-code">
+-- Current Employee Details Query
+SELECT employee_id, employee_name, designation, salary
+FROM dim_employee_type2 
+WHERE is_current_record = 'Y'
+ORDER BY employee_name;
+
+-- Employee Career History Query  
+SELECT employee_id, employee_name, designation, salary, 
+       effective_date, expiry_date,
+       DATEDIFF(COALESCE(NULLIF(expiry_date, '9999-12-31'), CURDATE()), effective_date) as days_in_role
+FROM dim_employee_type2 
+WHERE employee_id = 201
+ORDER BY effective_date;
+
+-- Point-in-Time Query (What was Anand's designation on 2024-02-15?)
+SELECT employee_name, designation, salary
+FROM dim_employee_type2 
+WHERE employee_id = 201 
+  AND '2024-02-15' BETWEEN effective_date AND expiry_date;
+        </div>
+        <div class="sql-explanation">
+            <strong>Current Employees:</strong> is_current_record = 'Y' use panni active records mattum<br>
+            <strong>Career History:</strong> Oru employee oda complete career path paakalam<br>
+            <strong>DATEDIFF:</strong> Each role la evlavu days irundhaanga calculate pannurom<br>
+            <strong>Point-in-Time:</strong> Specific date la yenna designation irundhadhu nu check pannurom<br>
+            <strong>BETWEEN effective_date AND expiry_date:</strong> Date range check
+        </div>
+
+        <h3>Example 3: Type 3 SCD - Customer Contact Information</h3>
+        
+        <div class="real-world-example">
+            <h4>Real World Scenario:</h4>
+            <p>Customer phone number change aagumbodhu current and previous number rendu layum access venum. Marketing team ku previous number la contact panna try pannalam.</p>
+        </div>
+
+        <div class="code-block type3-code">
+-- Type 3 Customer Table
+CREATE TABLE customers_type3 (
+    customer_id INT PRIMARY KEY,
+    customer_name VARCHAR(100),
+    current_phone VARCHAR(15),
+    previous_phone VARCHAR(15),
+    phone_change_date DATE,
+    current_email VARCHAR(100),
+    previous_email VARCHAR(100), 
+    email_change_date DATE,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Initial Data
+INSERT INTO customers_type3 (customer_id, customer_name, current_phone, current_email)
+VALUES
+(301, 'Rajesh Kumar', '9876543210', 'rajesh.kumar@gmail.com'),
+(302, 'Priya Venkat', '9123456789', 'priya.v@yahoo.com');
+        </div>
+        <div class="sql-explanation">
+            <strong>current_phone/previous_phone:</strong> Current and previous phone numbers<br>
+            <strong>phone_change_date:</strong> Eppo phone number change aagudhu<br>
+            <strong>current_email/previous_email:</strong> Email addresses um track pannurom<br>
+            <strong>Type 3 Advantage:</strong> Current and previous values rendu layum access pannalam
+        </div>
+
+        <div class="before-after">
+            <div class="before-box">
+                <h5>Before Phone Change</h5>
+                <div class="code-block type3-code">
+-- customer_id | name | current_phone | previous_phone | phone_change_date
+-- 301 | Rajesh Kumar | 9876543210 | NULL | NULL
+-- 302 | Priya Venkat | 9123456789 | NULL | NULL
+                </div>
+            </div>
+            <div class="after-box">
+                <h5>After Phone Change</h5>
+                <div class="code-block type3-code">
+-- customer_id | name | current_phone | previous_phone | phone_change_date
+-- 301 | Rajesh Kumar | 8765432109 | 9876543210 | 2024-04-15
+-- 302 | Priya Venkat | 9123456789 | NULL | NULL
+                </div>
+            </div>
+        </div>
+
+        <div class="code-block type3-code">
+-- Phone Number Change Implementation
+UPDATE customers_type3 
+SET previous_phone = current_phone,
+    current_phone = '8765432109',
+    phone_change_date = CURRENT_DATE
+WHERE customer_id = 301;
+
+-- Multi-contact Customer Service Query
+SELECT customer_id, customer_name,
+       current_phone as primary_contact,
+       previous_phone as secondary_contact,
+       phone_change_date,
+       CASE 
+           WHEN previous_phone IS NOT NULL THEN 'Try both numbers'
+           ELSE 'Use current number only'
+       END as contact_strategy
+FROM customers_type3 
+WHERE customer_id = 301;
+        </div>
+        <div class="sql-explanation">
+            <strong>previous_phone = current_phone:</strong> Current value ah previous column ku move pannurom<br>
+            <strong>current_phone = '8765432109':</strong> New number ah current column ku set pannurom<br>
+            <strong>phone_change_date = CURRENT_DATE:</strong> Change date record pannurom<br>
+            <strong>CASE Statement:</strong> Business logic based contact strategy suggest pannurom<br>
+            <strong>Type 3 Limitation:</strong> Only one previous value maintain pannalam
+        </div>
+
+        <h3>Example 4: Advanced Type 2 with Business Rules</h3>
+        
+        <div class="advanced-concept">
+            <h4>Advanced Business Scenario:</h4>
+            <p>Product pricing changes la seasonal discounts, promotional pricing ellaam track pannanum. Different time periods la different prices irukum.</p>
+        </div>
+
+        <div class="code-block">
+-- Advanced Product Pricing SCD Type 2
+CREATE TABLE dim_product_pricing (
+    pricing_key INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    product_name VARCHAR(100),
+    category VARCHAR(50),
+    regular_price DECIMAL(10,2),
+    discount_percent DECIMAL(5,2),
+    final_price DECIMAL(10,2),
+    pricing_type ENUM('Regular', 'Seasonal', 'Promotional', 'Clearance'),
+    effective_date DATE,
+    expiry_date DATE,
+    is_current_price CHAR(1) DEFAULT 'Y',
+    change_reason VARCHAR(100),
+    created_by VARCHAR(50),
+    created_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Product with Multiple Price Changes
+INSERT INTO dim_product_pricing 
+(product_id, product_name, category, regular_price, discount_percent, final_price, 
+ pricing_type, effective_date, expiry_date, change_reason, created_by)
+VALUES
+-- Initial Regular Price
+(1001, 'Samsung Galaxy S24', 'Mobile', 75000.00, 0.00, 75000.00, 
+ 'Regular', '2024-01-01', '2024-02-29', 'Product Launch', 'admin'),
+
+-- Festival Season Discount  
+(1001, 'Samsung Galaxy S24', 'Mobile', 75000.00, 15.00, 63750.00,
+ 'Seasonal', '2024-03-01', '2024-03-31', 'Holi Festival Offer', 'marketing_team'),
+
+-- Back to Regular Price
+(1001, 'Samsung Galaxy S24', 'Mobile', 75000.00, 5.00, 71250.00,
+ 'Regular', '2024-04-01', '9999-12-31', 'Post Festival Pricing', 'admin');
+        </div>
+        <div class="sql-explanation">
+            <strong>pricing_type:</strong> Different types of pricing strategies track pannurom<br>
+            <strong>discount_percent:</strong> Discount percentage track pannurom<br>
+            <strong>final_price:</strong> Customer ku actual ah charge panra amount<br>
+            <strong>change_reason:</strong> Yen price change aagudhu nu reason store pannurom<br>
+            <strong>created_by:</strong> Yaaru change pannanga nu audit trail maintain pannurom
+        </div>
+
+        <div class="code-block">
+-- Current Product Prices
+SELECT product_id, product_name, final_price, pricing_type, discount_percent
+FROM dim_product_pricing 
+WHERE is_current_price = 'Y'
+ORDER BY product_name;
+
+-- Price History Analysis
+SELECT product_name, final_price, pricing_type, discount_percent,
+       effective_date, expiry_date, change_reason,
+       LAG(final_price) OVER (PARTITION BY product_id ORDER BY effective_date) as previous_price,
+       final_price - LAG(final_price) OVER (PARTITION BY product_id ORDER BY effective_date) as price_change
+FROM dim_product_pricing 
+WHERE product_id = 1001
+ORDER BY effective_date;
+
+-- Revenue Impact Analysis  
+SELECT pricing_type,
+       AVG(final_price) as avg_price,
+       AVG(discount_percent) as avg_discount,
+       COUNT(*) as price_changes
+FROM dim_product_pricing 
+GROUP BY pricing_type;
+        </div>
+        <div class="sql-explanation">
+            <strong>LAG Function:</strong> Previous price compare panna window function use pannurom<br>
+            <strong>price_change:</strong> Current vs previous price difference calculate pannurom<br>
+            <strong>PARTITION BY product_id:</strong> Each product separately analyze pannurom<br>
+            <strong>Revenue Analysis:</strong> Different pricing strategies impact measure pannurom<br>
+            <strong>Business Intelligence:</strong> Historical data use panni business insights vaangalam
+        </div>
+
+        <h3>Example 5: SCD Implementation with Stored Procedures</h3>
+
+        <div class="code-block">
+-- Automated SCD Type 2 Implementation
+DELIMITER //
+
+CREATE PROCEDURE UpdateEmployeeSCD(
+    IN p_employee_id INT,
+    IN p_employee_name VARCHAR(100),
+    IN p_designation VARCHAR(50),
+    IN p_salary DECIMAL(10,2),
+    IN p_department VARCHAR(50)
+)
+BEGIN
+    DECLARE v_current_exists INT DEFAULT 0;
+    DECLARE v_data_changed INT DEFAULT 0;
+    
+    -- Check if current record exists
+    SELECT COUNT(*) INTO v_current_exists
+    FROM dim_employee_type2 
+    WHERE employee_id = p_employee_id AND is_current_record = 'Y';
+    
+    -- If current record exists, check for changes
+    IF v_current_exists > 0 THEN
+        SELECT COUNT(*) INTO v_data_changed
+        FROM dim_employee_type2 
+        WHERE employee_id = p_employee_id 
+          AND is_current_record = 'Y'
+          AND (designation != p_designation 
+               OR salary != p_salary 
+               OR department != p_department);
+    END IF;
+    
+    -- If data changed, implement SCD Type 2
+    IF v_data_changed > 0 THEN
+        -- Close current record
+        UPDATE dim_employee_type2 
+        SET expiry_date = CURDATE() - INTERVAL 1 DAY,
+            is_current_record = 'N'
+        WHERE employee_id = p_employee_id AND is_current_record = 'Y';
+        
+        -- Insert new record
+        INSERT INTO dim_employee_type2 
+        (employee_id, employee_name, designation, department, salary, effective_date, expiry_date)
+        VALUES
+        (p_employee_id, p_employee_name, p_designation, p_department, p_salary, CURDATE(), '9999-12-31');
+        
+    ELSEIF v_current_exists = 0 THEN
+        -- Insert first record for new employee
+        INSERT INTO dim_employee_type2 
+        (employee_id, employee_name, designation, department, salary, effective_date, expiry_date)
+        VALUES
+        (p_employee_id, p_employee_name, p_designation, p_department, p_salary, CURDATE(), '9999-12-31');
+    END IF;
+END //
+
+DELIMITER ;
+        </div>
+        <div class="sql-explanation">
+            <strong>PROCEDURE UpdateEmployeeSCD:</strong> Automated ah SCD Type 2 implement panra function<br>
+            <strong>DECLARE v_current_exists:</strong> Current record irukka nu check panra variable<br>
+            <strong>DECLARE v_data_changed:</strong> Data change aagudha nu check panra variable<br>
+            <strong>IF v_data_changed > 0:</strong> Data change aaguna SCD process start aagum<br>
+            <strong>CURDATE() - INTERVAL 1 DAY:</strong> Previous record end date yesterday set pannurom<br>
+            <strong>Automation Benefit:</strong> Manual errors avoid pannalam, consistent process
+        </div>
+
+        <div class="code-block">
+-- Using the Stored Procedure
+CALL UpdateEmployeeSCD(201, 'Anand Kumar', 'Team Lead', 75000.00, 'IT');
+
+-- Verify the update
+SELECT employee_id, employee_name, designation, salary, 
+       effective_date, expiry_date, is_current_record
+FROM dim_employee_type2 
+WHERE employee_id = 201
+ORDER BY effective_date;
+        </div>
+        <div class="sql-explanation">
+            <strong>CALL UpdateEmployeeSCD:</strong> Procedure ah execute pannurom<br>
+            <strong>Parameters:</strong> Employee details pass pannurom<br>
+            <strong>Automatic Process:</strong> Procedure automatic ah SCD logic implement pannum<br>
+            <strong>Verify Query:</strong> Changes correct ah implement aagudha nu check pannurom
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>SCD Types Detailed Comparison</h2>
+        
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th>SCD Type</th>
+                    <th>History Maintain</th>
+                    <th>Storage Space</th>
+                    <th>Query Complexity</th>
+                    <th>Implementation Effort</th>
+                    <th>Best Use Case</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Type 0</strong></td>
+                    <td>No Change Allowed</td>
+                    <td>Minimal</td>
+                    <td>Very Simple</td>
+                    <td>Easy</td>
+                    <td>Static data like Birth Date</td>
+                </tr>
+                <tr>
+                    <td><strong>Type 1</strong></td>
+                    <td>No History</td>
+                    <td>Minimal</td>
+                    <td>Simple</td>
+                    <td>Easy</td>
+                    <td>Current state matters only</td>
+                </tr>
+                <tr>
+                    <td><strong>Type 2</strong></td>
+                    <td>Complete History</td>
+                    <td>High</td>
+                    <td>Complex</td>
+                    <td>Moderate</td>
+                    <td>Full audit trail needed</td>
+                </tr>
+                <tr>
+                    <td><strong>Type 3</strong></td>
+                    <td>Limited (Previous)</td>
+                    <td>Moderate</td>
+                    <td>Simple</td>
+                    <td>Easy</td>
+                    <td>Before/After comparison</td>
+                </tr>
+                <tr>
+                    <td><strong>Type 4</strong></td>
+                    <td>Separate History</td>
+                    <td>High</td>
+                    <td>Complex</td>
+                    <td>Complex</td>
+                    <td>Performance critical systems</td>
+                </tr>
+                <tr>
+                    <td><strong>Type 6</strong></td>
+                    <td>Hybrid Approach</td>
+                    <td>Very High</td>
+                    <td>Very Complex</td>
+                    <td>Complex</td>
+                    <td>Complex business rules</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="content-box">
+        <h2>Real-World Implementation Strategies</h2>
+        
+        <div class="real-world-example">
+            <h4>Banking Domain - Customer Account SCD</h4>
+            <div class="code-block">
+-- Banking Customer SCD Implementation
+CREATE TABLE dim_customer_banking (
+    customer_key BIGINT AUTO_INCREMENT PRIMARY KEY,
+    customer_id VARCHAR(20) NOT NULL,
+    customer_name VARCHAR(100),
+    account_type VARCHAR(50),
+    branch_code VARCHAR(10),
+    risk_category VARCHAR(20),
+    kyc_status VARCHAR(20),
+    effective_date DATE,
+    expiry_date DATE,
+    is_current CHAR(1) DEFAULT 'Y',
+    change_reason VARCHAR(100),
+    data_source VARCHAR(50)
+);
+
+-- Account type upgrade scenario
+INSERT INTO dim_customer_banking 
+(customer_id, customer_name, account_type, branch_code, risk_category, kyc_status, 
+ effective_date, expiry_date, change_reason, data_source)
+VALUES
+-- Regular to Premium upgrade
+('CUST001', 'Vikram Patel', 'Premium', 'BR001', 'Low', 'Verified', 
+ '2024-04-01', '9999-12-31', 'Account Upgrade', 'Core Banking System');
+            </div>
+            <div class="sql-explanation">
+                <strong>Banking Use Case:</strong> Customer account type changes track pannurom<br>
+                <strong>risk_category:</strong> Customer risk assessment changes track pannurom<br>
+                <strong>kyc_status:</strong> KYC verification status changes maintain pannurom<br>
+                <strong>data_source:</strong> Which system la irundhu data vandhudhu nu track pannurom
+            </div>
+        </div>
+
+        <div class="real-world-example">
+            <h4>E-commerce Domain - Product Catalog SCD</h4>
+            <div class="code-block">
+-- E-commerce Product SCD
+CREATE TABLE dim_product_ecommerce (
+    product_key BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product_id VARCHAR(20) NOT NULL,
+    product_name VARCHAR(200),
+    category_level1 VARCHAR(50),
+    category_level2 VARCHAR(50),
+    brand VARCHAR(50),
+    supplier_id VARCHAR(20),
+    price DECIMAL(10,2),
+    discount_eligible CHAR(1),
+    inventory_status VARCHAR(20),
+    effective_date DATE,
+    expiry_date DATE,
+    is_current CHAR(1) DEFAULT 'Y',
+    version_number INT DEFAULT 1
+);
+
+-- Product lifecycle tracking
+-- Product launch -> Price changes -> Category changes -> Discontinuation
+            </div>
+            <div class="sql-explanation">
+                <strong>E-commerce Tracking:</strong> Product changes complete lifecycle track pannurom<br>
+                <strong>category_level1/level2:</strong> Product categorization changes track pannurom<br>
+                <strong>discount_eligible:</strong> Discount eligibility changes track pannurom<br>
+                <strong>version_number:</strong> How many times product details change aagudhu nu count
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Performance Optimization Techniques</h2>
+        
+        <div class="advanced-concept">
+            <h4>SCD Performance Best Practices:</h4>
+            
+            <div class="code-block">
+-- Indexing Strategy for SCD Type 2 Tables
+CREATE INDEX idx_employee_business_key ON dim_employee_type2(employee_id);
+CREATE INDEX idx_employee_current ON dim_employee_type2(employee_id, is_current_record);
+CREATE INDEX idx_employee_dates ON dim_employee_type2(effective_date, expiry_date);
+CREATE INDEX idx_employee_lookup ON dim_employee_type2(employee_id, effective_date, expiry_date);
+
+-- Partitioning for Large SCD Tables
+ALTER TABLE dim_employee_type2 
+PARTITION BY RANGE (YEAR(effective_date)) (
+    PARTITION p2020 VALUES LESS THAN (2021),
+    PARTITION p2021 VALUES LESS THAN (2022),
+    PARTITION p2022 VALUES LESS THAN (2023),
+    PARTITION p2023 VALUES LESS THAN (2024),
+    PARTITION p2024 VALUES LESS THAN (2025),
+    PARTITION p_future VALUES LESS THAN MAXVALUE
+);
+            </div>
+            <div class="sql-explanation">
+                <strong>idx_employee_business_key:</strong> Business key la fast lookup<br>
+                <strong>idx_employee_current:</strong> Current records ah quickly find panna<br>
+                <strong>idx_employee_dates:</strong> Date range queries ku optimize<br>
+                <strong>PARTITION BY RANGE:</strong> Year wise data separate panni performance improve<br>
+                <strong>Performance Benefit:</strong> Large tables la query speed significantly improve aagum
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Common Challenges and Solutions</h2>
+        
+        <div class="use-case">
+            <h4>Challenge 1: Late Arriving Data</h4>
+            <p><strong>Problem:</strong> Historical data late ah varumbodhu timeline mess aagum.<br>
+            <strong>Solution:</strong> Effective date proper ah set panni, existing records ah adjust pannanum.</p>
+            
+            <div class="code-block">
+-- Handle late arriving data
+UPDATE dim_employee_type2 
+SET expiry_date = '2024-02-15'  -- Late data effective date - 1 day
+WHERE employee_id = 201 
+  AND effective_date <= '2024-02-15' 
+  AND expiry_date >= '2024-02-15';
+
+-- Insert late arriving record
+INSERT INTO dim_employee_type2 
+(employee_id, employee_name, designation, salary, effective_date, expiry_date)
+VALUES
+(201, 'Anand Kumar', 'Mid-level Developer', 55000.00, '2024-02-16', '2024-03-31');
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>Challenge 2: Bulk Data Loading</h4>
+            <p><strong>Problem:</strong> Large volume la data load pannumbodhu performance issue.<br>
+            <strong>Solution:</strong> Batch processing and staging tables use pannalam.</p>
+            
+            <div class="code-block">
+-- Staging table approach
+CREATE TABLE stage_employee_updates (
+    employee_id INT,
+    employee_name VARCHAR(100),
+    designation VARCHAR(50),
+    salary DECIMAL(10,2),
+    load_date DATE
+);
+
+-- Bulk SCD processing
+INSERT INTO dim_employee_type2 
+(employee_id, employee_name, designation, salary, effective_date, expiry_date)
+SELECT s.employee_id, s.employee_name, s.designation, s.salary, 
+       s.load_date, '9999-12-31'
+FROM stage_employee_updates s
+LEFT JOIN dim_employee_type2 d ON s.employee_id = d.employee_id AND d.is_current_record = 'Y'
+WHERE d.employee_id IS NULL  -- Only new employees
+   OR (d.designation != s.designation OR d.salary != s.salary);  -- Changed data
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Use Cases in Different Industries</h2>
+        
+        <div class="use-case">
+            <h4>1. Healthcare - Patient Medical Records</h4>
+            <p><strong>SCD Type 2:</strong> Patient diagnosis, treatment history, doctor assignments ellaam track pannanum. Medical audit ku complete history important.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. Insurance - Policy Changes</h4>
+            <p><strong>SCD Type 2:</strong> Policy premium changes, coverage modifications, beneficiary updates ellaam historical analysis ku maintain pannanum.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Telecom - Customer Plan Changes</h4>
+            <p><strong>SCD Type 1/2:</strong> Customer contact details ku Type 1, plan upgrades ku Type 2 use pannalam. Customer behavior analysis ku useful.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Manufacturing - Product Specifications</h4>
+            <p><strong>SCD Type 2:</strong> Product design changes, material specifications, quality parameters ellaam version control panna use pannurom.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>5. Education - Student Academic Progress</h4>
+            <p><strong>SCD Type 2:</strong> Student grade progression, course enrollments, academic performance tracking ku full history maintain pannanum.</p>
+        </div>
+    </div>
+
+    <div class="sample-chapter">
+        <h2>Next Chapter Sample: ACID Properties</h2>
+        
+        <h3>Definition (Vilakkam)</h3>
+        <div class="definition">
+            <strong>ACID Properties:</strong> Database transactions la data integrity maintain panna follow panna veenda 4 fundamental properties. Atomicity, Consistency, Isolation, Durability nu 4 pillars irukku. Banking, financial systems pola critical applications la ACID compliance romba important.
+        </div>
+
+        <h3>Atomicity Example:</h3>
+        <div class="code-block">
+-- Bank Account Transfer Example
+START TRANSACTION;
+
+-- Debit from source account
+UPDATE bank_accounts 
+SET balance = balance - 10000 
+WHERE account_number = 'ACC001';
+
+-- Credit to destination account  
+UPDATE bank_accounts 
+SET balance = balance + 10000 
+WHERE account_number = 'ACC002';
+
+-- If any error occurs anywhere, entire transaction rollback aagum
+-- Both operations success aaganum illa rendu layum rollback aaganum
+
+COMMIT;  -- Success case la permanent ah save pannurom
+-- ROLLBACK;  -- Error case la everything undo pannurom
+        </div>
+        <div class="sql-explanation">
+            <strong>START TRANSACTION:</strong> Transaction boundary start pannurom<br>
+            <strong>Atomicity Principle:</strong> All or nothing - partial success allow pannaathu<br>
+            <strong>Real Scenario:</strong> Money transfer la amount debit aagudhu aana credit aagala na dangerous<br>
+            <strong>COMMIT:</strong> Everything successful aana permanent ah save pannurom<br>
+            <strong>ROLLBACK:</strong> Any error vandha complete transaction undo pannurom
+        </div>
+
+        <p><em>Full chapter la Consistency (data rules follow aagudha), Isolation (concurrent transactions interfere pannadha), Durability (committed data permanent ah irukudha) ellaam detailed examples ooda explain pannurom!</em></p>
+    </div>
+
+    <div class="header" style="margin-top: 30px; text-align: center;">
+        <p><strong>Connect with me:</strong></p>
+        <div class="author-info" style="justify-content: center;">
+            <a href="https://linkedin.com/in/sbgowtham" target="_blank">LinkedIn: sbgowtham</a>
+            <a href="https://youtube.com/@dataengineeringvideos" target="_blank">YouTube: dataengineeringvideos</a>
+            <a href="https://instagram.com/dataengineeringtamil" target="_blank">Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+</body>
+</html>

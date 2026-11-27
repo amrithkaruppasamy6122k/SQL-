@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 22: Window Functions - SQL Book</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .author-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .social-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .content-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .flowchart {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .code-explanation {
+            background: #e6fffa;
+            padding: 10px;
+            border-left: 4px solid #38b2ac;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f56565;
+            margin: 15px 0;
+        }
+        .diagram {
+            text-align: center;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .function-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .function-table th, .function-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .function-table th {
+            background-color: #667eea;
+            color: white;
+        }
+        .types-box {
+            background: #f0fff4;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #48bb78;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background: #fffaf0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ed8936;
+            margin: 15px 0;
+        }
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 SQL Complete Guide</h1>
+        <h2>Chapter 22: Window Functions</h2>
+        <p><em>Rows Ah Compare Panni Advanced Analytics Panalam!</em></p>
+    </div>
+
+    <div class="author-info">
+        <h3 style="text-align: center; margin-bottom: 15px;">👨‍💻 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#">📺 YouTube: dataengineeringvideos</a>
+            <a href="#">💼 LinkedIn: sbgowtham</a>
+            <a href="#">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📖 Definition (Window Functions Enna Da?)</h2>
+        <p><strong>Window Functions</strong> na oru row ku related ah mathra rows oda comparison panni calculation panra special functions thaan. Idhu normal aggregate functions maari illa - oru single value return panradhu illa, each row ku separate value return pannum.</p>
+        <p>Window Functions oda mukkiya features:</p>
+        <ul>
+            <li><strong>Row-by-row calculation:</strong> Oru row ku mathra rows compare panni value return pannum</li>
+            <li><strong>Partitioning:</strong> Data ah groups la divide panni each group kulla calculation pannum</li>
+            <li><strong>Ordering:</strong> Rows ah specific order la arrange panni calculation pannum</li>
+            <li><strong>Frame specification:</strong> Calculation ku enga rows use pananum nu define panalam</li>
+            <li><strong>Ranking functions:</strong> Data ah rank panna, dense rank panna use aagum</li>
+        </ul>
+        
+        <div class="types-box">
+            <h4>🎯 Window Function Basic Syntax:</h4>
+            <p><strong>function_name() OVER (PARTITION BY column ORDER BY column ROWS/RANGE frame)</strong></p>
+            <p>OVER clause thaan window function ah identify panra main component!</p>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Mukkiyamana Vishayangal:</h4>
+            <ul>
+                <li>Window functions SELECT clause la mattum use panna mudiyum</li>
+                <li>WHERE clause la direct ah use panna mudiyathu, HAVING la use panalam</li>
+                <li>Performance ku proper indexing venum PARTITION BY aur ORDER BY columns la</li>
+                <li>Large datasets la use pannum bodhu memory usage jaasthi aagum</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🏛️ Standard (Window Functions Types aur Avanga Velai)</h2>
+        <p>MySQL la namma different types oda window functions use panna mudiyum:</p>
+        
+        <table class="function-table">
+            <thead>
+                <tr>
+                    <th>Function Type</th>
+                    <th>Tamil la Explanation</th>
+                    <th>Common Functions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Ranking Functions</td>
+                    <td>Data ah rank order la arrange panna use aagum</td>
+                    <td>ROW_NUMBER(), RANK(), DENSE_RANK()</td>
+                </tr>
+                <tr>
+                    <td>Aggregate Functions</td>
+                    <td>Window frame kulla calculation panna</td>
+                    <td>SUM(), AVG(), COUNT(), MIN(), MAX()</td>
+                </tr>
+                <tr>
+                    <td>Value Functions</td>
+                    <td>Specific position la irukra value ah get panna</td>
+                    <td>LAG(), LEAD(), FIRST_VALUE(), LAST_VALUE()</td>
+                </tr>
+                <tr>
+                    <td>Distribution Functions</td>
+                    <td>Data distribution aur percentile calculate panna</td>
+                    <td>PERCENT_RANK(), CUME_DIST(), NTILE()</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="types-box">
+            <h4>📍 Window Function Components:</h4>
+            <ul>
+                <li><strong>PARTITION BY:</strong> Data ah groups la divide pannum (like GROUP BY but rows preserve aagum)</li>
+                <li><strong>ORDER BY:</strong> Window kulla rows ah sort pannum</li>
+                <li><strong>ROWS/RANGE:</strong> Window frame size define pannum (current row around enga vara rows use pananum)</li>
+                <li><strong>Frame boundaries:</strong> UNBOUNDED PRECEDING, CURRENT ROW, UNBOUNDED FOLLOWING</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📊 Flow Chart</h2>
+        <div class="flowchart">
+            <div class="diagram">
+                <h3>Window Functions Execution Process</h3>
+                <pre style="font-family: monospace; text-align: left; background: white; padding: 15px; border-radius: 5px;">
+Query Aarambham
+  ↓
+FROM aur JOIN Process Aagum
+  ↓
+WHERE Filter Apply Aagum
+  ↓
+┌─────────────────────────────────────────────┐
+│  PARTITION BY Iruka?                        │
+│  ┌─── YES ────────┐  ┌─── NO ─────────────┐ │
+│  │ Data Groups    │  │ Full Dataset       │ │
+│  │ Create Aagum   │  │ Single Window      │ │
+│  └────────────────┘  └────────────────────┘ │
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  ORDER BY Iruka?                            │
+│  ┌─── YES ────────┐  ┌─── NO ─────────────┐ │
+│  │ Rows Sort      │  │ Default Order      │ │
+│  │ Aagum          │  │ Maintain Aagum     │ │
+│  └────────────────┘  └────────────────────┘ │
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  Frame Specification Iruka?                 │
+│  ┌─── ROWS ───────┐  ┌─── RANGE ─────────┐  │
+│  │ Physical Rows  │  │ Logical Range     │  │
+│  │ Count          │  │ Value Range       │  │
+│  └────────────────┘  └───────────────────┘  │
+└─────────────────────────────────────────────┘
+  ↓
+Each Row ku Window Function Calculate Aagum
+  ↓
+Final Result Set Return Aagum
+  ↓
+Query Mudinju
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🎯 Examples with Full Tamil Explanation</h2>
+        
+        <h3>1. ROW_NUMBER() - Each row ku unique number assign panradhu</h3>
+        <div class="code-block">
+SELECT 
+    employee_name,
+    department_id,
+    salary,
+    ROW_NUMBER() OVER (
+        PARTITION BY department_id 
+        ORDER BY salary DESC
+    ) AS salary_rank
+FROM 
+    employees
+WHERE 
+    status = 'ACTIVE'
+ORDER BY 
+    department_id,
+    salary_rank;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT employee_name, department_id, salary</code> - Employee details select panrom<br>
+            • <code>ROW_NUMBER() OVER</code> - Row number assign panna window function start panrom<br>
+            • <code>PARTITION BY department_id</code> - Department wise groups create panrom<br>
+            • <code>ORDER BY salary DESC</code> - Each department kulla salary high to low order panrom<br>
+            • <code>AS salary_rank</code> - Result column ku alias name kudukrom<br>
+            • <code>FROM employees</code> - employees table la irundhu data edukrom<br>
+            • <code>WHERE status = 'ACTIVE'</code> - Active employees mattum filter panrom<br>
+            • <code>ORDER BY department_id, salary_rank</code> - Final result ah department aur rank wise sort panrom<br>
+            • <strong>Result:</strong> Each dept la highest salary 1, second highest 2 nu rank assign aagum
+        </div>
+
+        <h3>2. RANK() aur DENSE_RANK() - Duplicate values handle panra ranking</h3>
+        <div class="code-block">
+SELECT 
+    student_name,
+    class_id,
+    total_marks,
+    RANK() OVER (
+        PARTITION BY class_id 
+        ORDER BY total_marks DESC
+    ) AS normal_rank,
+    DENSE_RANK() OVER (
+        PARTITION BY class_id 
+        ORDER BY total_marks DESC
+    ) AS dense_rank
+FROM 
+    students
+WHERE 
+    academic_year = '2024-25'
+ORDER BY 
+    class_id,
+    total_marks DESC;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT student_name, class_id, total_marks</code> - Student basic details select panrom<br>
+            • <code>RANK() OVER (PARTITION BY class_id ORDER BY total_marks DESC)</code> - Class wise normal rank assign panrom<br>
+            • <code>AS normal_rank</code> - Normal rank column alias<br>
+            • <code>DENSE_RANK() OVER (PARTITION BY class_id ORDER BY total_marks DESC)</code> - Class wise dense rank assign panrom<br>
+            • <code>AS dense_rank</code> - Dense rank column alias<br>
+            • <code>FROM students</code> - students table data<br>
+            • <code>WHERE academic_year = '2024-25'</code> - Current academic year filter<br>
+            • <code>ORDER BY class_id, total_marks DESC</code> - Class aur marks wise sort<br>
+            • <strong>Difference:</strong> RANK() la gaps irukum (1,2,2,4), DENSE_RANK() la gaps illa (1,2,2,3)
+        </div>
+
+        <h3>3. LAG() aur LEAD() - Previous/Next row data compare panradhu</h3>
+        <div class="code-block">
+SELECT 
+    sales_date,
+    daily_revenue,
+    LAG(daily_revenue, 1) OVER (
+        ORDER BY sales_date
+    ) AS previous_day_revenue,
+    LEAD(daily_revenue, 1) OVER (
+        ORDER BY sales_date
+    ) AS next_day_revenue,
+    daily_revenue - LAG(daily_revenue, 1) OVER (
+        ORDER BY sales_date
+    ) AS revenue_difference
+FROM 
+    daily_sales
+WHERE 
+    sales_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+ORDER BY 
+    sales_date;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT sales_date, daily_revenue</code> - Date aur revenue select panrom<br>
+            • <code>LAG(daily_revenue, 1) OVER (ORDER BY sales_date)</code> - Previous day oda revenue get panrom<br>
+            • <code>AS previous_day_revenue</code> - Previous day revenue alias<br>
+            • <code>LEAD(daily_revenue, 1) OVER (ORDER BY sales_date)</code> - Next day oda revenue get panrom<br>
+            • <code>AS next_day_revenue</code> - Next day revenue alias<br>
+            • <code>daily_revenue - LAG(daily_revenue, 1)</code> - Current day minus previous day difference calculate panrom<br>
+            • <code>AS revenue_difference</code> - Difference alias<br>
+            • <code>FROM daily_sales</code> - daily_sales table data<br>
+            • <code>WHERE sales_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)</code> - Last 30 days data mattum<br>
+            • <strong>Usage:</strong> Daily revenue trend analysis panradhu ku perfect
+        </div>
+
+        <h3>4. SUM() OVER - Running total calculate panradhu</h3>
+        <div class="code-block">
+SELECT 
+    transaction_date,
+    transaction_amount,
+    transaction_type,
+    SUM(
+        CASE 
+            WHEN transaction_type = 'CREDIT' THEN transaction_amount
+            ELSE -transaction_amount
+        END
+    ) OVER (
+        ORDER BY transaction_date 
+        ROWS UNBOUNDED PRECEDING
+    ) AS running_balance
+FROM 
+    account_transactions
+WHERE 
+    account_id = 1001
+    AND 
+    transaction_date >= DATE_SUB(CURDATE(), INTERVAL 90 DAY)
+ORDER BY 
+    transaction_date;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT transaction_date, transaction_amount, transaction_type</code> - Transaction details select panrom<br>
+            • <code>SUM(CASE WHEN transaction_type = 'CREDIT' THEN transaction_amount</code> - Credit aana amount ah positive ah edukrom<br>
+            • <code>ELSE -transaction_amount END)</code> - Debit aana amount ah negative ah edukrom<br>
+            • <code>OVER (ORDER BY transaction_date</code> - Date wise order panni window create panrom<br>
+            • <code>ROWS UNBOUNDED PRECEDING)</code> - First row la irundhu current row varaikum sum panrom<br>
+            • <code>AS running_balance</code> - Running balance alias<br>
+            • <code>FROM account_transactions</code> - account_transactions table data<br>
+            • <code>WHERE account_id = 1001</code> - Specific account filter<br>
+            • <code>AND transaction_date >= DATE_SUB(CURDATE(), INTERVAL 90 DAY)</code> - Last 90 days data<br>
+            • <strong>Result:</strong> Each row la account balance show aagum cumulative ah
+        </div>
+
+        <h3>5. NTILE() - Data ah equal buckets la divide panradhu</h3>
+        <div class="code-block">
+SELECT 
+    product_name,
+    total_sales_amount,
+    NTILE(4) OVER (
+        ORDER BY total_sales_amount DESC
+    ) AS sales_quartile,
+    CASE 
+        WHEN NTILE(4) OVER (ORDER BY total_sales_amount DESC) = 1 THEN 'Top Performers'
+        WHEN NTILE(4) OVER (ORDER BY total_sales_amount DESC) = 2 THEN 'Good Performers'
+        WHEN NTILE(4) OVER (ORDER BY total_sales_amount DESC) = 3 THEN 'Average Performers'
+        ELSE 'Low Performers'
+    END AS performance_category
+FROM 
+    product_sales_summary
+WHERE 
+    sales_year = 2024
+ORDER BY 
+    total_sales_amount DESC;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT product_name, total_sales_amount</code> - Product name aur sales amount select panrom<br>
+            • <code>NTILE(4) OVER (ORDER BY total_sales_amount DESC)</code> - Data ah 4 equal parts la divide panrom<br>
+            • <code>AS sales_quartile</code> - Quartile number alias<br>
+            • <code>CASE WHEN NTILE(4) OVER (...) = 1 THEN 'Top Performers'</code> - First quartile ah top performers nu mark panrom<br>
+            • <code>WHEN NTILE(4) OVER (...) = 2 THEN 'Good Performers'</code> - Second quartile good performers<br>
+            • <code>WHEN NTILE(4) OVER (...) = 3 THEN 'Average Performers'</code> - Third quartile average<br>
+            • <code>ELSE 'Low Performers' END AS performance_category</code> - Fourth quartile low performers<br>
+            • <code>FROM product_sales_summary</code> - Sales summary table data<br>
+            • <code>WHERE sales_year = 2024</code> - 2024 year data mattum<br>
+            • <strong>Usage:</strong> Product performance analysis ku perfect, equal distribution guarantee
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🛠️ Use Cases (Real-world la Epidi Use Panradhu)</h2>
+        
+        <div class="use-case">
+            <h4>1. Sales Analytics - Monthly Revenue Trend Analysis</h4>
+            <p><strong>Situation:</strong> Each month oda revenue aur previous months oda comparison venum</p>
+            <div class="code-block">
+SELECT 
+    sales_month,
+    monthly_revenue,
+    LAG(monthly_revenue, 1) OVER (
+        ORDER BY sales_month
+    ) AS previous_month_revenue,
+    ROUND(
+        (monthly_revenue - LAG(monthly_revenue, 1) OVER (ORDER BY sales_month)) / 
+        LAG(monthly_revenue, 1) OVER (ORDER BY sales_month) * 100, 2
+    ) AS revenue_growth_percentage,
+    SUM(monthly_revenue) OVER (
+        ORDER BY sales_month 
+        ROWS UNBOUNDED PRECEDING
+    ) AS cumulative_revenue
+FROM 
+    monthly_sales_summary
+WHERE 
+    sales_year = 2024
+ORDER BY 
+    sales_month;
+            </div>
+            <p><strong>Faayda:</strong> Management ku month-to-month growth trend clear ah theriyum, business planning panradhu ku useful</p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. HR Analytics - Employee Performance Ranking</h4>
+            <p><strong>Situation:</strong> Department wise employee performance rank pannum, salary increment ku use panalam</p>
+            <div class="code-block">
+SELECT 
+    employee_name,
+    department_name,
+    performance_score,
+    salary,
+    RANK() OVER (
+        PARTITION BY department_name 
+        ORDER BY performance_score DESC
+    ) AS dept_performance_rank,
+    PERCENT_RANK() OVER (
+        PARTITION BY department_name 
+        ORDER BY performance_score DESC
+    ) AS performance_percentile,
+    CASE 
+        WHEN PERCENT_RANK() OVER (PARTITION BY department_name ORDER BY performance_score DESC) <= 0.1 THEN 'Top 10%'
+        WHEN PERCENT_RANK() OVER (PARTITION BY department_name ORDER BY performance_score DESC) <= 0.25 THEN 'Top 25%'
+        ELSE 'Others'
+    END AS performance_tier
+FROM 
+    employee_performance_review
+WHERE 
+    review_year = 2024
+ORDER BY 
+    department_name,
+    performance_score DESC;
+            </div>
+            <p><strong>Faayda:</strong> HR team ku fair ah performance based increments aur promotions decide panna mudiyum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Finance - Account Balance Monitoring</h4>
+            <p><strong>Situation:</strong> Customer account la daily balance track pannum, overdraft situations identify pannum</p>
+            <div class="code-block">
+SELECT 
+    transaction_date,
+    transaction_description,
+    transaction_amount,
+    transaction_type,
+    SUM(
+        CASE 
+            WHEN transaction_type = 'CREDIT' THEN transaction_amount
+            ELSE -transaction_amount
+        END
+    ) OVER (
+        ORDER BY transaction_date,
+        transaction_id 
+        ROWS UNBOUNDED PRECEDING
+    ) AS daily_balance,
+    MIN(
+        SUM(
+            CASE 
+                WHEN transaction_type = 'CREDIT' THEN transaction_amount
+                ELSE -transaction_amount
+            END
+        ) OVER (
+            ORDER BY transaction_date,
+            transaction_id 
+            ROWS UNBOUNDED PRECEDING
+        )
+    ) OVER (
+        ORDER BY transaction_date 
+        ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING
+    ) AS minimum_future_balance
+FROM 
+    account_transactions
+WHERE 
+    account_number = 'ACC123456'
+    AND 
+    transaction_date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+ORDER BY 
+    transaction_date,
+    transaction_id;
+            </div>
+            <p><strong>Faayda:</strong> Bank ku customer oda cash flow pattern theriyum, overdraft risk predict panna mudiyum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Inventory Management - Stock Movement Analysis</h4>
+            <p><strong>Situation:</strong> Product wise stock in/out movement track pannum, reorder point calculate pannum</p>
+            <div class="code-block">
+SELECT 
+    movement_date,
+    product_name,
+    movement_type,
+    quantity,
+    SUM(
+        CASE 
+            WHEN movement_type = 'IN' THEN quantity
+            ELSE -quantity
+        END
+    ) OVER (
+        PARTITION BY product_name 
+        ORDER BY movement_date 
+        ROWS UNBOUNDED PRECEDING
+    ) AS current_stock_level,
+    AVG(
+        CASE 
+            WHEN movement_type = 'OUT' THEN quantity
+            ELSE 0
+        END
+    ) OVER (
+        PARTITION BY product_name 
+        ORDER BY movement_date 
+        ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+    ) AS avg_weekly_consumption,
+    FIRST_VALUE(movement_date) OVER (
+        PARTITION BY product_name 
+        ORDER BY movement_date 
+        ROWS UNBOUNDED PRECEDING
+    ) AS first_movement_date
+FROM 
+    stock_movements
+WHERE 
+    movement_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+ORDER BY 
+    product_name,
+    movement_date;
+            </div>
+            <p><strong>Faayda:</strong> Inventory manager ku stock trends theriyum, automatic reorder alerts setup panna mudiyum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>5. Website Analytics - User Session Analysis</h4>
+            <p><strong>Situation:</strong> User behavior track pannum, session duration aur page views calculate pannum</p>
+            <div class="code-block">
+SELECT 
+    user_id,
+    session_start_time,
+    page_url,
+    page_view_time,
+    LEAD(page_view_time, 1) OVER (
+        PARTITION BY user_id,
+        session_id 
+        ORDER BY page_view_time
+    ) AS next_page_time,
+    COALESCE(
+        LEAD(page_view_time, 1) OVER (
+            PARTITION BY user_id,
+            session_id 
+            ORDER BY page_view_time
+        ) - page_view_time,
+        0
+    ) AS time_spent_seconds,
+    ROW_NUMBER() OVER (
+        PARTITION BY user_id,
+        session_id 
+        ORDER BY page_view_time
+    ) AS page_sequence,
+    COUNT(*) OVER (
+        PARTITION BY user_id,
+        session_id
+    ) AS total_pages_in_session
+FROM 
+    user_page_views
+WHERE 
+    session_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+ORDER BY 
+    user_id,
+    session_id,
+    page_view_time;
+            </div>
+            <p><strong>Faayda:</strong> Marketing team ku user engagement patterns theriyum, website optimization panna mudiyum</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>📚 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#" style="color: #64ffda;">📺 YouTube: dataengineeringvideos</a> |
+            <a href="#" style="color: #64ffda;">💼 LinkedIn: sbgowtham</a> |
+            <a href="#" style="color: #64ffda;">📸 Instagram: dataengineeringtamil</a>
+        </div>
+        <p style="margin-top: 15px;"><em>Window Functions master aagiduvenga! Advanced analytics ippove easy ah panna mudiyum! 🚀</em></p>
+    </div>
+</body>
+</html>

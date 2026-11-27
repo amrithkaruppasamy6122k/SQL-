@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 17 - NULL Handling Techniques</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .author-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .author-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.9em;
+        }
+        .social-link {
+            color: #74b9ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .social-link:hover {
+            color: #0984e3;
+        }
+        .chapter {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .definition-box {
+            background: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .null-functions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .function-card {
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .function-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .isnull-card { background: #e8f5e8; border-color: #27ae60; }
+        .coalesce-card { background: #e8f0ff; border-color: #3498db; }
+        .nullif-card { background: #fff8e8; border-color: #f39c12; }
+        .ifnull-card { background: #ffe8e8; border-color: #e74c3c; }
+        .sql-code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .data-table th {
+            background: #3498db;
+            color: white;
+        }
+        .data-table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .null-cell {
+            background: #ffebee !important;
+            font-style: italic;
+            color: #999;
+        }
+        .handled-cell {
+            background: #e8f5e8 !important;
+            font-weight: bold;
+        }
+        .syntax-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+        }
+        .use-case {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .tamil-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .info-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .author-footer {
+            background: #2d3436;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .footer-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #74b9ff;
+        }
+        @media print {
+            body { background: white; }
+            .chapter { box-shadow: none; }
+            .author-footer { background: #f8f9fa; color: #2c3e50; }
+        }
+        @media (max-width: 768px) {
+            .null-functions-grid { grid-template-columns: 1fr; }
+            .social-links { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="author-header">
+        <div class="author-name">📚 SQL Complete Course - By Gowtham SB</div>
+        <div class="social-links">
+            <span>📱 Instagram: <a href="#" class="social-link">@dataengineeringtamil</a></span>
+            <span>💼 LinkedIn: <a href="#" class="social-link">sbgowtham</a></span>
+            <span>🎥 YouTube: <a href="#" class="social-link">dataengineeringvideos</a></span>
+        </div>
+    </div>
+
+    <div class="chapter">
+        <h1>Chapter 17: NULL Handling Techniques Complete Guide</h1>
+
+        <h2>📖 Definition</h2>
+        <div class="definition-box">
+            <strong>NULL Handling:</strong> NULL values <span class="tamil-text">database-la missing or unknown data represent pannum</span>. <span class="tamil-text">NULL-nu</span> empty string '' <span class="tamil-text">or zero 0 illa</span>, <span class="tamil-text">completely absence of value</span>. NULL values <span class="tamil-text">properly handle pannama irundha</span> unexpected results, calculation errors, and application bugs <span class="tamil-text">varum</span>. <span class="tamil-text">Professional database development-la</span> NULL handling <span class="tamil-text">romba critical skill</span>.
+        </div>
+
+        <h2>🎯 NULL Handling Functions</h2>
+        <div class="null-functions-grid">
+            <div class="function-card isnull-card">
+                <h3>❓ IS NULL / IS NOT NULL</h3>
+                <h4><span class="tamil-text">NULL Check Functions</span></h4>
+                <p><span class="tamil-text">NULL values identify and filter pannalam</span></p>
+                <div style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 12px;">
+                    WHERE column IS NULL<br>
+                    WHERE column IS NOT NULL
+                </div>
+            </div>
+            
+            <div class="function-card coalesce-card">
+                <h3>🔄 COALESCE</h3>
+                <h4><span class="tamil-text">First Non-NULL Value</span></h4>
+                <p><span class="tamil-text">Multiple values-la first non-NULL value return pannum</span></p>
+                <div style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 12px;">
+                    COALESCE(col1, col2, 'default')
+                </div>
+            </div>
+            
+            <div class="function-card nullif-card">
+                <h3>🚫 NULLIF</h3>
+                <h4><span class="tamil-text">Conditional NULL Return</span></h4>
+                <p><span class="tamil-text">Two values equal-na NULL return pannum</span></p>
+                <div style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 12px;">
+                    NULLIF(expression1, expression2)
+                </div>
+            </div>
+            
+            <div class="function-card ifnull-card">
+                <h3>🔧 IFNULL</h3>
+                <h4><span class="tamil-text">MySQL Specific Function</span></h4>
+                <p><span class="tamil-text">NULL-na alternative value return pannum</span></p>
+                <div style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px; font-size: 12px;">
+                    IFNULL(column, replacement_value)
+                </div>
+            </div>
+        </div>
+
+        <h2>📝 Understanding NULL Behavior</h2>
+        <div class="info-box">
+            <h4><span class="tamil-text">NULL Key Properties:</span></h4>
+            • <strong><span class="tamil-text">NULL is not equal to anything</span></strong> - NULL = NULL returns NULL (not TRUE)<br>
+            • <strong><span class="tamil-text">NULL in arithmetic operations</span></strong> - Any calculation with NULL results in NULL<br>
+            • <strong><span class="tamil-text">NULL in string operations</span></strong> - Concatenation with NULL results in NULL<br>
+            • <strong><span class="tamil-text">NULL in comparisons</span></strong> - Always use IS NULL / IS NOT NULL<br>
+            • <strong><span class="tamil-text">NULL in aggregations</span></strong> - Aggregation functions ignore NULL values
+        </div>
+
+        <h2>📊 Sample Database Setup</h2>
+        <div class="sql-code">-- Create customer contact database with NULL values
+CREATE TABLE customer_contacts (
+    customer_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_name VARCHAR(100) NOT NULL,
+    primary_phone VARCHAR(15),
+    secondary_phone VARCHAR(15),
+    email_address VARCHAR(100),
+    alternate_email VARCHAR(100),
+    home_address TEXT,
+    office_address TEXT,
+    emergency_contact_name VARCHAR(100),
+    emergency_contact_phone VARCHAR(15),
+    notes TEXT,
+    registration_date DATE NOT NULL,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert sample data with various NULL scenarios
+INSERT INTO customer_contacts 
+    (customer_name, primary_phone, secondary_phone, email_address, alternate_email, 
+     home_address, office_address, emergency_contact_name, emergency_contact_phone, notes) 
+VALUES
+    ('Customer_A', '9800000001', NULL, 'customer.a@domain.com', NULL, 
+     '123 Main Street', 'Tech Park Building', 'Emergency_Contact_A', '9800000011', 'VIP Customer'),
+    
+    ('Customer_B', '9800000002', '9800000012', 'customer.b@domain.com', 'alt.b@domain.com', 
+     NULL, NULL, NULL, NULL, NULL),
+     
+    ('Customer_C', NULL, NULL, NULL, NULL, 
+     '456 Oak Avenue', NULL, 'Emergency_Contact_C', '9800000013', 'New Customer'),
+     
+    ('Customer_D', '9800000004', '9800000014', 'customer.d@domain.com', NULL, 
+     '789 Pine Street', '456 Business Center', NULL, NULL, 'Premium Customer'),
+     
+    ('Customer_E', NULL, '9800000015', NULL, 'alt.e@domain.com', 
+     NULL, '789 Corporate Plaza', 'Emergency_Contact_E', NULL, NULL);
+        </div>
+
+        <h4><span class="tamil-text">Sample Data with NULL Values:</span></h4>
+        <table class="data-table">
+            <tr>
+                <th>customer_name</th>
+                <th>primary_phone</th>
+                <th>email_address</th>
+                <th>home_address</th>
+                <th>emergency_contact_name</th>
+            </tr>
+            <tr><td>Customer_A</td><td>9800000001</td><td>customer.a@domain.com</td><td>123 Main Street</td><td>Emergency_Contact_A</td></tr>
+            <tr><td>Customer_B</td><td>9800000002</td><td>customer.b@domain.com</td><td class="null-cell">NULL</td><td class="null-cell">NULL</td></tr>
+            <tr><td>Customer_C</td><td class="null-cell">NULL</td><td class="null-cell">NULL</td><td>456 Oak Avenue</td><td>Emergency_Contact_C</td></tr>
+            <tr><td>Customer_D</td><td>9800000004</td><td>customer.d@domain.com</td><td>789 Pine Street</td><td class="null-cell">NULL</td></tr>
+            <tr><td>Customer_E</td><td class="null-cell">NULL</td><td class="null-cell">NULL</td><td class="null-cell">NULL</td><td>Emergency_Contact_E</td></tr>
+        </table>
+
+        <h2>❓ IS NULL and IS NOT NULL</h2>
+
+        <div class="sql-code">-- Basic NULL checking examples
+
+-- Find customers with no primary phone
+SELECT 
+    customer_name,
+    primary_phone,
+    email_address
+FROM customer_contacts
+WHERE primary_phone IS NULL;
+
+-- Find customers with contact information
+SELECT 
+    customer_name,
+    primary_phone,
+    email_address
+FROM customer_contacts
+WHERE primary_phone IS NOT NULL 
+  AND email_address IS NOT NULL;
+
+-- Find customers with missing emergency contact
+SELECT 
+    customer_name,
+    primary_phone,
+    emergency_contact_name,
+    emergency_contact_phone
+FROM customer_contacts
+WHERE emergency_contact_name IS NULL 
+   OR emergency_contact_phone IS NULL;
+
+-- Count NULL values in different columns
+SELECT 
+    COUNT(*) AS total_customers,
+    COUNT(primary_phone) AS customers_with_primary_phone,
+    COUNT(secondary_phone) AS customers_with_secondary_phone,
+    COUNT(email_address) AS customers_with_email,
+    COUNT(home_address) AS customers_with_home_address,
+    
+    -- Calculate percentage of NULL values
+    ROUND((COUNT(*) - COUNT(primary_phone)) * 100.0 / COUNT(*), 2) AS primary_phone_null_percentage,
+    ROUND((COUNT(*) - COUNT(email_address)) * 100.0 / COUNT(*), 2) AS email_null_percentage
+    
+FROM customer_contacts;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">IS NULL/IS NOT NULL Explanation:</span></strong><br>
+            <strong>WHERE primary_phone IS NULL</strong> - <span class="tamil-text">Primary phone illa-na customers-a find pannum</span><br>
+            <strong>WHERE column IS NOT NULL</strong> - <span class="tamil-text">Value irukura records mattum select pannum</span><br>
+            <strong>COUNT(column)</strong> - <span class="tamil-text">NULL values-a count panna, non-NULL values mattum count aagum</span><br>
+            <strong>Never use = NULL</strong> - <span class="tamil-text">Always IS NULL use pannanum, = NULL work aagadhu</span>
+        </div>
+
+        <h2>🔄 COALESCE Function</h2>
+
+        <div class="sql-code">-- COALESCE examples - first non-NULL value return pannum
+
+-- Get best available phone number
+SELECT 
+    customer_name,
+    primary_phone,
+    secondary_phone,
+    COALESCE(primary_phone, secondary_phone, 'No Phone Available') AS best_phone_number
+FROM customer_contacts;
+
+-- Get best available email address
+SELECT 
+    customer_name,
+    email_address,
+    alternate_email,
+    COALESCE(email_address, alternate_email, 'No Email Available') AS contact_email
+FROM customer_contacts;
+
+-- Get best available address
+SELECT 
+    customer_name,
+    home_address,
+    office_address,
+    COALESCE(home_address, office_address, 'Address Not Available') AS mailing_address
+FROM customer_contacts;
+
+-- Complex COALESCE with multiple fallbacks
+SELECT 
+    customer_name,
+    
+    -- Contact preference priority
+    COALESCE(primary_phone, secondary_phone, email_address, 'Contact Info Missing') AS primary_contact_method,
+    
+    -- Address with smart fallback
+    COALESCE(
+        home_address, 
+        office_address, 
+        CONCAT('Customer ID: ', customer_id, ' - Address Not Provided')
+    ) AS delivery_address,
+    
+    -- Emergency contact with fallback
+    COALESCE(
+        CONCAT(emergency_contact_name, ' - ', emergency_contact_phone),
+        emergency_contact_name,
+        emergency_contact_phone,
+        'No Emergency Contact'
+    ) AS emergency_info,
+    
+    -- Notes with default message
+    COALESCE(notes, 'No additional notes') AS customer_notes
+    
+FROM customer_contacts
+ORDER BY customer_name;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">COALESCE Function Explanation:</span></strong><br>
+            <strong>COALESCE(col1, col2, 'default')</strong> - <span class="tamil-text">Col1 NULL illa-na col1 return pannum, col1 NULL-na col2 check pannum</span><br>
+            <strong>Multiple parameters</strong> - <span class="tamil-text">Left to right order-la first non-NULL value return pannum</span><br>
+            <strong>Data type consistency</strong> - <span class="tamil-text">All parameters same data type irukanum</span><br>
+            <strong>Default values</strong> - <span class="tamil-text">Last parameter-a default value-a use pannalam</span>
+        </div>
+
+        <h2>🔧 IFNULL Function (MySQL Specific)</h2>
+
+        <div class="sql-code">-- IFNULL examples - MySQL specific NULL handling
+
+-- Replace NULL phone numbers with default message
+SELECT 
+    customer_name,
+    primary_phone,
+    IFNULL(primary_phone, 'Phone Not Provided') AS phone_display,
+    
+    secondary_phone,
+    IFNULL(secondary_phone, 'Secondary Phone Not Available') AS secondary_display
+    
+FROM customer_contacts;
+
+-- Replace NULL addresses with meaningful defaults
+SELECT 
+    customer_name,
+    IFNULL(home_address, 'Home Address Not Available') AS home_address_display,
+    IFNULL(office_address, 'Office Address Not Available') AS office_address_display,
+    
+    -- Combine with calculations
+    IFNULL(home_address, office_address) AS any_available_address,
+    
+    -- Use with string functions
+    IFNULL(UPPER(emergency_contact_name), 'NO EMERGENCY CONTACT') AS emergency_name_upper
+    
+FROM customer_contacts;
+
+-- IFNULL with aggregation and calculations
+SELECT 
+    customer_name,
+    registration_date,
+    IFNULL(notes, 'Standard Customer') AS customer_category,
+    
+    -- Calculate days since registration (handle NULL dates)
+    IFNULL(
+        DATEDIFF(CURDATE(), registration_date), 
+        0
+    ) AS days_since_registration,
+    
+    -- Convert NULL to zero for calculations
+    IFNULL(LENGTH(notes), 0) AS notes_character_count
+    
+FROM customer_contacts
+ORDER BY registration_date DESC;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">IFNULL Function Explanation:</span></strong><br>
+            <strong>IFNULL(column, replacement)</strong> - <span class="tamil-text">Column NULL-na replacement value return pannum</span><br>
+            <strong>Two parameters only</strong> - <span class="tamil-text">COALESCE-la multiple parameters, IFNULL-la rendu mattum</span><br>
+            <strong>MySQL specific</strong> - <span class="tamil-text">Other databases-la ISNULL or COALESCE use pannanum</span><br>
+            <strong>Performance optimized</strong> - <span class="tamil-text">Simple NULL checks-ku IFNULL faster</span>
+        </div>
+
+        <h2>🚫 NULLIF Function</h2>
+
+        <div class="sql-code">-- NULLIF examples - return NULL when values are equal
+
+-- Convert empty strings to NULL
+SELECT 
+    customer_name,
+    primary_phone,
+    NULLIF(primary_phone, '') AS cleaned_primary_phone,
+    
+    email_address,
+    NULLIF(email_address, '') AS cleaned_email,
+    
+    -- Convert placeholder values to NULL
+    NULLIF(notes, 'N/A') AS meaningful_notes,
+    NULLIF(notes, 'TBD') AS non_placeholder_notes
+    
+FROM customer_contacts;
+
+-- Prevent division by zero errors
+SELECT 
+    customer_name,
+    LENGTH(COALESCE(notes, '')) AS notes_length,
+    LENGTH(COALESCE(home_address, '')) AS address_length,
+    
+    -- Safe division using NULLIF
+    CASE 
+        WHEN NULLIF(LENGTH(COALESCE(notes, '')), 0) IS NOT NULL THEN
+            ROUND(LENGTH(COALESCE(home_address, '')) / LENGTH(COALESCE(notes, '')), 2)
+        ELSE 
+            NULL
+    END AS address_to_notes_ratio,
+    
+    -- Another approach with NULLIF
+    ROUND(
+        LENGTH(COALESCE(home_address, '')) / 
+        NULLIF(LENGTH(COALESCE(notes, '')), 0), 
+        2
+    ) AS safe_ratio
+    
+FROM customer_contacts
+WHERE notes IS NOT NULL OR home_address IS NOT NULL;
+
+-- Data cleansing with NULLIF
+SELECT 
+    customer_name,
+    
+    -- Convert various "empty" representations to actual NULL
+    NULLIF(TRIM(primary_phone), '') AS cleaned_phone,
+    NULLIF(TRIM(LOWER(email_address)), 'unknown') AS cleaned_email,
+    NULLIF(TRIM(notes), 'No notes') AS cleaned_notes,
+    NULLIF(TRIM(emergency_contact_name), 'None') AS cleaned_emergency_contact
+    
+FROM customer_contacts;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">NULLIF Function Explanation:</span></strong><br>
+            <strong>NULLIF(expr1, expr2)</strong> - <span class="tamil-text">Expr1 and expr2 equal-na NULL return pannum, illa-na expr1 return pannum</span><br>
+            <strong>Empty string handling</strong> - <span class="tamil-text">'' (empty string)-a NULL-ku convert panna useful</span><br>
+            <strong>Division by zero prevention</strong> - <span class="tamil-text">Denominator 0-na NULL return panni error avoid pannalam</span><br>
+            <strong>Data cleansing</strong> - <span class="tamil-text">Placeholder values-a NULL-ku convert panna use pannalam</span>
+        </div>
+
+        <h2>📊 NULL Handling in Aggregations</h2>
+
+        <div class="sql-code">-- NULL behavior in aggregation functions
+
+-- Aggregation functions ignore NULL values
+SELECT 
+    COUNT(*) AS total_customers,
+    COUNT(primary_phone) AS customers_with_primary_phone,
+    COUNT(DISTINCT primary_phone) AS unique_phone_numbers,
+    COUNT(email_address) AS customers_with_email,
+    COUNT(home_address) AS customers_with_home_address;
+
+-- Statistics with NULL handling
+SELECT 
+    'Primary Phone' AS contact_type,
+    COUNT(*) AS total_records,
+    COUNT(primary_phone) AS non_null_count,
+    COUNT(*) - COUNT(primary_phone) AS null_count,
+    ROUND((COUNT(primary_phone) * 100.0) / COUNT(*), 2) AS completion_percentage
+
+UNION ALL
+
+SELECT 
+    'Email Address' AS contact_type,
+    COUNT(*) AS total_records,
+    COUNT(email_address) AS non_null_count,
+    COUNT(*) - COUNT(email_address) AS null_count,
+    ROUND((COUNT(email_address) * 100.0) / COUNT(*), 2) AS completion_percentage
+
+UNION ALL
+
+SELECT 
+    'Home Address' AS contact_type,
+    COUNT(*) AS total_records,
+    COUNT(home_address) AS non_null_count,
+    COUNT(*) - COUNT(home_address) AS null_count,
+    ROUND((COUNT(home_address) * 100.0) / COUNT(*), 2) AS completion_percentage
+
+FROM customer_contacts;
+
+-- Advanced aggregation with NULL handling
+SELECT 
+    CASE 
+        WHEN primary_phone IS NOT NULL AND email_address IS NOT NULL THEN 'Complete Contact Info'
+        WHEN primary_phone IS NOT NULL OR email_address IS NOT NULL THEN 'Partial Contact Info'
+        ELSE 'Missing Contact Info'
+    END AS contact_completeness,
+    
+    COUNT(*) AS customer_count,
+    ROUND((COUNT(*) * 100.0) / (SELECT COUNT(*) FROM customer_contacts), 2) AS percentage,
+    
+    -- Average note length (ignoring NULLs)
+    ROUND(AVG(LENGTH(notes)), 2) AS avg_notes_length,
+    
+    -- Include NULL values in average calculation
+    ROUND(AVG(COALESCE(LENGTH(notes), 0)), 2) AS avg_notes_length_including_nulls
+    
+FROM customer_contacts
+GROUP BY contact_completeness
+ORDER BY customer_count DESC;
+        </div>
+
+        <h2>🔧 Advanced NULL Handling Techniques</h2>
+
+        <div class="sql-code">-- Complex NULL handling scenarios
+
+-- Create a comprehensive contact summary
+SELECT 
+    customer_name,
+    
+    -- Contact methods availability
+    CASE 
+        WHEN primary_phone IS NOT NULL THEN '📞 Phone'
+        ELSE ''
+    END ||
+    CASE 
+        WHEN email_address IS NOT NULL THEN 
+            CASE WHEN primary_phone IS NOT NULL THEN ' + 📧 Email' ELSE '📧 Email' END
+        ELSE ''
+    END ||
+    CASE 
+        WHEN home_address IS NOT NULL OR office_address IS NOT NULL THEN 
+            CASE WHEN (primary_phone IS NOT NULL OR email_address IS NOT NULL) 
+                 THEN ' + 🏠 Address' ELSE '🏠 Address' END
+        ELSE ''
+    END AS available_contact_methods,
+    
+    -- Contact completeness score (out of 5)
+    (CASE WHEN primary_phone IS NOT NULL THEN 1 ELSE 0 END +
+     CASE WHEN secondary_phone IS NOT NULL THEN 1 ELSE 0 END +
+     CASE WHEN email_address IS NOT NULL THEN 1 ELSE 0 END +
+     CASE WHEN home_address IS NOT NULL THEN 1 ELSE 0 END +
+     CASE WHEN emergency_contact_name IS NOT NULL AND emergency_contact_phone IS NOT NULL THEN 1 ELSE 0 END
+    ) AS completeness_score,
+    
+    -- Smart contact preference
+    CASE 
+        WHEN primary_phone IS NOT NULL AND email_address IS NOT NULL THEN 'Multi-channel'
+        WHEN primary_phone IS NOT NULL THEN 'Phone Preferred'
+        WHEN email_address IS NOT NULL THEN 'Email Only'
+        WHEN home_address IS NOT NULL OR office_address IS NOT NULL THEN 'Mail Only'
+        ELSE 'Contact Method Unknown'
+    END AS preferred_contact_method,
+    
+    -- Data quality assessment
+    CASE 
+        WHEN (primary_phone IS NOT NULL OR email_address IS NOT NULL) 
+             AND (home_address IS NOT NULL OR office_address IS NOT NULL)
+             AND emergency_contact_name IS NOT NULL THEN 'High Quality Data'
+        WHEN primary_phone IS NOT NULL OR email_address IS NOT NULL THEN 'Medium Quality Data'
+        ELSE 'Low Quality Data'
+    END AS data_quality_level
+    
+FROM customer_contacts
+ORDER BY completeness_score DESC, customer_name;
+
+-- NULL handling in JOIN operations
+SELECT 
+    c.customer_name,
+    c.primary_phone,
+    c.email_address,
+    
+    -- Safe string concatenation with NULL handling
+    COALESCE(
+        CONCAT(c.customer_name, ' - ', c.primary_phone), 
+        CONCAT(c.customer_name, ' - Phone Not Available')
+    ) AS customer_phone_display,
+    
+    -- Handle NULL in conditional formatting
+    CASE 
+        WHEN c.primary_phone IS NOT NULL AND c.email_address IS NOT NULL THEN
+            CONCAT('📞 ', c.primary_phone, ' | 📧 ', c.email_address)
+        WHEN c.primary_phone IS NOT NULL THEN
+            CONCAT('📞 ', c.primary_phone, ' | 📧 No Email')
+        WHEN c.email_address IS NOT NULL THEN
+            CONCAT('📞 No Phone | 📧 ', c.email_address)
+        ELSE
+            '📞 No Phone | 📧 No Email'
+    END AS formatted_contact_info
+    
+FROM customer_contacts c
+WHERE c.customer_name IS NOT NULL;
+
+-- Recursive NULL replacement with priority
+SELECT 
+    customer_name,
+    
+    -- Multi-level fallback system
+    COALESCE(
+        NULLIF(TRIM(primary_phone), ''),
+        NULLIF(TRIM(secondary_phone), ''),
+        NULLIF(TRIM(emergency_contact_phone), ''),
+        'No Contact Number Available'
+    ) AS best_available_phone,
+    
+    -- Complex email handling
+    COALESCE(
+        CASE WHEN email_address LIKE '%@%.%' THEN email_address END,
+        CASE WHEN alternate_email LIKE '%@%.%' THEN alternate_email END,
+        'No Valid Email Available'
+    ) AS validated_email,
+    
+    -- Address consolidation with smart logic
+    CASE 
+        WHEN home_address IS NOT NULL AND office_address IS NOT NULL THEN
+            CONCAT('Home: ', home_address, ' | Office: ', office_address)
+        WHEN home_address IS NOT NULL THEN
+            CONCAT('Home: ', home_address)
+        WHEN office_address IS NOT NULL THEN
+            CONCAT('Office: ', office_address)
+        ELSE
+            'No Address Available'
+    END AS consolidated_address
+    
+FROM customer_contacts
+ORDER BY customer_name;
+        </div>
+
+        <h2>🔧 Use Cases</h2>
+
+        <div class="use-case">
+            <h4>1. <span class="tamil-text">Customer Service Dashboard</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Customer service representatives-ku complete contact info display pannum</span><br>
+            <div class="sql-code">-- Customer service contact display
+SELECT 
+    customer_id,
+    customer_name,
+    
+    -- Primary contact method with fallback
+    COALESCE(
+        CONCAT('📞 ', primary_phone),
+        CONCAT('📧 ', email_address),
+        CONCAT('🏠 ', home_address),
+        '⚠️ No Contact Information Available'
+    ) AS primary_contact_display,
+    
+    -- All available contact methods
+    CONCAT_WS(' | ',
+        CASE WHEN primary_phone IS NOT NULL THEN CONCAT('Phone: ', primary_phone) END,
+        CASE WHEN email_address IS NOT NULL THEN CONCAT('Email: ', email_address) END,
+        CASE WHEN home_address IS NOT NULL THEN CONCAT('Address: ', LEFT(home_address, 50)) END
+    ) AS all_contact_methods,
+    
+    -- Emergency contact availability
+    CASE 
+        WHEN emergency_contact_name IS NOT NULL AND emergency_contact_phone IS NOT NULL THEN
+            CONCAT('✅ ', emergency_contact_name, ' - ', emergency_contact_phone)
+        WHEN emergency_contact_name IS NOT NULL THEN
+            CONCAT('⚠️ ', emergency_contact_name, ' - Phone Missing')
+        ELSE
+            '❌ No Emergency Contact'
+    END AS emergency_contact_status,
+    
+    -- Data completeness indicator
+    CASE 
+        WHEN primary_phone IS NOT NULL AND email_address IS NOT NULL 
+             AND home_address IS NOT NULL THEN '🟢 Complete'
+        WHEN primary_phone IS NOT NULL OR email_address IS NOT NULL THEN '🟡 Partial'
+        ELSE '🔴 Incomplete'
+    END AS contact_completeness
+    
+FROM customer_contacts
+ORDER BY 
+    CASE 
+        WHEN primary_phone IS NOT NULL AND email_address IS NOT NULL THEN 1
+        WHEN primary_phone IS NOT NULL OR email_address IS NOT NULL THEN 2
+        ELSE 3
+    END,
+    customer_name;
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>2. <span class="tamil-text">Marketing Campaign Segmentation</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Different marketing channels-ku customers segment pannum</span><br>
+            <div class="sql-code">-- Marketing segmentation based on available contact methods
+SELECT 
+    customer_name,
+    
+    -- Channel availability
+    CASE WHEN primary_phone IS NOT NULL THEN 'YES' ELSE 'NO' END AS sms_campaign_eligible,
+    CASE WHEN email_address IS NOT NULL THEN 'YES' ELSE 'NO' END AS email_campaign_eligible,
+    CASE WHEN home_address IS NOT NULL THEN 'YES' ELSE 'NO' END AS direct_mail_eligible,
+    
+    -- Campaign priority based on contact quality
+    CASE 
+        WHEN primary_phone IS NOT NULL AND email_address IS NOT NULL THEN 'Multi-Channel Campaign'
+        WHEN email_address IS NOT NULL THEN 'Email Campaign Only'
+        WHEN primary_phone IS NOT NULL THEN 'SMS Campaign Only'
+        WHEN home_address IS NOT NULL THEN 'Direct Mail Campaign'
+        ELSE 'No Campaign Possible'
+    END AS recommended_campaign_type,
+    
+    -- Contact reliability score
+    (COALESCE(LENGTH(primary_phone), 0) / 10.0 +
+     CASE WHEN email_address LIKE '%@%.%' THEN 2.0 ELSE 0.0 END +
+     COALESCE(LENGTH(home_address), 0) / 20.0
+    ) AS contact_quality_score,
+    
+    -- Preferred contact time (based on available info)
+    CASE 
+        WHEN primary_phone IS NOT NULL THEN 'Business Hours (Phone)'
+        WHEN email_address IS NOT NULL THEN 'Anytime (Email)'
+        ELSE 'Standard Business Hours'
+    END AS optimal_contact_time
+    
+FROM customer_contacts
+WHERE customer_name IS NOT NULL
+ORDER BY contact_quality_score DESC;
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>3. <span class="tamil-text">Data Quality Report</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Database data quality assess panni improvement areas identify pannum</span><br>
+            <div class="sql-code">-- Comprehensive data quality analysis
+SELECT 
+    'Data Completeness Report' AS report_type,
+    COUNT(*) AS total_customers,
+    
+    -- Phone number completeness
+    COUNT(primary_phone) AS customers_with_primary_phone,
+    ROUND((COUNT(primary_phone) * 100.0) / COUNT(*), 2) AS primary_phone_completeness_pct,
+    
+    -- Email completeness
+    COUNT(email_address) AS customers_with_email,
+    ROUND((COUNT(email_address) * 100.0) / COUNT(*), 2) AS email_completeness_pct,
+    
+    -- Address completeness
+    COUNT(CASE WHEN home_address IS NOT NULL OR office_address IS NOT NULL THEN 1 END) AS customers_with_address,
+    ROUND((COUNT(CASE WHEN home_address IS NOT NULL OR office_address IS NOT NULL THEN 1 END) * 100.0) / COUNT(*), 2) AS address_completeness_pct,
+    
+    -- Emergency contact completeness
+    COUNT(CASE WHEN emergency_contact_name IS NOT NULL AND emergency_contact_phone IS NOT NULL THEN 1 END) AS customers_with_complete_emergency_contact,
+    ROUND((COUNT(CASE WHEN emergency_contact_name IS NOT NULL AND emergency_contact_phone IS NOT NULL THEN 1 END) * 100.0) / COUNT(*), 2) AS emergency_contact_completeness_pct,
+    
+    -- Overall data quality score
+    ROUND(
+        (COUNT(primary_phone) + COUNT(email_address) + 
+         COUNT(CASE WHEN home_address IS NOT NULL OR office_address IS NOT NULL THEN 1 END) +
+         COUNT(CASE WHEN emergency_contact_name IS NOT NULL AND emergency_contact_phone IS NOT NULL THEN 1 END)
+        ) * 100.0 / (COUNT(*) * 4), 2
+    ) AS overall_completeness_score
+
+FROM customer_contacts
+
+UNION ALL
+
+-- Data quality by customer segment
+SELECT 
+    CONCAT('Segment: ', 
+        CASE 
+            WHEN primary_phone IS NOT NULL AND email_address IS NOT NULL THEN 'Complete Contact'
+            WHEN primary_phone IS NOT NULL OR email_address IS NOT NULL THEN 'Partial Contact'
+            ELSE 'Missing Contact'
+        END
+    ) AS report_type,
+    COUNT(*) AS total_customers,
+    COUNT(primary_phone) AS customers_with_primary_phone,
+    ROUND((COUNT(primary_phone) * 100.0) / COUNT(*), 2) AS primary_phone_completeness_pct,
+    COUNT(email_address) AS customers_with_email,
+    ROUND((COUNT(email_address) * 100.0) / COUNT(*), 2) AS email_completeness_pct,
+    COUNT(CASE WHEN home_address IS NOT NULL OR office_address IS NOT NULL THEN 1 END) AS customers_with_address,
+    ROUND((COUNT(CASE WHEN home_address IS NOT NULL OR office_address IS NOT NULL THEN 1 END) * 100.0) / COUNT(*), 2) AS address_completeness_pct,
+    COUNT(CASE WHEN emergency_contact_name IS NOT NULL AND emergency_contact_phone IS NOT NULL THEN 1 END) AS customers_with_complete_emergency_contact,
+    ROUND((COUNT(CASE WHEN emergency_contact_name IS NOT NULL AND emergency_contact_phone IS NOT NULL THEN 1 END) * 100.0) / COUNT(*), 2) AS emergency_contact_completeness_pct,
+    ROUND(
+        (COUNT(primary_phone) + COUNT(email_address) + 
+         COUNT(CASE WHEN home_address IS NOT NULL OR office_address IS NOT NULL THEN 1 END) +
+         COUNT(CASE WHEN emergency_contact_name IS NOT NULL AND emergency_contact_phone IS NOT NULL THEN 1 END)
+        ) * 100.0 / (COUNT(*) * 4), 2
+    ) AS overall_completeness_score
+
+FROM customer_contacts
+GROUP BY 
+    CASE 
+        WHEN primary_phone IS NOT NULL AND email_address IS NOT NULL THEN 'Complete Contact'
+        WHEN primary_phone IS NOT NULL OR email_address IS NOT NULL THEN 'Partial Contact'
+        ELSE 'Missing Contact'
+    END
+
+ORDER BY report_type;
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>4. <span class="tamil-text">Contact Information Consolidation</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">CRM system-ku consolidated contact view create pannum</span><br>
+            <div class="sql-code">-- CRM contact consolidation view
+SELECT 
+    customer_id,
+    customer_name,
+    
+    -- Consolidated phone display
+    CASE 
+        WHEN primary_phone IS NOT NULL AND secondary_phone IS NOT NULL THEN
+            CONCAT(primary_phone, ' (Primary), ', secondary_phone, ' (Secondary)')
+        WHEN primary_phone IS NOT NULL THEN
+            CONCAT(primary_phone, ' (Primary)')
+        WHEN secondary_phone IS NOT NULL THEN
+            CONCAT(secondary_phone, ' (Secondary)')
+        ELSE
+            'No Phone Number Available'
+    END AS consolidated_phone_display,
+    
+    -- Email consolidation with validation
+    CASE 
+        WHEN email_address IS NOT NULL AND alternate_email IS NOT NULL THEN
+            CONCAT(email_address, ' (Primary), ', alternate_email, ' (Alternate)')
+        WHEN email_address IS NOT NULL THEN
+            email_address
+        WHEN alternate_email IS NOT NULL THEN
+            CONCAT(alternate_email, ' (Alternate Only)')
+        ELSE
+            'No Email Available'
+    END AS consolidated_email_display,
+    
+    -- Smart address selection
+    COALESCE(
+        CASE WHEN home_address IS NOT NULL THEN CONCAT('🏠 ', home_address) END,
+        CASE WHEN office_address IS NOT NULL THEN CONCAT('🏢 ', office_address) END,
+        'No Address Available'
+    ) AS primary_address_display,
+    
+    -- Communication preferences based on available channels
+    CONCAT_WS(', ',
+        CASE WHEN primary_phone IS NOT NULL THEN 'Phone' END,
+        CASE WHEN email_address IS NOT NULL THEN 'Email' END,
+        CASE WHEN home_address IS NOT NULL OR office_address IS NOT NULL THEN 'Mail' END
+    ) AS available_communication_channels,
+    
+    -- Last resort contact method
+    COALESCE(
+        primary_phone,
+        email_address,
+        emergency_contact_phone,
+        secondary_phone,
+        'No Direct Contact Available'
+    ) AS emergency_contact_method,
+    
+    -- Contact completeness rating
+    CONCAT(
+        (CASE WHEN primary_phone IS NOT NULL THEN 1 ELSE 0 END +
+         CASE WHEN email_address IS NOT NULL THEN 1 ELSE 0 END +
+         CASE WHEN home_address IS NOT NULL OR office_address IS NOT NULL THEN 1 ELSE 0 END),
+        '/3 - ',
+        CASE 
+            WHEN (CASE WHEN primary_phone IS NOT NULL THEN 1 ELSE 0 END +
+                  CASE WHEN email_address IS NOT NULL THEN 1 ELSE 0 END +
+                  CASE WHEN home_address IS NOT NULL OR office_address IS NOT NULL THEN 1 ELSE 0 END) = 3 THEN 'Complete'
+            WHEN (CASE WHEN primary_phone IS NOT NULL THEN 1 ELSE 0 END +
+                  CASE WHEN email_address IS NOT NULL THEN 1 ELSE 0 END +
+                  CASE WHEN home_address IS NOT NULL OR office_address IS NOT NULL THEN 1 ELSE 0 END) >= 1 THEN 'Partial'
+            ELSE 'Incomplete'
+        END
+    ) AS contact_completeness_rating
+    
+FROM customer_contacts
+ORDER BY 
+    (CASE WHEN primary_phone IS NOT NULL THEN 1 ELSE 0 END +
+     CASE WHEN email_address IS NOT NULL THEN 1 ELSE 0 END +
+     CASE WHEN home_address IS NOT NULL OR office_address IS NOT NULL THEN 1 ELSE 0 END) DESC,
+    customer_name;
+            </div>
+        </div>
+
+        <h2>⚠️ Common Mistakes & Best Practices</h2>
+
+        <div class="warning-box">
+            <h4><span class="tamil-text">Common NULL Handling Mistakes:</span></h4>
+            ❌ <strong><span class="tamil-text">Using = or != with NULL:</span></strong> <span class="tamil-text">WHERE column = NULL work aagadhu, IS NULL use pannunga</span><br>
+            ❌ <strong><span class="tamil-text">Forgetting NULL in calculations:</span></strong> <span class="tamil-text">NULL + 5 = NULL, calculations-la NULL values handle pannunga</span><br>
+            ❌ <strong><span class="tamil-text">String concatenation with NULL:</span></strong> <span class="tamil-text">CONCAT with NULL entire result NULL aagum</span><br>
+            ❌ <strong><span class="tamil-text">NOT IN with NULL:</span></strong> <span class="tamil-text">Subquery results-la NULL irundha NOT IN unexpected results kudukum</span><br>
+            ❌ <strong><span class="tamil-text">Assuming COUNT() counts NULLs:</span></strong> <span class="tamil-text">COUNT(column) NULL values ignore pannum</span>
+        </div>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">NULL Handling Best Practices:</span></h4>
+            ✅ <strong><span class="tamil-text">Always use IS NULL/IS NOT NULL:</span></strong> <span class="tamil-text">Never use = or != for NULL comparisons</span><br>
+            ✅ <strong><span class="tamil-text">Provide meaningful defaults:</span></strong> <span class="tamil-text">COALESCE or IFNULL use panni user-friendly defaults kudunga</span><br>
+            ✅ <strong><span class="tamil-text">Handle NULLs in joins:</span></strong> <span class="tamil-text">LEFT JOIN results-la NULL values expect pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Document NULL behavior:</span></strong> <span class="tamil-text">Application logic-la NULL handling strategy document pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Test edge cases:</span></strong> <span class="tamil-text">NULL values-oda application behavior test pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Use constraints wisely:</span></strong> <span class="tamil-text">Critical fields-ku NOT NULL constraint add pannunga</span>
+        </div>
+
+        <h2>📊 Performance Considerations</h2>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">NULL Performance Optimization:</span></h4>
+            ⚡ <strong><span class="tamil-text">Index behavior:</span></strong> <span class="tamil-text">NULL values normally index-la include aagadhu, partial indexes consider pannunga</span><br>
+            ⚡ <strong><span class="tamil-text">IS NOT NULL filters:</span></strong> <span class="tamil-text">IS NOT NULL conditions index use panna help pannum</span><br>
+            ⚡ <strong><span class="tamil-text">COALESCE vs CASE:</span></strong> <span class="tamil-text">Simple NULL replacement-ku COALESCE faster</span><br>
+            ⚡ <strong><span class="tamil-text">Function-based indexes:</span></strong> <span class="tamil-text">Frequently used COALESCE expressions-ku function-based indexes consider pannunga</span><br>
+            ⚡ <strong><span class="tamil-text">NULL statistics:</span></strong> <span class="tamil-text">Database optimizer-ku NULL distribution statistics accurate-a irukanum</span>
+        </div>
+
+        <h2>🔄 Function Comparison</h2>
+
+        <table class="comparison-table">
+            <tr>
+                <th>Function</th>
+                <th>Purpose</th>
+                <th>Parameters</th>
+                <th>Database Support</th>
+                <th><span class="tamil-text">Best Use Case</span></th>
+            </tr>
+            <tr>
+                <td><strong>IS NULL</strong></td>
+                <td><span class="tamil-text">Check if value is NULL</span></td>
+                <td>1 (column/expression)</td>
+                <td><span class="tamil-text">All databases</span></td>
+                <td><span class="tamil-text">Filtering NULL records</span></td>
+            </tr>
+            <tr>
+                <td><strong>COALESCE</strong></td>
+                <td><span class="tamil-text">First non-NULL value</span></td>
+                <td><span class="tamil-text">Multiple (unlimited)</span></td>
+                <td><span class="tamil-text">All databases</span></td>
+                <td><span class="tamil-text">Multiple fallback options</span></td>
+            </tr>
+            <tr>
+                <td><strong>IFNULL</strong></td>
+                <td><span class="tamil-text">Replace NULL with value</span></td>
+                <td>2 (value, replacement)</td>
+                <td>MySQL</td>
+                <td><span class="tamil-text">Simple NULL replacement</span></td>
+            </tr>
+            <tr>
+                <td><strong>NULLIF</strong></td>
+                <td><span class="tamil-text">Return NULL if values equal</span></td>
+                <td>2 (value1, value2)</td>
+                <td><span class="tamil-text">Most databases</span></td>
+                <td><span class="tamil-text">Convert specific values to NULL</span></td>
+            </tr>
+        </table>
+
+        <h2>📚 Quick Reference</h2>
+        <ul>
+            <li><strong>NULL Check:</strong> <span class="tamil-text">WHERE column IS NULL / IS NOT NULL</span></li>
+            <li><strong>Replace NULL:</strong> <span class="tamil-text">COALESCE(col, 'default') or IFNULL(col, 'default')</span></li>
+            <li><strong>Create NULL:</strong> <span class="tamil-text">NULLIF(col, 'empty') converts 'empty' to NULL</span></li>
+            <li><strong>Count non-NULL:</strong> <span class="tamil-text">COUNT(column) ignores NULL values</span></li>
+            <li><strong>Aggregation:</strong> <span class="tamil-text">SUM, AVG, MIN, MAX ignore NULL values</span></li>
+            <li><strong>String concat:</strong> <span class="tamil-text">Use COALESCE before CONCAT to handle NULL</span></li>
+            <li><strong>Calculations:</strong> <span class="tamil-text">Any math with NULL results in NULL</span></li>
+            <li><strong>JOIN behavior:</strong> <span class="tamil-text">NULL values don't match in JOIN conditions</span></li>
+        </ul>
+
+        <h2>🎯 Summary</h2>
+        <div class="success-box">
+            <h4><span class="tamil-text">Key Takeaways:</span></h4>
+            🎯 <strong><span class="tamil-text">NULL values</span></strong> represent missing or unknown data, not empty values<br>
+            🎯 <strong><span class="tamil-text">IS NULL/IS NOT NULL</span></strong> only way to properly check for NULL values<br>
+            🎯 <strong><span class="tamil-text">COALESCE</span></strong> flexible function for multiple fallback values<br>
+            🎯 <strong><span class="tamil-text">IFNULL</span></strong> MySQL-specific, efficient for simple replacements<br>
+            🎯 <strong><span class="tamil-text">NULLIF</span></strong> useful for data cleansing and preventing division by zero<br>
+            🎯 <strong><span class="tamil-text">Aggregation functions</span></strong> automatically ignore NULL values<br>
+            🎯 <strong><span class="tamil-text">Proper NULL handling</span></strong> prevents unexpected application behavior<br>
+            🎯 <strong><span class="tamil-text">Performance impact</span></strong> consider panni optimization pannanum
+        </div>
+    </div>
+
+    <div class="author-footer">
+        <div class="footer-title">📘 Master NULL Handling with Gowtham SB</div>
+        <div class="social-links">
+            <span>🎥 Advanced NULL Techniques: <strong>YouTube/dataengineeringvideos</strong></span><br>
+            <span>📱 Daily SQL Tips: <strong>Instagram/@dataengineeringtamil</strong></span><br>
+            <span>💼 Connect for Career Guidance: <strong>LinkedIn/sbgowtham</strong></span>
+        </div>
+    </div>
+</body>
+</html>

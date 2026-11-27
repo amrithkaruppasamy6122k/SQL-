@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 28: Commit and Rollback - SQL Book</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .author-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .social-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .content-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .flowchart {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .code-explanation {
+            background: #e6fffa;
+            padding: 10px;
+            border-left: 4px solid #38b2ac;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f56565;
+            margin: 15px 0;
+        }
+        .diagram {
+            text-align: center;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .function-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .function-table th, .function-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .function-table th {
+            background-color: #667eea;
+            color: white;
+        }
+        .types-box {
+            background: #f0fff4;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #48bb78;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background: #fffaf0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ed8936;
+            margin: 15px 0;
+        }
+        .tip-box {
+            background: #f5f0ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #9f7aea;
+            margin: 15px 0;
+        }
+        .transaction-box {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3182ce;
+            margin: 15px 0;
+        }
+        .acid-box {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #e53e3e;
+            margin: 15px 0;
+        }
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 SQL Complete Guide</h1>
+        <h2>Chapter 28: Commit and Rollback</h2>
+        <p><em>Transaction Management Expert Aagidunga! Data Integrity Ah Guarantee Pannalam!</em></p>
+    </div>
+
+    <div class="author-info">
+        <h3 style="text-align: center; margin-bottom: 15px;">👨‍💻 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#">📺 YouTube: dataengineeringvideos</a>
+            <a href="#">💼 LinkedIn: sbgowtham</a>
+            <a href="#">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📖 Definition (Transactions Enna da Machan?)</h2>
+        <p><strong>Transaction</strong> na database la execute agura related operations oda collection thaan, adhu ellam successful aana commit pannum, yaarachu error vanthu failure aana ellam operations ah rollback panni original state ku return pannum. Idhu database integrity maintain panradhu ku romba mukkiyam!</p>
+        
+        <p>Transaction Management oda powerful capabilities:</p>
+        <ul>
+            <li><strong>Data Consistency:</strong> All-or-nothing approach - ellam success yaa ellam failure</li>
+            <li><strong>Error Recovery:</strong> Error aana original state ku automatic ah return aagidum</li>
+            <li><strong>Concurrent Access:</strong> Multiple users access pannumpothu data corruption prevent pannum</li>
+            <li><strong>Business Logic:</strong> Complex business operations ah safely execute panalam</li>
+            <li><strong>Audit Trail:</strong> Every transaction details track panna mudiyum</li>
+            <li><strong>Performance:</strong> Batch operations efficient ah handle panalam</li>
+        </ul>
+        
+        <div class="transaction-box">
+            <h4>🔄 Transaction Lifecycle:</h4>
+            <ul>
+                <li><strong>BEGIN/START TRANSACTION:</strong> Transaction start panrom</li>
+                <li><strong>EXECUTE:</strong> Database operations perform panrom</li>
+                <li><strong>COMMIT:</strong> All changes permanently save panrom</li>
+                <li><strong>ROLLBACK:</strong> All changes undo panni original state restore panrom</li>
+            </ul>
+        </div>
+
+        <div class="acid-box">
+            <h4>💎 ACID Properties (Transaction oda Foundation):</h4>
+            <ul>
+                <li><strong>Atomicity:</strong> Transaction complete ah success aaganum yaa complete ah fail aaganum</li>
+                <li><strong>Consistency:</strong> Database always valid state la irukanum</li>
+                <li><strong>Isolation:</strong> Concurrent transactions interfere pannakoodadhu</li>
+                <li><strong>Durability:</strong> Committed data permanent ah store aaganum</li>
+            </ul>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Transaction la Careful Ah Irukkanum:</h4>
+            <ul>
+                <li><strong>Deadlock Issues:</strong> Multiple transactions wait pannina system hang aagum</li>
+                <li><strong>Long Transactions:</strong> Too long transactions performance affect pannum</li>
+                <li><strong>Nested Transactions:</strong> Complex nested structures avoid pannunga</li>
+                <li><strong>Auto-commit:</strong> Default auto-commit mode enable/disable properly handle pananum</li>
+                <li><strong>Connection Management:</strong> Transaction connection close aana automatic rollback aagum</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🏛️ Standard (Transaction Control Statements)</h2>
+        <p>MySQL la different transaction control commands irukku, each one specific purpose ku optimized:</p>
+        
+        <table class="function-table">
+            <thead>
+                <tr>
+                    <th>Command</th>
+                    <th>Tamil la Explanation</th>
+                    <th>Usage</th>
+                    <th>Impact</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>START TRANSACTION</td>
+                    <td>Transaction ah start panradhu ku</td>
+                    <td>BEGIN; or START TRANSACTION;</td>
+                    <td>Auto-commit disable aagum</td>
+                </tr>
+                <tr>
+                    <td>COMMIT</td>
+                    <td>Changes ah permanently save panradhu ku</td>
+                    <td>COMMIT;</td>
+                    <td>All pending changes finalized</td>
+                </tr>
+                <tr>
+                    <td>ROLLBACK</td>
+                    <td>Changes ah undo panni original state restore panradhu ku</td>
+                    <td>ROLLBACK;</td>
+                    <td>All changes since BEGIN discarded</td>
+                </tr>
+                <tr>
+                    <td>SAVEPOINT</td>
+                    <td>Transaction kulla checkpoint create panradhu ku</td>
+                    <td>SAVEPOINT name;</td>
+                    <td>Partial rollback possible</td>
+                </tr>
+                <tr>
+                    <td>ROLLBACK TO</td>
+                    <td>Specific savepoint ku rollback panradhu ku</td>
+                    <td>ROLLBACK TO name;</td>
+                    <td>Partial transaction undo</td>
+                </tr>
+                <tr>
+                    <td>SET AUTOCOMMIT</td>
+                    <td>Auto-commit mode control panradhu ku</td>
+                    <td>SET AUTOCOMMIT = 0/1;</td>
+                    <td>Transaction behavior change</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="types-box">
+            <h4>📍 Transaction Types:</h4>
+            <ul>
+                <li><strong>Implicit Transactions:</strong> Single statement transactions (auto-commit enabled)</li>
+                <li><strong>Explicit Transactions:</strong> Manual START/COMMIT/ROLLBACK controlled</li>
+                <li><strong>Read-only Transactions:</strong> Only SELECT operations allowed</li>
+                <li><strong>Read-write Transactions:</strong> All DML operations allowed</li>
+                <li><strong>Distributed Transactions:</strong> Multiple databases across transactions</li>
+            </ul>
+        </div>
+
+        <div class="tip-box">
+            <h4>💡 Transaction Best Practices:</h4>
+            <ul>
+                <li><strong>Keep it Short:</strong> Long transactions avoid pannunga, performance issues varum</li>
+                <li><strong>Error Handling:</strong> Proper try-catch blocks use panni rollback implement pannunga</li>
+                <li><strong>Savepoints:</strong> Complex transactions la intermediate savepoints use pannunga</li>
+                <li><strong>Lock Management:</strong> Unnecessary table locks avoid pannunga</li>
+                <li><strong>Connection Pool:</strong> Database connections properly manage pannunga</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📊 Flow Chart</h2>
+        <div class="flowchart">
+            <div class="diagram">
+                <h3>Transaction Management Flow</h3>
+                <pre style="font-family: monospace; text-align: left; background: white; padding: 15px; border-radius: 5px;">
+Business Operation Requirements Identify Panrom
+  ↓
+┌─────────────────────────────────────────────┐
+│  Transaction Requirement Assessment          │
+│  ┌─── Single Operation ──┐  ┌─── Multiple ──┐│
+│  │   (Auto-commit OK)    │  │   Operations   ││
+│  │ → Direct Execute      │  │ → Transaction  ││
+│  └───────────────────────┘  └───────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+START TRANSACTION / BEGIN
+  ↓
+┌─────────────────────────────────────────────┐
+│  Operations Execute Panrom                   │
+│  ┌─── Success Path ───┐  ┌─── Error Path ──┐│
+│  │   All Operations   │  │   Exception     ││
+│  │   Successful       │  │   Occurred      ││
+│  └────────────────────┘  └─────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓                           ↓
+┌─── Success ───────────┐   ┌─── Error Handling ────┐
+│  Validation Check     │   │  Error Analysis       │
+│  Business Rules       │   │  Determine Action     │
+│  Data Consistency     │   │                       │
+└───────────────────────┘   └───────────────────────┘
+  ↓                           ↓
+COMMIT                      ROLLBACK
+  ↓                           ↓
+┌─── Permanent Save ────┐   ┌─── Restore Original ──┐
+│  Changes Applied      │   │  All Changes Undone   │
+│  Transaction Success  │   │  Transaction Failed   │
+└───────────────────────┘   └───────────────────────┘
+  ↓                           ↓
+Transaction Complete        Error Handling Complete
+  ↓
+Connection Release / Next Operation
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🎯 Examples with Detailed Tamil Explanation</h2>
+        
+        <h3>1. Basic Transaction Operations - Simple commit/rollback example</h3>
+        <div class="code-block">
+-- Bank account money transfer transaction
+START TRANSACTION;
+
+-- Sender account la irundhu amount debit panrom
+UPDATE 
+    accounts 
+SET 
+    balance = balance - 5000,
+    last_updated = NOW()
+WHERE 
+    account_number = 'ACC001'
+    AND 
+    balance >= 5000;
+
+-- Check panrom - sufficient balance iruka nu
+SELECT 
+    ROW_COUNT() AS affected_rows;
+
+-- Receiver account la amount credit panrom
+UPDATE 
+    accounts 
+SET 
+    balance = balance + 5000,
+    last_updated = NOW()
+WHERE 
+    account_number = 'ACC002';
+
+-- Transaction record insert panrom
+INSERT INTO transaction_history (
+    from_account,
+    to_account,
+    amount,
+    transaction_type,
+    transaction_date,
+    description
+) VALUES (
+    'ACC001',
+    'ACC002', 
+    5000,
+    'TRANSFER',
+    NOW(),
+    'Money transfer between accounts'
+);
+
+-- All operations successful aana commit panrom
+COMMIT;
+
+-- Error aana rollback panrom (manual check)
+-- ROLLBACK;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>START TRANSACTION;</code> - Transaction start panrom, auto-commit disable aagum<br>
+            • <code>UPDATE accounts SET balance = balance - 5000</code> - Sender account balance la irundhu amount deduct panrom<br>
+            • <code>WHERE account_number = 'ACC001' AND balance >= 5000</code> - Account number check panrom aur sufficient balance iruka nu verify panrom<br>
+            • <code>SELECT ROW_COUNT() AS affected_rows</code> - Previous update evlo rows affect pannuchi nu check panrom<br>
+            • <code>UPDATE accounts SET balance = balance + 5000</code> - Receiver account la amount add panrom<br>
+            • <code>WHERE account_number = 'ACC002'</code> - Target account specify panrom<br>
+            • <code>INSERT INTO transaction_history</code> - Transaction record audit trail ku store panrom<br>
+            • <code>COMMIT;</code> - Ellam operations successful aana permanent ah save panrom<br>
+            • <strong>Business Logic:</strong> Money transfer operation atomically execute aagum - all or nothing<br>
+            • <strong>Data Safety:</strong> Any error aana automatic rollback, no partial transfers possible
+        </div>
+
+        <h3>2. Error Handling with Rollback - Exception handling implementation</h3>
+        <div class="code-block">
+-- Order processing with inventory management
+DELIMITER $$
+CREATE PROCEDURE ProcessOrder(
+    IN p_customer_id INT,
+    IN p_product_id INT, 
+    IN p_quantity INT,
+    OUT p_result VARCHAR(100)
+)
+BEGIN
+    DECLARE v_available_stock INT DEFAULT 0;
+    DECLARE v_product_price DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_order_id INT DEFAULT 0;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SET p_result = 'Error: Transaction failed and rolled back';
+    END;
+
+    START TRANSACTION;
+    
+    -- Stock check panrom
+    SELECT 
+        available_quantity,
+        unit_price 
+    INTO 
+        v_available_stock,
+        v_product_price
+    FROM 
+        products 
+    WHERE 
+        product_id = p_product_id
+        AND 
+        status = 'ACTIVE';
+    
+    -- Sufficient stock iruka nu verify panrom
+    IF v_available_stock < p_quantity THEN
+        ROLLBACK;
+        SET p_result = CONCAT('Error: Insufficient stock. Available: ', v_available_stock);
+    ELSE
+        -- Order create panrom
+        INSERT INTO orders (
+            customer_id,
+            order_date,
+            status,
+            total_amount
+        ) VALUES (
+            p_customer_id,
+            NOW(),
+            'PROCESSING',
+            p_quantity * v_product_price
+        );
+        
+        SET v_order_id = LAST_INSERT_ID();
+        
+        -- Order items add panrom
+        INSERT INTO order_items (
+            order_id,
+            product_id,
+            quantity,
+            unit_price,
+            total_price
+        ) VALUES (
+            v_order_id,
+            p_product_id,
+            p_quantity,
+            v_product_price,
+            p_quantity * v_product_price
+        );
+        
+        -- Inventory update panrom
+        UPDATE 
+            products 
+        SET 
+            available_quantity = available_quantity - p_quantity,
+            last_updated = NOW()
+        WHERE 
+            product_id = p_product_id;
+        
+        -- All successful aana commit panrom
+        COMMIT;
+        SET p_result = CONCAT('Success: Order ', v_order_id, ' created successfully');
+    END IF;
+END$$
+DELIMITER ;
+
+-- Procedure call pannalam
+CALL ProcessOrder(1001, 501, 3, @result);
+SELECT @result AS order_result;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>DECLARE EXIT HANDLER FOR SQLEXCEPTION</code> - Error aana automatic ah rollback aagura handler create panrom<br>
+            • <code>BEGIN ROLLBACK; SET p_result = 'Error: Transaction failed'</code> - Error aana rollback panni error message set panrom<br>
+            • <code>START TRANSACTION;</code> - Transaction start panrom for complete order processing<br>
+            • <code>SELECT available_quantity, unit_price INTO v_available_stock, v_product_price</code> - Product stock aur price check panrom<br>
+            • <code>IF v_available_stock < p_quantity THEN ROLLBACK</code> - Stock illa na transaction rollback panrom<br>
+            • <code>INSERT INTO orders</code> - New order record create panrom<br>
+            • <code>SET v_order_id = LAST_INSERT_ID()</code> - Generated order ID get panrom<br>
+            • <code>INSERT INTO order_items</code> - Order line items add panrom<br>
+            • <code>UPDATE products SET available_quantity = available_quantity - p_quantity</code> - Stock reduce panrom<br>
+            • <code>COMMIT;</code> - All operations successful aana commit panrom<br>
+            • <strong>Error Safety:</strong> Any step la error aana entire transaction rollback aagum<br>
+            • <strong>Business Integrity:</strong> Order, inventory, payment ellam consistent ah update aagum
+        </div>
+
+        <h3>3. Savepoints - Partial rollback implementation</h3>
+        <div class="code-block">
+-- Complex data migration with checkpoints
+START TRANSACTION;
+
+-- Customer data migration start panrom
+INSERT INTO new_customers 
+SELECT 
+    customer_id,
+    customer_name,
+    email_address,
+    phone_number,
+    CURDATE() AS migration_date
+FROM 
+    old_customers
+WHERE 
+    status = 'ACTIVE';
+
+-- First checkpoint create panrom
+SAVEPOINT customer_migration_done;
+
+-- Address data migration panrom
+INSERT INTO new_addresses 
+SELECT 
+    customer_id,
+    address_line1,
+    address_line2,
+    city,
+    state,
+    postal_code
+FROM 
+    old_addresses
+WHERE 
+    customer_id IN (SELECT customer_id FROM new_customers);
+
+-- Second checkpoint create panrom  
+SAVEPOINT address_migration_done;
+
+-- Order history migration attempt panrom
+INSERT INTO new_orders
+SELECT 
+    order_id,
+    customer_id,
+    order_date,
+    total_amount,
+    'MIGRATED' AS status
+FROM 
+    old_orders
+WHERE 
+    customer_id IN (SELECT customer_id FROM new_customers)
+    AND 
+    order_date >= DATE_SUB(CURDATE(), INTERVAL 2 YEAR);
+
+-- Check panrom - orders properly migrated ah
+SELECT 
+    COUNT(*) AS migrated_orders_count
+FROM 
+    new_orders;
+
+-- If orders migration failed, rollback to address checkpoint
+-- ROLLBACK TO address_migration_done;
+
+-- If address migration failed, rollback to customer checkpoint  
+-- ROLLBACK TO customer_migration_done;
+
+-- All successful aana full commit panrom
+COMMIT;
+
+-- Cleanup old data (optional)
+-- DELETE FROM old_customers WHERE customer_id IN (SELECT customer_id FROM new_customers);
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>START TRANSACTION;</code> - Complex migration process ku transaction start panrom<br>
+            • <code>INSERT INTO new_customers SELECT ... FROM old_customers</code> - Customer master data migrate panrom<br>
+            • <code>SAVEPOINT customer_migration_done;</code> - Customer migration complete aana checkpoint create panrom<br>
+            • <code>INSERT INTO new_addresses SELECT ... FROM old_addresses</code> - Customer addresses migrate panrom<br>
+            • <code>SAVEPOINT address_migration_done;</code> - Address migration checkpoint create panrom<br>
+            • <code>INSERT INTO new_orders SELECT ... FROM old_orders</code> - Order history migrate panrom<br>
+            • <code>WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 2 YEAR)</code> - Last 2 years orders mattum migrate panrom<br>
+            • <code>ROLLBACK TO address_migration_done;</code> - Orders fail aana address checkpoint ku rollback panrom<br>
+            • <code>ROLLBACK TO customer_migration_done;</code> - Address fail aana customer checkpoint ku rollback panrom<br>
+            • <code>COMMIT;</code> - All migrations successful aana commit panrom<br>
+            • <strong>Flexible Recovery:</strong> Different levels la rollback panna mudiyum<br>
+            • <strong>Migration Safety:</strong> Partial success maintain panni incremental progress possible
+        </div>
+
+        <h3>4. Concurrent Transaction Handling - Lock management example</h3>
+        <div class="code-block">
+-- Session 1: Inventory reservation process
+START TRANSACTION;
+
+-- Product ah lock panni read panrom (prevents other sessions from modifying)
+SELECT 
+    product_id,
+    product_name,
+    available_quantity,
+    reserved_quantity
+FROM 
+    products 
+WHERE 
+    product_id = 1001
+FOR UPDATE;
+
+-- Check panrom - available stock iruka nu
+SET @available = (
+    SELECT available_quantity - reserved_quantity 
+    FROM products 
+    WHERE product_id = 1001
+);
+
+-- Sufficient stock iruntha reservation create panrom
+INSERT INTO inventory_reservations (
+    product_id,
+    customer_id,
+    reserved_quantity,
+    reservation_date,
+    expiry_date,
+    status
+) VALUES (
+    1001,
+    5001,
+    5,
+    NOW(),
+    DATE_ADD(NOW(), INTERVAL 15 MINUTE),
+    'ACTIVE'
+);
+
+-- Reserved quantity update panrom
+UPDATE 
+    products 
+SET 
+    reserved_quantity = reserved_quantity + 5,
+    last_updated = NOW()
+WHERE 
+    product_id = 1001;
+
+-- Commit panrom (lock release aagum)
+COMMIT;
+
+-- Session 2: Same time la different user reservation try panranga
+START TRANSACTION;
+
+-- Same product ah access try panranga (wait pannanum Session 1 complete aagum varaikum)
+SELECT 
+    product_id,
+    available_quantity,
+    reserved_quantity,
+    (available_quantity - reserved_quantity) AS actual_available
+FROM 
+    products 
+WHERE 
+    product_id = 1001
+FOR UPDATE;
+
+-- Session 1 complete aana apram than idhu execute aagum
+INSERT INTO inventory_reservations (
+    product_id,
+    customer_id,
+    reserved_quantity,
+    reservation_date,
+    expiry_date,
+    status
+) VALUES (
+    1001,
+    5002,
+    3,
+    NOW(),
+    DATE_ADD(NOW(), INTERVAL 15 MINUTE),
+    'ACTIVE'
+);
+
+UPDATE 
+    products 
+SET 
+    reserved_quantity = reserved_quantity + 3
+WHERE 
+    product_id = 1001;
+
+COMMIT;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT ... FROM products WHERE product_id = 1001 FOR UPDATE</code> - Product record ah exclusive lock panni read panrom<br>
+            • <code>FOR UPDATE</code> - Other sessions idha modify panna mudiyathu until transaction complete<br>
+            • <code>SET @available = (SELECT available_quantity - reserved_quantity)</code> - Actual available stock calculate panrom<br>
+            • <code>INSERT INTO inventory_reservations</code> - Reservation record create panrom<br>
+            • <code>UPDATE products SET reserved_quantity = reserved_quantity + 5</code> - Reserved stock count increase panrom<br>
+            • <code>COMMIT;</code> - Transaction complete panni lock release panrom<br>
+            • <strong>Session 2 la same product access:</strong> Session 1 lock irukum varaikum wait pannanum<br>
+            • <code>SELECT ... FOR UPDATE</code> - Lock acquire panna wait pannum<br>
+            • <strong>Concurrency Control:</strong> Multiple users same product reserve panna try pannalum data consistency maintain aagum<br>
+            • <strong>Deadlock Prevention:</strong> Proper lock ordering use panni deadlocks avoid panrom
+        </div>
+
+        <h3>5. Batch Processing with Transaction Control - Large data operations</h3>
+        <div class="code-block">
+-- Monthly salary processing with batch transactions
+DELIMITER $$
+CREATE PROCEDURE ProcessMonthlySalary(IN p_month INT, IN p_year INT)
+BEGIN
+    DECLARE v_employee_id INT DEFAULT 0;
+    DECLARE v_basic_salary DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_processed_count INT DEFAULT 0;
+    DECLARE v_batch_size INT DEFAULT 100;
+    DECLARE done INT DEFAULT FALSE;
+    
+    -- Employee cursor declare panrom
+    DECLARE employee_cursor CURSOR FOR
+        SELECT 
+            employee_id, 
+            basic_salary
+        FROM 
+            employees 
+        WHERE 
+            status = 'ACTIVE'
+            AND 
+            employee_id NOT IN (
+                SELECT employee_id 
+                FROM salary_payments 
+                WHERE MONTH(payment_date) = p_month 
+                AND YEAR(payment_date) = p_year
+            );
+    
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    OPEN employee_cursor;
+    
+    -- Batch processing start panrom
+    batch_loop: LOOP
+        START TRANSACTION;
+        
+        SET v_processed_count = 0;
+        
+        -- Batch size varaikum process panrom
+        employee_loop: LOOP
+            FETCH employee_cursor INTO v_employee_id, v_basic_salary;
+            
+            IF done OR v_processed_count >= v_batch_size THEN
+                LEAVE employee_loop;
+            END IF;
+            
+            -- Attendance check panni working days calculate panrom
+            SET @working_days = (
+                SELECT COUNT(*) 
+                FROM attendance 
+                WHERE employee_id = v_employee_id 
+                AND MONTH(attendance_date) = p_month 
+                AND YEAR(attendance_date) = p_year
+                AND status = 'PRESENT'
+            );
+            
+            -- Pro-rated salary calculate panrom
+            SET @monthly_salary = (v_basic_salary / 30) * @working_days;
+            
+            -- Salary payment record insert panrom
+            INSERT INTO salary_payments (
+                employee_id,
+                payment_date,
+                basic_salary,
+                working_days,
+                gross_salary,
+                net_salary,
+                status
+            ) VALUES (
+                v_employee_id,
+                LAST_DAY(CONCAT(p_year, '-', LPAD(p_month, 2, '0'), '-01')),
+                v_basic_salary,
+                @working_days,
+                @monthly_salary,
+                @monthly_salary * 0.8, -- Tax deduction example
+                'PROCESSED'
+            );
+            
+            -- Employee account la salary credit panrom
+            UPDATE 
+                employee_accounts 
+            SET 
+                balance = balance + (@monthly_salary * 0.8),
+                last_updated = NOW()
+            WHERE 
+                employee_id = v_employee_id;
+            
+            SET v_processed_count = v_processed_count + 1;
+        END LOOP employee_loop;
+        
+        -- Batch commit panrom
+        COMMIT;
+        
+        -- All employees processed aana loop exit panrom
+        IF done THEN
+            LEAVE batch_loop;
+        END IF;
+        
+    END LOOP batch_loop;
+    
+    CLOSE employee_cursor;
+    
+    -- Summary report generate panrom
+    SELECT 
+        COUNT(*) AS total_processed,
+        SUM(gross_salary) AS total_gross,
+        SUM(net_salary) AS total_net,
+        AVG(working_days) AS avg_working_days
+    FROM 
+        salary_payments
+    WHERE 
+        MONTH(payment_date) = p_month 
+        AND 
+        YEAR(payment_date) = p_year;
+        
+END$
+DELIMITER ;
+
+-- Procedure call pannalam
+CALL ProcessMonthlySalary(12, 2024);
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>DECLARE employee_cursor CURSOR FOR SELECT employee_id, basic_salary</code> - Active employees ku cursor create panrom<br>
+            • <code>WHERE employee_id NOT IN (SELECT employee_id FROM salary_payments)</code> - Already processed employees ah exclude panrom<br>
+            • <code>DECLARE EXIT HANDLER FOR SQLEXCEPTION</code> - Error aana automatic rollback handler<br>
+            • <code>START TRANSACTION;</code> - Each batch ku separate transaction start panrom<br>
+            • <code>SET v_processed_count = 0;</code> - Batch counter reset panrom<br>
+            • <code>FETCH employee_cursor INTO v_employee_id, v_basic_salary</code> - Next employee data fetch panrom<br>
+            • <code>IF done OR v_processed_count >= v_batch_size THEN LEAVE</code> - Batch size complete aana loop exit panrom<br>
+            • <code>SET @working_days = (SELECT COUNT(*) FROM attendance)</code> - Employee working days count panrom<br>
+            • <code>SET @monthly_salary = (v_basic_salary / 30) * @working_days</code> - Pro-rated salary calculate panrom<br>
+            • <code>INSERT INTO salary_payments</code> - Salary payment record create panrom<br>
+            • <code>UPDATE employee_accounts SET balance = balance + (@monthly_salary * 0.8)</code> - Employee account la net salary credit panrom<br>
+            • <code>COMMIT;</code> - Batch complete aana commit panrom<br>
+            • <strong>Batch Processing:</strong> 100 employees batches la process panrom, memory efficient<br>
+            • <strong>Error Recovery:</strong> One batch fail aana others affect aagadhu<br>
+            • <strong>Performance:</strong> Large dataset efficient ah handle pannum
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🛠️ Use Cases (Real-world la Epidi Use Pannalam)</h2>
+        
+        <div class="use-case">
+            <h4>1. E-commerce Order Processing - Complete order lifecycle management</h4>
+            <p><strong>Situation:</strong> Customer order place pannumpothu inventory, payment, shipping ellam atomically handle pananum</p>
+            <div class="code-block">
+-- Complete e-commerce order processing transaction
+DELIMITER $
+CREATE PROCEDURE ProcessEcommerceOrder(
+    IN p_customer_id INT,
+    IN p_cart_items JSON,
+    IN p_payment_method VARCHAR(50),
+    IN p_shipping_address_id INT,
+    OUT p_order_id INT,
+    OUT p_result_message VARCHAR(500)
+)
+BEGIN
+    DECLARE v_total_amount DECIMAL(12,2) DEFAULT 0;
+    DECLARE v_item_count INT DEFAULT 0;
+    DECLARE v_product_id INT;
+    DECLARE v_quantity INT;
+    DECLARE v_unit_price DECIMAL(10,2);
+    DECLARE v_available_stock INT;
+    DECLARE v_discount_amount DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_shipping_charge DECIMAL(8,2) DEFAULT 0;
+    DECLARE i INT DEFAULT 0;
+    
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SET p_result_message = 'Error: Order processing failed, all changes rolled back';
+        SET p_order_id = 0;
+    END;
+
+    START TRANSACTION;
+    
+    -- Cart items count panrom
+    SET v_item_count = JSON_LENGTH(p_cart_items);
+    
+    -- Each cart item validate panrom
+    item_validation: WHILE i < v_item_count DO
+        SET v_product_id = JSON_UNQUOTE(JSON_EXTRACT(p_cart_items, CONCAT('$[', i, '].product_id')));
+        SET v_quantity = JSON_UNQUOTE(JSON_EXTRACT(p_cart_items, CONCAT('$[', i, '].quantity')));
+        
+        -- Product availability check panrom
+        SELECT 
+            unit_price,
+            stock_quantity
+        INTO 
+            v_unit_price,
+            v_available_stock
+        FROM 
+            products 
+        WHERE 
+            product_id = v_product_id 
+            AND 
+            status = 'ACTIVE';
+        
+        -- Stock validation
+        IF v_available_stock < v_quantity THEN
+            ROLLBACK;
+            SET p_result_message = CONCAT('Error: Insufficient stock for product ID ', v_product_id);
+            SET p_order_id = 0;
+            LEAVE item_validation;
+        END IF;
+        
+        -- Total amount calculate panrom
+        SET v_total_amount = v_total_amount + (v_unit_price * v_quantity);
+        SET i = i + 1;
+    END WHILE;
+    
+    -- Customer discount check panrom
+    SELECT 
+        COALESCE(discount_percentage, 0) 
+    INTO 
+        v_discount_amount
+    FROM 
+        customer_discounts 
+    WHERE 
+        customer_id = p_customer_id 
+        AND 
+        status = 'ACTIVE'
+        AND 
+        expiry_date > CURDATE()
+    LIMIT 1;
+    
+    -- Shipping charges calculate panrom
+    SET v_shipping_charge = CASE 
+        WHEN v_total_amount > 500 THEN 0 
+        ELSE 50 
+    END;
+    
+    -- Final amount with discount and shipping
+    SET v_total_amount = (v_total_amount * (1 - v_discount_amount/100)) + v_shipping_charge;
+    
+    -- Order create panrom
+    INSERT INTO orders (
+        customer_id,
+        order_date,
+        total_amount,
+        discount_applied,
+        shipping_charge,
+        payment_method,
+        shipping_address_id,
+        order_status
+    ) VALUES (
+        p_customer_id,
+        NOW(),
+        v_total_amount,
+        v_discount_amount,
+        v_shipping_charge,
+        p_payment_method,
+        p_shipping_address_id,
+        'CONFIRMED'
+    );
+    
+    SET p_order_id = LAST_INSERT_ID();
+    
+    -- Order items insert panrom aur inventory update panrom
+    SET i = 0;
+    item_processing: WHILE i < v_item_count DO
+        SET v_product_id = JSON_UNQUOTE(JSON_EXTRACT(p_cart_items, CONCAT('$[', i, '].product_id')));
+        SET v_quantity = JSON_UNQUOTE(JSON_EXTRACT(p_cart_items, CONCAT('$[', i, '].quantity')));
+        
+        SELECT 
+            unit_price 
+        INTO 
+            v_unit_price
+        FROM 
+            products 
+        WHERE 
+            product_id = v_product_id;
+        
+        -- Order item insert panrom
+        INSERT INTO order_items (
+            order_id,
+            product_id,
+            quantity,
+            unit_price,
+            total_price
+        ) VALUES (
+            p_order_id,
+            v_product_id,
+            v_quantity,
+            v_unit_price,
+            v_unit_price * v_quantity
+        );
+        
+        -- Inventory update panrom
+        UPDATE 
+            products 
+        SET 
+            stock_quantity = stock_quantity - v_quantity,
+            last_updated = NOW()
+        WHERE 
+            product_id = v_product_id;
+        
+        SET i = i + 1;
+    END WHILE;
+    
+    -- Payment record create panrom
+    INSERT INTO payments (
+        order_id,
+        customer_id,
+        amount,
+        payment_method,
+        payment_status,
+        transaction_date
+    ) VALUES (
+        p_order_id,
+        p_customer_id,
+        v_total_amount,
+        p_payment_method,
+        'COMPLETED',
+        NOW()
+    );
+    
+    -- Shipping record create panrom
+    INSERT INTO shipments (
+        order_id,
+        shipping_address_id,
+        estimated_delivery,
+        shipping_status
+    ) VALUES (
+        p_order_id,
+        p_shipping_address_id,
+        DATE_ADD(CURDATE(), INTERVAL 3 DAY),
+        'PROCESSING'
+    );
+    
+    -- Customer cart clear panrom
+    DELETE FROM 
+        cart_items 
+    WHERE 
+        customer_id = p_customer_id;
+    
+    -- All successful aana commit panrom
+    COMMIT;
+    
+    SET p_result_message = CONCAT('Success: Order ', p_order_id, ' processed successfully. Total amount: ₹', v_total_amount);
+
+END$
+DELIMITER ;
+
+-- Order processing example
+SET @cart_data = '[{"product_id": 101, "quantity": 2}, {"product_id": 102, "quantity": 1}]';
+CALL ProcessEcommerceOrder(1001, @cart_data, 'CREDIT_CARD', 2001, @order_id, @result);
+SELECT @order_id AS OrderID, @result AS ProcessingResult;
+            </div>
+            <p><strong>Tremendous Business Impact:</strong></p>
+            <ul>
+                <li><strong>Data Integrity:</strong> Order, inventory, payment, shipping ellam consistent ah update aagum</li>
+                <li><strong>Error Safety:</strong> Any step fail aana complete order rollback, no partial orders</li>
+                <li><strong>Business Logic:</strong> Discount, shipping, stock validation ellam atomic operation</li>
+                <li><strong>Customer Experience:</strong> Order confirmation instant ah, no waiting for manual processing</li>
+            </ul>
+        </div>
+
+        <div class="use-case">
+            <h4>2. Banking Fund Transfer System - Multi-account transaction processing</h4>
+            <p><strong>Situation:</strong> Bank la customers between fund transfer, multiple accounts, different banks handle pananum</p>
+            <div class="code-block">
+-- Comprehensive banking fund transfer system
+DELIMITER $
+CREATE PROCEDURE BankFundTransfer(
+    IN p_from_account VARCHAR(20),
+    IN p_to_account VARCHAR(20),
+    IN p_amount DECIMAL(12,2),
+    IN p_transfer_type VARCHAR(20),
+    IN p_description VARCHAR(200),
+    OUT p_transaction_id VARCHAR(50),
+    OUT p_status VARCHAR(100)
+)
+BEGIN
+    DECLARE v_from_balance DECIMAL(12,2) DEFAULT 0;
+    DECLARE v_from_bank_code VARCHAR(10);
+    DECLARE v_to_bank_code VARCHAR(10);
+    DECLARE v_transfer_fee DECIMAL(8,2) DEFAULT 0;
+    DECLARE v_daily_limit DECIMAL(12,2) DEFAULT 0;
+    DECLARE v_today_transferred DECIMAL(12,2) DEFAULT 0;
+    DECLARE v_min_balance DECIMAL(10,2) DEFAULT 1000;
+    
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SET p_status = 'FAILED: Transaction rolled back due to error';
+        SET p_transaction_id = NULL;
+    END;
+
+    START TRANSACTION;
+    
+    -- From account validation and balance check
+    SELECT 
+        a.current_balance,
+        a.bank_code,
+        c.daily_transfer_limit
+    INTO 
+        v_from_balance,
+        v_from_bank_code,
+        v_daily_limit
+    FROM 
+        accounts a
+    JOIN 
+        customers c ON a.customer_id = c.customer_id
+    WHERE 
+        a.account_number = p_from_account
+        AND 
+        a.status = 'ACTIVE'
+        AND 
+        a.account_type != 'FROZEN'
+    FOR UPDATE;
+    
+    -- To account validation
+    SELECT 
+        bank_code
+    INTO 
+        v_to_bank_code
+    FROM 
+        accounts
+    WHERE 
+        account_number = p_to_account
+        AND 
+        status = 'ACTIVE';
+    
+    -- Transfer fee calculation
+    SET v_transfer_fee = CASE 
+        WHEN v_from_bank_code = v_to_bank_code THEN 0 -- Same bank
+        WHEN p_amount <= 10000 THEN 5 -- Inter-bank small amount
+        ELSE 25 -- Inter-bank large amount
+    END;
+    
+    -- Daily limit check
+    SELECT 
+        COALESCE(SUM(amount + transfer_fee), 0)
+    INTO 
+        v_today_transferred
+    FROM 
+        fund_transfers
+    WHERE 
+        from_account = p_from_account
+        AND 
+        transfer_date = CURDATE()
+        AND 
+        status = 'COMPLETED';
+    
+    -- Validation checks
+    IF v_from_balance IS NULL THEN
+        ROLLBACK;
+        SET p_status = 'FAILED: From account not found or inactive';
+        SET p_transaction_id = NULL;
+    ELSEIF v_to_bank_code IS NULL THEN
+        ROLLBACK;
+        SET p_status = 'FAILED: To account not found or inactive';
+        SET p_transaction_id = NULL;
+    ELSEIF (v_from_balance - p_amount - v_transfer_fee) < v_min_balance THEN
+        ROLLBACK;
+        SET p_status = CONCAT('FAILED: Insufficient balance. Available: ₹', v_from_balance - v_min_balance);
+        SET p_transaction_id = NULL;
+    ELSEIF (v_today_transferred + p_amount + v_transfer_fee) > v_daily_limit THEN
+        ROLLBACK;
+        SET p_status = CONCAT('FAILED: Daily limit exceeded. Remaining: ₹', v_daily_limit - v_today_transferred);
+        SET p_transaction_id = NULL;
+    ELSE
+        -- Generate unique transaction ID
+        SET p_transaction_id = CONCAT(
+            'TXN',
+            DATE_FORMAT(NOW(), '%Y%m%d'),
+            LPAD(CONNECTION_ID(), 6, '0'),
+            LPAD(UNIX_TIMESTAMP(NOW()) % 1000000, 6, '0')
+        );
+        
+        -- Debit from sender account
+        UPDATE 
+            accounts
+        SET 
+            current_balance = current_balance - p_amount - v_transfer_fee,
+            last_transaction_date = NOW()
+        WHERE 
+            account_number = p_from_account;
+        
+        -- Credit to receiver account
+        UPDATE 
+            accounts
+        SET 
+            current_balance = current_balance + p_amount,
+            last_transaction_date = NOW()
+        WHERE 
+            account_number = p_to_account;
+        
+        -- Fund transfer record
+        INSERT INTO fund_transfers (
+            transaction_id,
+            from_account,
+            to_account,
+            amount,
+            transfer_fee,
+            transfer_type,
+            transfer_date,
+            description,
+            status
+        ) VALUES (
+            p_transaction_id,
+            p_from_account,
+            p_to_account,
+            p_amount,
+            v_transfer_fee,
+            p_transfer_type,
+            NOW(),
+            p_description,
+            'COMPLETED'
+        );
+        
+        -- Transaction history for both accounts
+        INSERT INTO account_transactions (
+            account_number,
+            transaction_id,
+            transaction_type,
+            amount,
+            balance_after,
+            transaction_date,
+            description
+        ) VALUES 
+        (
+            p_from_account,
+            p_transaction_id,
+            'DEBIT',
+            -(p_amount + v_transfer_fee),
+            v_from_balance - p_amount - v_transfer_fee,
+            NOW(),
+            CONCAT('Fund transfer to ', p_to_account, ': ', p_description)
+        ),
+        (
+            p_to_account,
+            p_transaction_id,
+            'CREDIT',
+            p_amount,
+            (SELECT current_balance FROM accounts WHERE account_number = p_to_account),
+            NOW(),
+            CONCAT('Fund transfer from ', p_from_account, ': ', p_description)
+        );
+        
+        -- Notification records
+        INSERT INTO notifications (
+            account_number,
+            notification_type,
+            message,
+            created_date,
+            status
+        ) VALUES 
+        (
+            p_from_account,
+            'DEBIT_ALERT',
+            CONCAT('₹', p_amount, ' debited. Txn ID: ', p_transaction_id),
+            NOW(),
+            'PENDING'
+        ),
+        (
+            p_to_account,
+            'CREDIT_ALERT', 
+            CONCAT('₹', p_amount, ' credited. Txn ID: ', p_transaction_id),
+            NOW(),
+            'PENDING'
+        );
+        
+        COMMIT;
+        SET p_status = CONCAT('SUCCESS: ₹', p_amount, ' transferred successfully. Fee: ₹', v_transfer_fee);
+        
+    END IF;
+
+END$
+DELIMITER ;
+
+-- Fund transfer example
+CALL BankFundTransfer('ACC001', 'ACC002', 15000, 'IMPS', 'Salary transfer', @txn_id, @status);
+SELECT @txn_id AS TransactionID, @status AS TransferStatus;
+            </div>
+            <p><strong>Banking Excellence:</strong></p>
+            <ul>
+                <li><strong>Financial Integrity:</strong> Dual entry bookkeeping, no money loss or creation</li>
+                <li><strong>Regulatory Compliance:</strong> Daily limits, minimum balance, audit trails</li>
+                <li><strong>Real-time Processing:</strong> Instant fund transfers with immediate notifications</li>
+                <li><strong>Error Prevention:</strong> Comprehensive validation before any money movement</li>
+            </ul>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Hospital Patient Treatment Management - Medical workflow transactions</h4>
+            <p><strong>Situation:</strong> Hospital la patient treatment, medication, billing, insurance ellam coordinate pannanum</p>
+            <div class="code-block">
+-- Hospital patient treatment processing
+DELIMITER $
+CREATE PROCEDURE ProcessPatientTreatment(
+    IN p_patient_id INT,
+    IN p_doctor_id INT,
+    IN p_treatment_type VARCHAR(50),
+    IN p_medications JSON,
+    IN p_insurance_claim BOOLEAN,
+    OUT p_treatment_id INT,
+    OUT p_total_cost DECIMAL(10,2),
+    OUT p_result VARCHAR(200)
+)
+BEGIN
+    DECLARE v_consultation_fee DECIMAL(8,2) DEFAULT 0;
+    DECLARE v_medication_cost DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_insurance_coverage DECIMAL(5,2) DEFAULT 0;
+    DECLARE v_patient_balance DECIMAL(10,2) DEFAULT 0;
+    DECLARE v_med_count INT DEFAULT 0;
+    DECLARE v_med_id INT;
+    DECLARE v_med_quantity INT;
+    DECLARE v_med_unit_cost DECIMAL(8,2);
+    DECLARE v_available_stock INT;
+    DECLARE i INT DEFAULT 0;
+    
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        SET p_result = 'ERROR: Treatment processing failed, all changes rolled back';
+        SET p_treatment_id = 0;
+        SET p_total_cost = 0;
+    END;
+
+    START TRANSACTION;
+    
+    -- Doctor consultation fee get panrom
+    SELECT 
+        consultation_fee
+    INTO 
+        v_consultation_fee
+    FROM 
+        doctors
+    WHERE 
+        doctor_id = p_doctor_id
+        AND 
+        status = 'ACTIVE';
+    
+    -- Patient insurance coverage check panrom
+    IF p_insurance_claim THEN
+        SELECT 
+            COALESCE(coverage_percentage, 0),
+            available_balance
+        INTO 
+            v_insurance_coverage,
+            v_patient_balance
+        FROM 
+            patient_insurance
+        WHERE 
+            patient_id = p_patient_id
+            AND 
+            policy_status = 'ACTIVE'
+            AND 
+            expiry_date > CURDATE();
+    END IF;
+    
+    -- Medication cost calculation and stock validation
+    SET v_med_count = JSON_LENGTH(p_medications);
+    
+    medication_loop: WHILE i < v_med_count DO
+        SET v_med_id = JSON_UNQUOTE(JSON_EXTRACT(p_medications, CONCAT('$[', i, '].medication_id')));
+        SET v_med_quantity = JSON_UNQUOTE(JSON_EXTRACT(p_medications, CONCAT('$[', i, '].quantity')));
+        
+        -- Medication stock and price check
+        SELECT 
+            unit_cost,
+            available_stock
+        INTO 
+            v_med_unit_cost,
+            v_available_stock
+        FROM 
+            pharmacy_inventory
+        WHERE 
+            medication_id = v_med_id;
+        
+        -- Stock validation
+        IF v_available_stock < v_med_quantity THEN
+            ROLLBACK;
+            SET p_result = CONCAT('ERROR: Insufficient stock for medication ID ', v_med_id);
+            SET p_treatment_id = 0;
+            LEAVE medication_loop;
+        END IF;
+        
+        SET v_medication_cost = v_medication_cost + (v_med_unit_cost * v_med_quantity);
+        SET i = i + 1;
+    END WHILE;
+    
+    -- Total cost calculation
+    SET p_total_cost = v_consultation_fee + v_medication_cost;
+    
+    -- Insurance deduction
+    IF p_insurance_claim AND v_insurance_coverage > 0 THEN
+        SET p_total_cost = p_total_cost * (1 - v_insurance_coverage/100);
+    END IF;
+    
+    -- Treatment record create panrom
+    INSERT INTO patient_treatments (
+        patient_id,
+        doctor_id,
+        treatment_date,
+        treatment_type,
+        consultation_fee,
+        medication_cost,
+        total_cost,
+        insurance_claimed,
+        insurance_coverage,
+        status
+    ) VALUES (
+        p_patient_id,
+        p_doctor_id,
+        NOW(),
+        p_treatment_type,
+        v_consultation_fee,
+        v_medication_cost,
+        p_total_cost,
+        p_insurance_claim,
+        v_insurance_coverage,
+        'COMPLETED'
+    );
+    
+    SET p_treatment_id = LAST_INSERT_ID();
+    
+    -- Medication prescription records
+    SET i = 0;
+    WHILE i < v_med_count DO
+        SET v_med_id = JSON_UNQUOTE(JSON_EXTRACT(p_medications, CONCAT('$[', i, '].medication_id')));
+        SET v_med_quantity = JSON_UNQUOTE(JSON_EXTRACT(p_medications, CONCAT('$[', i, '].quantity')));
+        
+        -- Prescription record
+        INSERT INTO prescriptions (
+            treatment_id,
+            patient_id,
+            medication_id,
+            quantity,
+            dosage_instructions,
+            prescribed_date
+        ) VALUES (
+            p_treatment_id,
+            p_patient_id,
+            v_med_id,
+            v_med_quantity,
+            'As directed by doctor',
+            NOW()
+        );
+        
+        -- Pharmacy inventory update
+        UPDATE 
+            pharmacy_inventory
+        SET 
+            available_stock = available_stock - v_med_quantity,
+            last_updated = NOW()
+        WHERE 
+            medication_id = v_med_id;
+        
+        SET i = i + 1;
+    END WHILE;
+    
+    -- Patient billing record
+    INSERT INTO patient_bills (
+        patient_id,
+        treatment_id,
+        bill_date,
+        consultation_charges,
+        medication_charges,
+        total_amount,
+        insurance_covered,
+        patient_payable,
+        payment_status
+    ) VALUES (
+        p_patient_id,
+        p_treatment_id,
+        NOW(),
+        v_consultation_fee,
+        v_medication_cost,
+        v_consultation_fee + v_medication_cost,
+        (v_consultation_fee + v_medication_cost) - p_total_cost,
+        p_total_cost,
+        'PENDING'
+    );
+    
+    -- Insurance claim record
+    IF p_insurance_claim AND v_insurance_coverage > 0 THEN
+        INSERT INTO insurance_claims (
+            patient_id,
+            treatment_id,
+            claim_date,
+            claim_amount,
+            coverage_percentage,
+            claim_status
+        ) VALUES (
+            p_patient_id,
+            p_treatment_id,
+            NOW(),
+            (v_consultation_fee + v_medication_cost) - p_total_cost,
+            v_insurance_coverage,
+            'SUBMITTED'
+        );
+    END IF;
+    
+    COMMIT;
+    
+    SET p_result = CONCAT('SUCCESS: Treatment processed. Patient payable: ₹', p_total_cost);
+
+END$
+DELIMITER ;
+
+-- Treatment processing example
+SET @medications = '[{"medication_id": 101, "quantity": 10}, {"medication_id": 102, "quantity": 5}]';
+CALL ProcessPatientTreatment(1001, 501, 'General Consultation', @medications, TRUE, @treatment_id, @cost, @result);
+SELECT @treatment_id AS TreatmentID, @cost AS TotalCost, @result AS ProcessingResult;
+            </div>
+            <p><strong>Healthcare Excellence:</strong></p>
+            <ul>
+                <li><strong>Patient Safety:</strong> Medication stock validation prevents prescription errors</li>
+                <li><strong>Financial Accuracy:</strong> Insurance, billing, pharmacy ellam synchronized</li>
+                <li><strong>Regulatory Compliance:</strong> Complete treatment audit trail for medical records</li>
+                <li><strong>Operational Efficiency:</strong> Single transaction for complete treatment workflow</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>📚 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#" style="color: #64ffda;">📺 YouTube: dataengineeringvideos</a> |
+            <a href="#" style="color: #64ffda;">💼 LinkedIn: sbgowtham</a> |
+            <a href="#" style="color: #64ffda;">📸 Instagram: dataengineeringtamil</a>
+        </div>
+        <p style="margin-top: 15px;"><em>Transaction Management master aagiduvenga! Data integrity expert level ku reach panniduvenga! 🔒💪🚀</em></p>
+        <p style="margin-top: 10px; color: #a0aec0; font-size: 14px;">
+            <em>"Transaction mastery = Business operations ah safely and reliably execute panra super power!"</em>
+        </p>
+    </div>
+</body>
+</html>

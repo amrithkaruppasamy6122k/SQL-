@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 26: Date and Time Functions - SQL Book</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .author-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .social-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .content-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .flowchart {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .code-explanation {
+            background: #e6fffa;
+            padding: 10px;
+            border-left: 4px solid #38b2ac;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f56565;
+            margin: 15px 0;
+        }
+        .diagram {
+            text-align: center;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .function-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .function-table th, .function-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .function-table th {
+            background-color: #667eea;
+            color: white;
+        }
+        .types-box {
+            background: #f0fff4;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #48bb78;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background: #fffaf0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ed8936;
+            margin: 15px 0;
+        }
+        .tip-box {
+            background: #f5f0ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #9f7aea;
+            margin: 15px 0;
+        }
+        .datetime-box {
+            background: #fff8dc;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #daa520;
+            margin: 15px 0;
+        }
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 SQL Complete Guide</h1>
+        <h2>Chapter 26: Date and Time Functions</h2>
+        <p><em>Date aur Time Ah Master Panni Temporal Data Analysis Expert Aagalam!</em></p>
+    </div>
+
+    <div class="author-info">
+        <h3 style="text-align: center; margin-bottom: 15px;">👨‍💻 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#">📺 YouTube: dataengineeringvideos</a>
+            <a href="#">💼 LinkedIn: sbgowtham</a>
+            <a href="#">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📖 Definition (Date Time Functions Enna Solluranga?)</h2>
+        <p><strong>Date and Time Functions</strong> na MySQL la temporal data (time-related data) ah manipulate panna, format panna, calculate panna use agura built-in functions collection thaan. Idhu business applications la romba mukkiyam - payroll, billing, analytics, reporting ellame date-time operations mela depend aagum!</p>
+        
+        <p>Date Time Functions oda powerful capabilities:</p>
+        <ul>
+            <li><strong>Date Extraction:</strong> Year, month, day, hour, minute, second ah separate ah extract panna mudiyum</li>
+            <li><strong>Date Arithmetic:</strong> Dates kulla add/subtract operations perform panna mudiyum</li>
+            <li><strong>Format Conversion:</strong> Different date formats ku convert panna mudiyum</li>
+            <li><strong>Business Logic:</strong> Working days, age calculation, tenure calculation lam easy</li>
+            <li><strong>Timezone Handling:</strong> Different timezone data ah handle panna mudiyum</li>
+            <li><strong>Period Calculations:</strong> Duration, intervals, date differences calculate panalam</li>
+        </ul>
+        
+        <div class="datetime-box">
+            <h4>🕒 MySQL Date Time Data Types:</h4>
+            <ul>
+                <li><strong>DATE:</strong> 'YYYY-MM-DD' format (1000-01-01 to 9999-12-31)</li>
+                <li><strong>TIME:</strong> 'HH:MM:SS' format (-838:59:59 to 838:59:59)</li>
+                <li><strong>DATETIME:</strong> 'YYYY-MM-DD HH:MM:SS' format</li>
+                <li><strong>TIMESTAMP:</strong> Unix timestamp with timezone awareness</li>
+                <li><strong>YEAR:</strong> 4-digit year values (1901 to 2155)</li>
+            </ul>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Date Time la Jaakkiradhaga Irukanume:</h4>
+            <ul>
+                <li><strong>Timezone Issues:</strong> Server timezone aur client timezone different aana confusion varum</li>
+                <li><strong>Date Format:</strong> Input format wrong aana implicit conversion try aagum</li>
+                <li><strong>Null Values:</strong> Date calculations la NULL values unexpected results kudukum</li>
+                <li><strong>Performance:</strong> Date functions WHERE clause la use pannumpothu index utilization slow aagum</li>
+                <li><strong>Business Rules:</strong> Leap years, month-end dates, weekend calculations careful ah handle pananum</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🏛️ Standard (Date Time Functions Categories)</h2>
+        <p>MySQL la comprehensive date time functions library iruku, different categories la organized:</p>
+        
+        <table class="function-table">
+            <thead>
+                <tr>
+                    <th>Function Category</th>
+                    <th>Tamil la Explanation</th>
+                    <th>Common Functions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Current Date/Time</td>
+                    <td>Current date aur time get panradhu ku</td>
+                    <td>NOW(), CURDATE(), CURTIME(), UTC_TIMESTAMP()</td>
+                </tr>
+                <tr>
+                    <td>Date Extraction</td>
+                    <td>Date components ah extract panradhu ku</td>
+                    <td>YEAR(), MONTH(), DAY(), HOUR(), MINUTE(), SECOND()</td>
+                </tr>
+                <tr>
+                    <td>Date Arithmetic</td>
+                    <td>Date calculations aur operations ku</td>
+                    <td>DATE_ADD(), DATE_SUB(), DATEDIFF(), TIMESTAMPDIFF()</td>
+                </tr>
+                <tr>
+                    <td>Date Formatting</td>
+                    <td>Date display format change panradhu ku</td>
+                    <td>DATE_FORMAT(), TIME_FORMAT(), STR_TO_DATE()</td>
+                </tr>
+                <tr>
+                    <td>Date Validation</td>
+                    <td>Valid dates ah check panradhu ku</td>
+                    <td>ISDATE() (not in MySQL), validation through functions</td>
+                </tr>
+                <tr>
+                    <td>Timezone Functions</td>
+                    <td>Timezone conversions ku</td>
+                    <td>CONVERT_TZ(), UTC_DATE(), UTC_TIME()</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="types-box">
+            <h4>📍 Business Applications:</h4>
+            <ul>
+                <li><strong>Payroll Systems:</strong> Salary calculations, working days, overtime</li>
+                <li><strong>E-commerce:</strong> Order dates, delivery schedules, return periods</li>
+                <li><strong>Banking:</strong> Interest calculations, loan tenures, transaction timestamps</li>
+                <li><strong>Healthcare:</strong> Appointment scheduling, medication reminders, patient age</li>
+                <li><strong>Analytics:</strong> Time-based trends, seasonal analysis, growth metrics</li>
+            </ul>
+        </div>
+
+        <div class="tip-box">
+            <h4>💡 Performance Optimization Tips:</h4>
+            <ul>
+                <li><strong>Index Strategy:</strong> Date columns la index create pannumpothu YYYY-MM-DD format use pannunga</li>
+                <li><strong>Range Queries:</strong> BETWEEN operator use panni date ranges specify pannunga</li>
+                <li><strong>Function Avoidance:</strong> WHERE clause la date functions avoid panni pre-calculated values use pannunga</li>
+                <li><strong>Partitioning:</strong> Large tables ah date-based partitioning panni performance improve pannunga</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📊 Flow Chart</h2>
+        <div class="flowchart">
+            <div class="diagram">
+                <h3>Date Time Operations Decision Flow</h3>
+                <pre style="font-family: monospace; text-align: left; background: white; padding: 15px; border-radius: 5px;">
+Date Time Requirement Identify Panrom
+  ↓
+┌─────────────────────────────────────────────┐
+│  Operation Type Decide Panrom               │
+│  ┌─── Current Value ──┐  ┌─── Historical ──┐│
+│  │   Get Pananum     │  │   Data Process  ││
+│  │ → NOW(), CURDATE()│  │ → Extract/Calc  ││
+│  └───────────────────┘  └─────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  Data Type Check Panrom                     │
+│  ┌─── DATE Only ─────┐  ┌─── DATETIME ────┐│
+│  │  Simple Date     │  │  Full Timestamp  ││
+│  │  Functions       │  │  Functions       ││
+│  └──────────────────┘  └──────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  Business Logic Apply Panrom                │
+│  ┌─── Calculations ──┐  ┌─── Formatting ──┐│
+│  │  Age, Duration   │  │  Display Format  ││
+│  │  Differences     │  │  Localization    ││
+│  └──────────────────┘  └──────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+Function Select Panni Query Write Panrom
+  ↓
+Performance aur Accuracy Verify Panrom
+  ↓
+Date Time Logic Implementation Complete!
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🎯 Examples with Detailed Tamil Explanation</h2>
+        
+        <h3>1. Current Date Time Functions - System date time get panradhu</h3>
+        <div class="code-block">
+SELECT 
+    NOW() AS current_datetime,
+    CURDATE() AS current_date,
+    CURTIME() AS current_time,
+    UTC_TIMESTAMP() AS utc_datetime,
+    UNIX_TIMESTAMP() AS unix_timestamp,
+    FROM_UNIXTIME(UNIX_TIMESTAMP()) AS from_unix_conversion
+FROM 
+    DUAL;
+
+-- Business example: Login tracking
+INSERT INTO user_login_logs (
+    user_id,
+    login_datetime,
+    login_date,
+    login_time,
+    ip_address
+) VALUES (
+    1001,
+    NOW(),
+    CURDATE(),
+    CURTIME(),
+    '192.168.1.100'
+);
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>NOW() AS current_datetime</code> - Current date aur time full format la get panrom (YYYY-MM-DD HH:MM:SS)<br>
+            • <code>CURDATE() AS current_date</code> - Current date mattum get panrom (YYYY-MM-DD format)<br>
+            • <code>CURTIME() AS current_time</code> - Current time mattum get panrom (HH:MM:SS format)<br>
+            • <code>UTC_TIMESTAMP() AS utc_datetime</code> - UTC timezone la current datetime get panrom<br>
+            • <code>UNIX_TIMESTAMP() AS unix_timestamp</code> - Current time ah Unix timestamp format la get panrom<br>
+            • <code>FROM_UNIXTIME(UNIX_TIMESTAMP())</code> - Unix timestamp ah readable format ku convert panrom<br>
+            • <code>INSERT INTO user_login_logs</code> - User login time track panradhu ku practical example<br>
+            • <strong>Business Use:</strong> Audit trails, session management, activity tracking ku essential
+        </div>
+
+        <h3>2. Date Extraction Functions - Date components separate panna</h3>
+        <div class="code-block">
+SELECT 
+    order_date,
+    YEAR(order_date) AS order_year,
+    MONTH(order_date) AS order_month,
+    MONTHNAME(order_date) AS month_name,
+    DAY(order_date) AS order_day,
+    DAYNAME(order_date) AS day_name,
+    DAYOFWEEK(order_date) AS day_of_week_num,
+    DAYOFYEAR(order_date) AS day_of_year,
+    WEEK(order_date) AS week_number,
+    QUARTER(order_date) AS quarter_num
+FROM 
+    orders
+WHERE 
+    order_date >= '2024-01-01'
+    AND 
+    order_date < '2025-01-01'
+ORDER BY 
+    order_date DESC
+LIMIT 10;
+
+-- Monthly sales summary using date extraction
+SELECT 
+    YEAR(order_date) AS sales_year,
+    MONTHNAME(order_date) AS sales_month,
+    COUNT(*) AS total_orders,
+    SUM(order_amount) AS total_revenue,
+    AVG(order_amount) AS avg_order_value
+FROM 
+    orders
+WHERE 
+    order_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+GROUP BY 
+    YEAR(order_date),
+    MONTH(order_date),
+    MONTHNAME(order_date)
+ORDER BY 
+    sales_year DESC,
+    MONTH(order_date) DESC;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>YEAR(order_date) AS order_year</code> - Order date la irundhu year ah extract panrom<br>
+            • <code>MONTH(order_date) AS order_month</code> - Month number ah extract panrom (1-12)<br>
+            • <code>MONTHNAME(order_date) AS month_name</code> - Month name ah text format la get panrom (January, February, etc.)<br>
+            • <code>DAYNAME(order_date) AS day_name</code> - Day name get panrom (Monday, Tuesday, etc.)<br>
+            • <code>DAYOFWEEK(order_date) AS day_of_week_num</code> - Week la enga day nu number ah get panrom (1=Sunday, 7=Saturday)<br>
+            • <code>DAYOFYEAR(order_date) AS day_of_year</code> - Year la enga day nu get panrom (1-366)<br>
+            • <code>WEEK(order_date) AS week_number</code> - Year la enga week nu get panrom (0-53)<br>
+            • <code>QUARTER(order_date) AS quarter_num</code> - Financial quarter get panrom (1-4)<br>
+            • <code>GROUP BY YEAR(order_date), MONTH(order_date)</code> - Year aur month wise data group panrom<br>
+            • <strong>Analytics Power:</strong> Time-based reporting, seasonal analysis, business intelligence ku powerful
+        </div>
+
+        <h3>3. Date Arithmetic Functions - Date calculations perform panna</h3>
+        <div class="code-block">
+-- Employee tenure calculation
+SELECT 
+    employee_name,
+    hire_date,
+    CURDATE() AS current_date,
+    DATEDIFF(CURDATE(), hire_date) AS days_worked,
+    TIMESTAMPDIFF(YEAR, hire_date, CURDATE()) AS years_experience,
+    TIMESTAMPDIFF(MONTH, hire_date, CURDATE()) AS months_experience,
+    DATE_ADD(hire_date, INTERVAL 1 YEAR) AS first_anniversary,
+    DATE_ADD(hire_date, INTERVAL 5 YEAR) AS fifth_anniversary,
+    CASE 
+        WHEN TIMESTAMPDIFF(YEAR, hire_date, CURDATE()) >= 5 THEN 'Senior Employee'
+        WHEN TIMESTAMPDIFF(YEAR, hire_date, CURDATE()) >= 2 THEN 'Experienced'
+        ELSE 'Junior'
+    END AS experience_level
+FROM 
+    employees
+WHERE 
+    status = 'ACTIVE'
+ORDER BY 
+    hire_date;
+
+-- Loan EMI due date calculations
+SELECT 
+    loan_id,
+    loan_start_date,
+    loan_tenure_months,
+    DATE_ADD(loan_start_date, INTERVAL 1 MONTH) AS first_emi_date,
+    DATE_ADD(loan_start_date, INTERVAL loan_tenure_months MONTH) AS loan_end_date,
+    DATEDIFF(DATE_ADD(loan_start_date, INTERVAL loan_tenure_months MONTH), CURDATE()) AS days_remaining,
+    ROUND(
+        DATEDIFF(CURDATE(), loan_start_date) / 30, 0
+    ) AS emis_completed_approx
+FROM 
+    loans
+WHERE 
+    loan_status = 'ACTIVE';
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>DATEDIFF(CURDATE(), hire_date) AS days_worked</code> - Current date minus hire date, total working days calculate panrom<br>
+            • <code>TIMESTAMPDIFF(YEAR, hire_date, CURDATE()) AS years_experience</code> - Years la experience calculate panrom<br>
+            • <code>TIMESTAMPDIFF(MONTH, hire_date, CURDATE()) AS months_experience</code> - Months la experience calculate panrom<br>
+            • <code>DATE_ADD(hire_date, INTERVAL 1 YEAR) AS first_anniversary</code> - Hire date ku 1 year add panni anniversary date calculate panrom<br>
+            • <code>DATE_ADD(hire_date, INTERVAL 5 YEAR) AS fifth_anniversary</code> - 5 years complete aagura date calculate panrom<br>
+            • <code>CASE WHEN TIMESTAMPDIFF(YEAR, hire_date, CURDATE()) >= 5</code> - Experience based ah category assign panrom<br>
+            • <code>DATE_ADD(loan_start_date, INTERVAL 1 MONTH) AS first_emi_date</code> - Loan start date ku 1 month add panni first EMI date calculate panrom<br>
+            • <code>DATEDIFF(...) / 30 AS emis_completed_approx</code> - Approximate ah evlo EMIs complete aanathunu calculate panrom<br>
+            • <strong>Business Applications:</strong> HR analytics, financial calculations, subscription management
+        </div>
+
+        <h3>4. Date Formatting Functions - Display formats customize panna</h3>
+        <div class="code-block">
+-- Various date formatting examples
+SELECT 
+    order_date,
+    DATE_FORMAT(order_date, '%d-%m-%Y') AS indian_format,
+    DATE_FORMAT(order_date, '%M %d, %Y') AS us_format,
+    DATE_FORMAT(order_date, '%W, %D %M %Y') AS full_format,
+    DATE_FORMAT(order_date, '%d/%m/%y') AS short_format,
+    DATE_FORMAT(order_date, '%Y-%m') AS year_month,
+    DATE_FORMAT(order_date, '%b %Y') AS month_year_short,
+    TIME_FORMAT(order_time, '%h:%i %p') AS twelve_hour_format,
+    TIME_FORMAT(order_time, '%H:%i:%s') AS twenty_four_hour_format
+FROM 
+    orders
+WHERE 
+    order_date = CURDATE()
+LIMIT 5;
+
+-- Business report with custom formatting
+SELECT 
+    'Order Report - ' || DATE_FORMAT(CURDATE(), '%M %d, %Y') AS report_title,
+    COUNT(*) AS total_orders,
+    DATE_FORMAT(MIN(order_date), '%d %b %Y') AS first_order_date,
+    DATE_FORMAT(MAX(order_date), '%d %b %Y') AS last_order_date,
+    CONCAT(
+        'Report generated on ', 
+        DATE_FORMAT(NOW(), '%W, %M %d, %Y at %h:%i %p')
+    ) AS generation_info
+FROM 
+    orders
+WHERE 
+    order_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY);
+
+-- String to date conversion
+SELECT 
+    STR_TO_DATE('15-06-2024', '%d-%m-%Y') AS converted_date,
+    STR_TO_DATE('June 15, 2024', '%M %d, %Y') AS text_date_converted,
+    STR_TO_DATE('2024-06-15 14:30:00', '%Y-%m-%d %H:%i:%s') AS datetime_converted;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>DATE_FORMAT(order_date, '%d-%m-%Y') AS indian_format</code> - Indian format (DD-MM-YYYY) la date display panrom<br>
+            • <code>DATE_FORMAT(order_date, '%M %d, %Y') AS us_format</code> - US format (Month DD, YYYY) la display panrom<br>
+            • <code>DATE_FORMAT(order_date, '%W, %D %M %Y') AS full_format</code> - Full format with day name display panrom<br>
+            • <code>DATE_FORMAT(order_date, '%Y-%m') AS year_month</code> - Year-Month format display panrom<br>
+            • <code>TIME_FORMAT(order_time, '%h:%i %p') AS twelve_hour_format</code> - 12-hour format with AM/PM display panrom<br>
+            • <code>TIME_FORMAT(order_time, '%H:%i:%s') AS twenty_four_hour_format</code> - 24-hour format display panrom<br>
+            • <code>DATE_FORMAT(NOW(), '%W, %M %d, %Y at %h:%i %p')</code> - Report generation time ah readable format la show panrom<br>
+            • <code>STR_TO_DATE('15-06-2024', '%d-%m-%Y')</code> - String format la irukra date ah DATE type ku convert panrom<br>
+            • <code>STR_TO_DATE('June 15, 2024', '%M %d, %Y')</code> - Text month name oda date ah convert panrom<br>
+            • <strong>Practical Usage:</strong> Reports, invoices, certificates, user interfaces ku date formatting essential
+        </div>
+
+        <h3>5. Advanced Date Operations - Complex business logic implement panna</h3>
+        <div class="code-block">
+-- Working days calculation (excluding weekends)
+SELECT 
+    employee_id,
+    leave_start_date,
+    leave_end_date,
+    DATEDIFF(leave_end_date, leave_start_date) + 1 AS total_days,
+    (DATEDIFF(leave_end_date, leave_start_date) + 1) - 
+    (
+        (WEEK(leave_end_date) - WEEK(leave_start_date)) * 2 +
+        CASE WHEN DAYOFWEEK(leave_start_date) = 1 THEN 1 ELSE 0 END +
+        CASE WHEN DAYOFWEEK(leave_end_date) = 7 THEN 1 ELSE 0 END
+    ) AS working_days_approximate,
+    CASE 
+        WHEN DAYOFWEEK(leave_start_date) IN (1, 7) OR DAYOFWEEK(leave_end_date) IN (1, 7) THEN 'Includes Weekend'
+        ELSE 'Weekdays Only'
+    END AS weekend_status
+FROM 
+    employee_leaves
+WHERE 
+    leave_status = 'APPROVED'
+    AND 
+    leave_start_date >= DATE_SUB(CURDATE(), INTERVAL 3 MONTH);
+
+-- Age calculation with precision
+SELECT 
+    customer_name,
+    birth_date,
+    CURDATE() AS current_date,
+    TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) AS age_years,
+    TIMESTAMPDIFF(MONTH, birth_date, CURDATE()) AS age_months,
+    TIMESTAMPDIFF(DAY, birth_date, CURDATE()) AS age_days,
+    CASE 
+        WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 60 THEN 'Senior Citizen'
+        WHEN TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 18 THEN 'Adult'
+        ELSE 'Minor'
+    END AS age_category,
+    DATE_ADD(birth_date, INTERVAL (TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) + 1) YEAR) AS next_birthday
+FROM 
+    customers
+WHERE 
+    birth_date IS NOT NULL
+ORDER BY 
+    age_years DESC
+LIMIT 20;
+
+-- Financial year and quarter calculations
+SELECT 
+    transaction_date,
+    transaction_amount,
+    CASE 
+        WHEN MONTH(transaction_date) >= 4 THEN YEAR(transaction_date)
+        ELSE YEAR(transaction_date) - 1
+    END AS financial_year,
+    CASE 
+        WHEN MONTH(transaction_date) IN (4, 5, 6) THEN 'Q1'
+        WHEN MONTH(transaction_date) IN (7, 8, 9) THEN 'Q2'
+        WHEN MONTH(transaction_date) IN (10, 11, 12) THEN 'Q3'
+        ELSE 'Q4'
+    END AS financial_quarter,
+    LAST_DAY(transaction_date) AS month_end_date,
+    DAY(LAST_DAY(transaction_date)) AS days_in_month
+FROM 
+    financial_transactions
+WHERE 
+    transaction_date >= '2024-01-01'
+ORDER BY 
+    transaction_date DESC
+LIMIT 15;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>CASE WHEN MONTH(transaction_date) >= 4 THEN YEAR(transaction_date)</code> - Indian financial year calculate panrom (April start)<br>
+            • <code>WHEN MONTH(transaction_date) IN (4, 5, 6) THEN 'Q1'</code> - Financial quarters assign panrom<br>
+            • <code>LAST_DAY(transaction_date) AS month_end_date</code> - Month oda last date get panrom<br>
+            • <code>DAY(LAST_DAY(transaction_date)) AS days_in_month</code> - Month la evlo days irukku nu get panrom<br>
+            • <strong>Business Intelligence:</strong> Payroll calculations, leave management, age-based services, financial reporting<br>
+            • <strong>Complex Logic:</strong> Working days, financial periods, age categories, business rules implementation
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🛠️ Use Cases (Real-world la Epidi Use Pannalam)</h2>
+        
+        <div class="use-case">
+            <h4>1. Payroll System - Employee Salary Calculations</h4>
+            <p><strong>Situation:</strong> Monthly payroll process pannum bodhu attendance, working days, overtime calculations accurate ah pananum</p>
+            <div class="code-block">
+-- Monthly payroll calculation with date functions
+SELECT 
+    e.employee_id,
+    e.employee_name,
+    e.basic_salary,
+    YEAR(CURDATE()) AS payroll_year,
+    MONTH(CURDATE()) AS payroll_month,
+    MONTHNAME(CURDATE()) AS payroll_month_name,
+    -- Working days in current month
+    DAY(LAST_DAY(CURDATE())) - 
+    (
+        SELECT COUNT(*) 
+        FROM calendar_dates cd 
+        WHERE cd.date_value BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') 
+        AND LAST_DAY(CURDATE())
+        AND DAYOFWEEK(cd.date_value) IN (1, 7)
+    ) AS working_days_in_month,
+    -- Employee actual working days
+    COALESCE(
+        (
+            SELECT COUNT(DISTINCT attendance_date)
+            FROM attendance a
+            WHERE a.employee_id = e.employee_id
+            AND a.attendance_date >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+            AND a.attendance_date <= LAST_DAY(CURDATE())
+            AND a.status = 'PRESENT'
+        ), 0
+    ) AS days_worked,
+    -- Leave days taken
+    COALESCE(
+        (
+            SELECT SUM(DATEDIFF(leave_end_date, leave_start_date) + 1)
+            FROM leaves l
+            WHERE l.employee_id = e.employee_id
+            AND l.leave_start_date >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+            AND l.leave_end_date <= LAST_DAY(CURDATE())
+            AND l.status = 'APPROVED'
+        ), 0
+    ) AS leave_days,
+    -- Calculate proportional salary
+    ROUND(
+        (e.basic_salary / DAY(LAST_DAY(CURDATE()))) * 
+        COALESCE(
+            (
+                SELECT COUNT(DISTINCT attendance_date)
+                FROM attendance a
+                WHERE a.employee_id = e.employee_id
+                AND a.attendance_date >= DATE_FORMAT(CURDATE(), '%Y-%m-01')
+                AND a.attendance_date <= LAST_DAY(CURDATE())
+                AND a.status = 'PRESENT'
+            ), 0
+        ), 2
+    ) AS calculated_salary
+FROM 
+    employees e
+WHERE 
+    e.status = 'ACTIVE'
+ORDER BY 
+    e.employee_id;
+            </div>
+            <p><strong>Tremendous Faayda:</strong></p>
+            <ul>
+                <li><strong>Accurate Payroll:</strong> Working days based ah exact salary calculation</li>
+                <li><strong>Leave Integration:</strong> Approved leaves automatic ah deduct aagum</li>
+                <li><strong>Monthly Automation:</strong> Every month consistent payroll generation</li>
+                <li><strong>Compliance:</strong> Labor law requirements meet pannum</li>
+            </ul>
+        </div>
+
+        <div class="use-case">
+            <h4>2. E-commerce Order Management - Delivery Timeline Tracking</h4>
+            <p><strong>Situation:</strong> Customer orders ku delivery promises, SLA tracking, return period calculations pananum</p>
+            <div class="code-block">
+-- Order delivery timeline management
+SELECT 
+    o.order_id,
+    o.customer_id,
+    o.order_date,
+    o.order_time,
+    -- Expected delivery calculation
+    CASE 
+        WHEN o.delivery_type = 'EXPRESS' THEN DATE_ADD(o.order_date, INTERVAL 1 DAY)
+        WHEN o.delivery_type = 'STANDARD' THEN DATE_ADD(o.order_date, INTERVAL 3 DAY)
+        WHEN o.delivery_type = 'ECONOMY' THEN DATE_ADD(o.order_date, INTERVAL 7 DAY)
+        ELSE DATE_ADD(o.order_date, INTERVAL 5 DAY)
+    END AS expected_delivery_date,
+    -- Actual delivery tracking
+    o.delivered_date,
+    CASE 
+        WHEN o.delivered_date IS NOT NULL THEN 
+            DATEDIFF(o.delivered_date, o.order_date)
+        ELSE 
+            DATEDIFF(CURDATE(), o.order_date)
+    END AS delivery_days_taken,
+    -- SLA compliance check
+    CASE 
+        WHEN o.delivered_date IS NULL AND CURDATE() > 
+            (CASE 
+                WHEN o.delivery_type = 'EXPRESS' THEN DATE_ADD(o.order_date, INTERVAL 1 DAY)
+                WHEN o.delivery_type = 'STANDARD' THEN DATE_ADD(o.order_date, INTERVAL 3 DAY)
+                WHEN o.delivery_type = 'ECONOMY' THEN DATE_ADD(o.order_date, INTERVAL 7 DAY)
+                ELSE DATE_ADD(o.order_date, INTERVAL 5 DAY)
+            END) THEN 'DELAYED'
+        WHEN o.delivered_date IS NOT NULL AND o.delivered_date <= 
+            (CASE 
+                WHEN o.delivery_type = 'EXPRESS' THEN DATE_ADD(o.order_date, INTERVAL 1 DAY)
+                WHEN o.delivery_type = 'STANDARD' THEN DATE_ADD(o.order_date, INTERVAL 3 DAY)
+                WHEN o.delivery_type = 'ECONOMY' THEN DATE_ADD(o.order_date, INTERVAL 7 DAY)
+                ELSE DATE_ADD(o.order_date, INTERVAL 5 DAY)
+            END) THEN 'ON_TIME'
+        WHEN o.delivered_date IS NOT NULL THEN 'LATE_DELIVERY'
+        ELSE 'IN_TRANSIT'
+    END AS delivery_status,
+    -- Return period calculation
+    CASE 
+        WHEN o.delivered_date IS NOT NULL THEN 
+            DATE_ADD(o.delivered_date, INTERVAL 7 DAY)
+        ELSE NULL
+    END AS return_deadline,
+    -- Customer notification timing
+    CASE 
+        WHEN o.delivered_date IS NULL AND 
+             DATEDIFF(CURDATE(), o.order_date) >= 2 THEN 'SEND_UPDATE'
+        ELSE 'NO_ACTION'
+    END AS notification_required
+FROM 
+    orders o
+WHERE 
+    o.order_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+ORDER BY 
+    o.order_date DESC;
+            </div>
+            <p><strong>Business Excellence:</strong></p>
+            <ul>
+                <li><strong>Customer Satisfaction:</strong> Accurate delivery promises aur tracking</li>
+                <li><strong>SLA Monitoring:</strong> Service level compliance automatic tracking</li>
+                <li><strong>Return Management:</strong> Return period automatic calculation</li>
+                <li><strong>Proactive Communication:</strong> Customer notification triggers</li>
+            </ul>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Banking Loan Management - EMI and Interest Calculations</h4>
+            <p><strong>Situation:</strong> Bank la customer loans ku EMI schedule, interest calculations, penalty calculations pananum</p>
+            <div class="code-block">
+-- Comprehensive loan management system
+SELECT 
+    l.loan_id,
+    l.customer_id,
+    l.loan_amount,
+    l.interest_rate,
+    l.loan_start_date,
+    l.tenure_months,
+    -- Loan end date calculation
+    DATE_ADD(l.loan_start_date, INTERVAL l.tenure_months MONTH) AS loan_end_date,
+    -- Next EMI due date
+    (
+        SELECT MIN(due_date)
+        FROM emi_schedule es
+        WHERE es.loan_id = l.loan_id
+        AND es.due_date > CURDATE()
+        AND es.status = 'PENDING'
+    ) AS next_emi_date,
+    -- Overdue EMI check
+    (
+        SELECT COUNT(*)
+        FROM emi_schedule es
+        WHERE es.loan_id = l.loan_id
+        AND es.due_date < CURDATE()
+        AND es.status = 'PENDING'
+    ) AS overdue_emis,
+    -- Days overdue for penalty calculation
+    CASE 
+        WHEN (
+            SELECT MIN(due_date)
+            FROM emi_schedule es
+            WHERE es.loan_id = l.loan_id
+            AND es.due_date < CURDATE()
+            AND es.status = 'PENDING'
+        ) IS NOT NULL THEN
+            DATEDIFF(
+                CURDATE(),
+                (
+                    SELECT MIN(due_date)
+                    FROM emi_schedule es
+                    WHERE es.loan_id = l.loan_id
+                    AND es.due_date < CURDATE()
+                    AND es.status = 'PENDING'
+                )
+            )
+        ELSE 0
+    END AS days_overdue,
+    -- Penalty calculation
+    CASE 
+        WHEN (
+            SELECT COUNT(*)
+            FROM emi_schedule es
+            WHERE es.loan_id = l.loan_id
+            AND es.due_date < CURDATE()
+            AND es.status = 'PENDING'
+        ) > 0 THEN
+            ROUND(
+                (l.loan_amount * 0.02 / 100) * 
+                DATEDIFF(
+                    CURDATE(),
+                    (
+                        SELECT MIN(due_date)
+                        FROM emi_schedule es
+                        WHERE es.loan_id = l.loan_id
+                        AND es.due_date < CURDATE()
+                        AND es.status = 'PENDING'
+                    )
+                ), 2
+            )
+        ELSE 0
+    END AS penalty_amount,
+    -- Loan completion percentage
+    ROUND(
+        (TIMESTAMPDIFF(MONTH, l.loan_start_date, CURDATE()) * 100.0) / l.tenure_months, 2
+    ) AS completion_percentage,
+    -- Remaining tenure
+    CASE 
+        WHEN CURDATE() < DATE_ADD(l.loan_start_date, INTERVAL l.tenure_months MONTH) THEN
+            TIMESTAMPDIFF(
+                MONTH, 
+                CURDATE(), 
+                DATE_ADD(l.loan_start_date, INTERVAL l.tenure_months MONTH)
+            )
+        ELSE 0
+    END AS remaining_months
+FROM 
+    loans l
+WHERE 
+    l.status = 'ACTIVE'
+    AND 
+    l.loan_start_date <= CURDATE()
+ORDER BY 
+    days_overdue DESC,
+    next_emi_date;
+            </div>
+            <p><strong>Financial Management Power:</strong></p>
+            <ul>
+                <li><strong>EMI Tracking:</strong> Automated due date monitoring</li>
+                <li><strong>Penalty Calculation:</strong> Accurate overdue charges</li>
+                <li><strong>Risk Assessment:</strong> Loan completion tracking</li>
+                <li><strong>Customer Service:</strong> Proactive payment reminders</li>
+            </ul>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Healthcare Appointment System - Patient Scheduling</h4>
+            <p><strong>Situation:</strong> Hospital la patient appointments, doctor availability, medication reminders schedule pananum</p>
+            <div class="code-block">
+-- Healthcare appointment and medication management
+SELECT 
+    p.patient_id,
+    p.patient_name,
+    p.birth_date,
+    -- Patient age calculation
+    TIMESTAMPDIFF(YEAR, p.birth_date, CURDATE()) AS patient_age,
+    -- Age category for pediatric/geriatric care
+    CASE 
+        WHEN TIMESTAMPDIFF(YEAR, p.birth_date, CURDATE()) < 18 THEN 'Pediatric'
+        WHEN TIMESTAMPDIFF(YEAR, p.birth_date, CURDATE()) >= 65 THEN 'Geriatric'
+        ELSE 'Adult'
+    END AS age_category,
+    -- Last appointment tracking
+    (
+        SELECT MAX(appointment_date)
+        FROM appointments a
+        WHERE a.patient_id = p.patient_id
+        AND a.status = 'COMPLETED'
+    ) AS last_appointment_date,
+    -- Days since last visit
+    CASE 
+        WHEN (
+            SELECT MAX(appointment_date)
+            FROM appointments a
+            WHERE a.patient_id = p.patient_id
+            AND a.status = 'COMPLETED'
+        ) IS NOT NULL THEN
+            DATEDIFF(
+                CURDATE(),
+                (
+                    SELECT MAX(appointment_date)
+                    FROM appointments a
+                    WHERE a.patient_id = p.patient_id
+                    AND a.status = 'COMPLETED'
+                )
+            )
+        ELSE NULL
+    END AS days_since_last_visit,
+    -- Next scheduled appointment
+    (
+        SELECT MIN(appointment_date)
+        FROM appointments a
+        WHERE a.patient_id = p.patient_id
+        AND a.appointment_date > CURDATE()
+        AND a.status = 'SCHEDULED'
+    ) AS next_appointment_date,
+    -- Follow-up reminder check
+    CASE 
+        WHEN (
+            SELECT MAX(appointment_date)
+            FROM appointments a
+            WHERE a.patient_id = p.patient_id
+            AND a.status = 'COMPLETED'
+        ) IS NOT NULL AND
+        DATEDIFF(
+            CURDATE(),
+            (
+                SELECT MAX(appointment_date)
+                FROM appointments a
+                WHERE a.patient_id = p.patient_id
+                AND a.status = 'COMPLETED'
+            )
+        ) >= 90 AND
+        (
+            SELECT COUNT(*)
+            FROM appointments a
+            WHERE a.patient_id = p.patient_id
+            AND a.appointment_date > CURDATE()
+            AND a.status = 'SCHEDULED'
+        ) = 0 THEN 'FOLLOW_UP_NEEDED'
+        ELSE 'NO_ACTION'
+    END AS follow_up_status,
+    -- Birthday reminder for wellness check
+    CASE 
+        WHEN DATE_FORMAT(p.birth_date, '%m-%d') = DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 30 DAY), '%m-%d') THEN 'BIRTHDAY_WELLNESS_CHECK'
+        ELSE 'NO_REMINDER'
+    END AS birthday_wellness_reminder
+FROM 
+    patients p
+WHERE 
+    p.status = 'ACTIVE'
+ORDER BY 
+    days_since_last_visit DESC NULLS LAST;
+
+-- Medication reminder system
+SELECT 
+    pr.prescription_id,
+    pr.patient_id,
+    p.patient_name,
+    pr.medicine_name,
+    pr.dosage,
+    pr.frequency_per_day,
+    pr.start_date,
+    pr.duration_days,
+    DATE_ADD(pr.start_date, INTERVAL pr.duration_days DAY) AS end_date,
+    -- Medication adherence tracking
+    DATEDIFF(CURDATE(), pr.start_date) AS days_elapsed,
+    pr.duration_days - DATEDIFF(CURDATE(), pr.start_date) AS days_remaining,
+    -- Reminder status
+    CASE 
+        WHEN CURDATE() < pr.start_date THEN 'NOT_STARTED'
+        WHEN CURDATE() > DATE_ADD(pr.start_date, INTERVAL pr.duration_days DAY) THEN 'COMPLETED'
+        WHEN DATE_ADD(pr.start_date, INTERVAL pr.duration_days DAY) <= DATE_ADD(CURDATE(), INTERVAL 3 DAY) THEN 'ENDING_SOON'
+        ELSE 'ACTIVE'
+    END AS medication_status,
+    -- Refill reminder
+    CASE 
+        WHEN pr.duration_days - DATEDIFF(CURDATE(), pr.start_date) <= 7 AND 
+             pr.duration_days - DATEDIFF(CURDATE(), pr.start_date) > 0 THEN 'REFILL_REMINDER'
+        ELSE 'NO_REMINDER'
+    END AS refill_status
+FROM 
+    prescriptions pr
+JOIN 
+    patients p ON pr.patient_id = p.patient_id
+WHERE 
+    pr.start_date <= CURDATE()
+    AND 
+    DATE_ADD(pr.start_date, INTERVAL pr.duration_days DAY) >= CURDATE()
+ORDER BY 
+    days_remaining;
+            </div>
+            <p><strong>Healthcare Excellence:</strong></p>
+            <ul>
+                <li><strong>Patient Care:</strong> Age-appropriate treatment protocols</li>
+                <li><strong>Follow-up Management:</strong> Proactive patient outreach</li>
+                <li><strong>Medication Adherence:</strong> Automated refill reminders</li>
+                <li><strong>Preventive Care:</strong> Wellness check scheduling</li>
+            </ul>
+        </div>
+
+        <div class="use-case">
+            <h4>5. Subscription Business - Billing and Renewal Management</h4>
+            <p><strong>Situation:</strong> SaaS company la customer subscription renewals, billing cycles, trial periods manage pananum</p>
+            <div class="code-block">
+-- Comprehensive subscription management system
+SELECT 
+    s.subscription_id,
+    s.customer_id,
+    c.customer_name,
+    s.plan_name,
+    s.monthly_price,
+    s.billing_cycle,
+    s.start_date,
+    -- Current billing period
+    CASE 
+        WHEN s.billing_cycle = 'MONTHLY' THEN
+            CASE 
+                WHEN DAY(s.start_date) <= DAY(CURDATE()) THEN
+                    DATE_FORMAT(CURDATE(), '%Y-%m-') || LPAD(DAY(s.start_date), 2, '0')
+                ELSE
+                    DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-') || LPAD(DAY(s.start_date), 2, '0')
+            END
+        WHEN s.billing_cycle = 'ANNUAL' THEN
+            CASE 
+                WHEN DATE_FORMAT(s.start_date, '%m-%d') <= DATE_FORMAT(CURDATE(), '%m-%d') THEN
+                    CONCAT(YEAR(CURDATE()), '-', DATE_FORMAT(s.start_date, '%m-%d'))
+                ELSE
+                    CONCAT(YEAR(CURDATE()) - 1, '-', DATE_FORMAT(s.start_date, '%m-%d'))
+            END
+    END AS current_billing_start,
+    -- Next billing date
+    CASE 
+        WHEN s.billing_cycle = 'MONTHLY' THEN
+            CASE 
+                WHEN DAY(s.start_date) <= DAY(CURDATE()) THEN
+                    DATE_ADD(
+                        STR_TO_DATE(
+                            CONCAT(YEAR(CURDATE()), '-', MONTH(CURDATE()), '-', DAY(s.start_date)),
+                            '%Y-%m-%d'
+                        ), 
+                        INTERVAL 1 MONTH
+                    )
+                ELSE
+                    STR_TO_DATE(
+                        CONCAT(YEAR(CURDATE()), '-', MONTH(CURDATE()), '-', DAY(s.start_date)),
+                        '%Y-%m-%d'
+                    )
+            END
+        WHEN s.billing_cycle = 'ANNUAL' THEN
+            CASE 
+                WHEN DATE_FORMAT(s.start_date, '%m-%d') <= DATE_FORMAT(CURDATE(), '%m-%d') THEN
+                    STR_TO_DATE(
+                        CONCAT(YEAR(CURDATE()) + 1, '-', DATE_FORMAT(s.start_date, '%m-%d')),
+                        '%Y-%m-%d'
+                    )
+                ELSE
+                    STR_TO_DATE(
+                        CONCAT(YEAR(CURDATE()), '-', DATE_FORMAT(s.start_date, '%m-%d')),
+                        '%Y-%m-%d'
+                    )
+            END
+    END AS next_billing_date,
+    -- Days until next billing
+    DATEDIFF(
+        CASE 
+            WHEN s.billing_cycle = 'MONTHLY' THEN
+                CASE 
+                    WHEN DAY(s.start_date) <= DAY(CURDATE()) THEN
+                        DATE_ADD(
+                            STR_TO_DATE(
+                                CONCAT(YEAR(CURDATE()), '-', MONTH(CURDATE()), '-', DAY(s.start_date)),
+                                '%Y-%m-%d'
+                            ), 
+                            INTERVAL 1 MONTH
+                        )
+                    ELSE
+                        STR_TO_DATE(
+                            CONCAT(YEAR(CURDATE()), '-', MONTH(CURDATE()), '-', DAY(s.start_date)),
+                            '%Y-%m-%d'
+                        )
+                END
+            WHEN s.billing_cycle = 'ANNUAL' THEN
+                CASE 
+                    WHEN DATE_FORMAT(s.start_date, '%m-%d') <= DATE_FORMAT(CURDATE(), '%m-%d') THEN
+                        STR_TO_DATE(
+                            CONCAT(YEAR(CURDATE()) + 1, '-', DATE_FORMAT(s.start_date, '%m-%d')),
+                            '%Y-%m-%d'
+                        )
+                    ELSE
+                        STR_TO_DATE(
+                            CONCAT(YEAR(CURDATE()), '-', DATE_FORMAT(s.start_date, '%m-%d')),
+                            '%Y-%m-%d'
+                        )
+                END
+        END,
+        CURDATE()
+    ) AS days_to_next_billing,
+    -- Subscription age
+    TIMESTAMPDIFF(MONTH, s.start_date, CURDATE()) AS subscription_age_months,
+    -- Trial period check
+    CASE 
+        WHEN s.trial_days > 0 AND DATEDIFF(CURDATE(), s.start_date) <= s.trial_days THEN 'TRIAL_ACTIVE'
+        WHEN s.trial_days > 0 AND DATEDIFF(CURDATE(), s.start_date) > s.trial_days THEN 'TRIAL_ENDED'
+        ELSE 'NO_TRIAL'
+    END AS trial_status,
+    -- Payment reminder logic
+    CASE 
+        WHEN DATEDIFF(
+            CASE 
+                WHEN s.billing_cycle = 'MONTHLY' THEN
+                    CASE 
+                        WHEN DAY(s.start_date) <= DAY(CURDATE()) THEN
+                            DATE_ADD(
+                                STR_TO_DATE(
+                                    CONCAT(YEAR(CURDATE()), '-', MONTH(CURDATE()), '-', DAY(s.start_date)),
+                                    '%Y-%m-%d'
+                                ), 
+                                INTERVAL 1 MONTH
+                            )
+                        ELSE
+                            STR_TO_DATE(
+                                CONCAT(YEAR(CURDATE()), '-', MONTH(CURDATE()), '-', DAY(s.start_date)),
+                                '%Y-%m-%d'
+                            )
+                    END
+                ELSE
+                    CASE 
+                        WHEN DATE_FORMAT(s.start_date, '%m-%d') <= DATE_FORMAT(CURDATE(), '%m-%d') THEN
+                            STR_TO_DATE(
+                                CONCAT(YEAR(CURDATE()) + 1, '-', DATE_FORMAT(s.start_date, '%m-%d')),
+                                '%Y-%m-%d'
+                            )
+                        ELSE
+                            STR_TO_DATE(
+                                CONCAT(YEAR(CURDATE()), '-', DATE_FORMAT(s.start_date, '%m-%d')),
+                                '%Y-%m-%d'
+                            )
+                    END
+            END,
+            CURDATE()
+        ) <= 7 THEN 'RENEWAL_REMINDER'
+        WHEN DATEDIFF(
+            CASE 
+                WHEN s.billing_cycle = 'MONTHLY' THEN
+                    CASE 
+                        WHEN DAY(s.start_date) <= DAY(CURDATE()) THEN
+                            DATE_ADD(
+                                STR_TO_DATE(
+                                    CONCAT(YEAR(CURDATE()), '-', MONTH(CURDATE()), '-', DAY(s.start_date)),
+                                    '%Y-%m-%d'
+                                ), 
+                                INTERVAL 1 MONTH
+                            )
+                        ELSE
+                            STR_TO_DATE(
+                                CONCAT(YEAR(CURDATE()), '-', MONTH(CURDATE()), '-', DAY(s.start_date)),
+                                '%Y-%m-%d'
+                            )
+                    END
+                ELSE
+                    CASE 
+                        WHEN DATE_FORMAT(s.start_date, '%m-%d') <= DATE_FORMAT(CURDATE(), '%m-%d') THEN
+                            STR_TO_DATE(
+                                CONCAT(YEAR(CURDATE()) + 1, '-', DATE_FORMAT(s.start_date, '%m-%d')),
+                                '%Y-%m-%d'
+                            )
+                        ELSE
+                            STR_TO_DATE(
+                                CONCAT(YEAR(CURDATE()), '-', DATE_FORMAT(s.start_date, '%m-%d')),
+                                '%Y-%m-%d'
+                            )
+                    END
+            END,
+            CURDATE()
+        ) < 0 THEN 'OVERDUE'
+        ELSE 'ACTIVE'
+    END AS billing_status
+FROM 
+    subscriptions s
+JOIN 
+    customers c ON s.customer_id = c.customer_id
+WHERE 
+    s.status = 'ACTIVE'
+ORDER BY 
+    days_to_next_billing;
+            </div>
+            <p><strong>Subscription Business Mastery:</strong></p>
+            <ul>
+                <li><strong>Billing Automation:</strong> Accurate billing cycle calculations</li>
+                <li><strong>Churn Prevention:</strong> Proactive renewal reminders</li>
+                <li><strong>Trial Management:</strong> Trial-to-paid conversion tracking</li>
+                <li><strong>Revenue Optimization:</strong> Subscription lifecycle analytics</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>📚 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#" style="color: #64ffda;">📺 YouTube: dataengineeringvideos</a> |
+            <a href="#" style="color: #64ffda;">💼 LinkedIn: sbgowtham</a> |
+            <a href="#" style="color: #64ffda;">📸 Instagram: dataengineeringtamil</a>
+        </div>
+        <p style="margin-top: 15px;"><em>Date Time Functions master aagiduvenga! Temporal data analysis expert level ku reach panniduvenga! 📅⏰🚀</em></p>
+    </div>
+</body>
+</html>
+            

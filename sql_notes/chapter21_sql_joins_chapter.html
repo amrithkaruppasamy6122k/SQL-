@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 21: Joins - SQL Book</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .author-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .social-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .content-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .flowchart {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .code-explanation {
+            background: #e6fffa;
+            padding: 10px;
+            border-left: 4px solid #38b2ac;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f56565;
+            margin: 15px 0;
+        }
+        .diagram {
+            text-align: center;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .function-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .function-table th, .function-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .function-table th {
+            background-color: #667eea;
+            color: white;
+        }
+        .types-box {
+            background: #f0fff4;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #48bb78;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background: #fffaf0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ed8936;
+            margin: 15px 0;
+        }
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 SQL Complete Guide</h1>
+        <h2>Chapter 21: Joins</h2>
+        <p><em>Rendu Table ah Connect Panni Data Ah Combine Panalam!</em></p>
+    </div>
+
+    <div class="author-info">
+        <h3 style="text-align: center; margin-bottom: 15px;">👨‍💻 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#">📺 YouTube: dataengineeringvideos</a>
+            <a href="#">💼 LinkedIn: sbgowtham</a>
+            <a href="#">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📖 Definition (Joins enna nu theriyuma?)</h2>
+        <p><strong>Joins</strong> na rendu yaa athiga table la irukira related data va onnodu onnu connect panni oru single result set la show panradhu thaan.</p>
+        <p>Joins oda main mukkiyam:</p>
+        <ul>
+            <li>Different table la irukira data ah combine panna mudiyum</li>
+            <li>Related information ah oru saathave retrieve panna mudiyum</li>
+            <li>Database normalization pannina apram data ah reconnect panna use aagum</li>
+            <li>Duplicate data avoid panni clean result kudukum</li>
+            <li>Complex business logic implement panna help aagum</li>
+        </ul>
+        
+        <div class="types-box">
+            <h4>🎯 Join Basic Syntax:</h4>
+            <p><strong>SELECT columns FROM table1 JOIN table2 ON table1.column = table2.column;</strong></p>
+            <p>Common key/foreign key relationship irukanum rendu table la!</p>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Mukkiyamana Vishayangal:</h4>
+            <ul>
+                <li>Join condition illana Cartesian product agum (ellam rows combine aagidum)</li>
+                <li>Wrong join condition use pannina duplicate or incorrect data varum</li>
+                <li>Performance ku proper indexing venum join columns la</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🏛️ Standard (Joins Types um Avanga Velai)</h2>
+        <p>MySQL la namma different prakar join operations use panna mudiyum:</p>
+        
+        <table class="function-table">
+            <thead>
+                <tr>
+                    <th>Join Type</th>
+                    <th>Tamil Explanation</th>
+                    <th>Return Agradhu</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>INNER JOIN</td>
+                    <td>Rendu table la matching records mattum return agum</td>
+                    <td>Common data mattum</td>
+                </tr>
+                <tr>
+                    <td>LEFT JOIN (LEFT OUTER)</td>
+                    <td>Left table la irukira ellam records plus right table matching records</td>
+                    <td>Left table full + matching right data</td>
+                </tr>
+                <tr>
+                    <td>RIGHT JOIN (RIGHT OUTER)</td>
+                    <td>Right table la irukira ellam records plus left table matching records</td>
+                    <td>Right table full + matching left data</td>
+                </tr>
+                <tr>
+                    <td>FULL OUTER JOIN</td>
+                    <td>Rendu table layum irukira ellam records (MySQL la direct support illa)</td>
+                    <td>Ellam data from both tables</td>
+                </tr>
+                <tr>
+                    <td>CROSS JOIN</td>
+                    <td>Oru table oda ellam rows ah mathra table oda ellam rows ooda combine pannum</td>
+                    <td>Cartesian product</td>
+                </tr>
+                <tr>
+                    <td>SELF JOIN</td>
+                    <td>Same table ah thanne join panradhu</td>
+                    <td>Hierarchical data ku use aagum</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="types-box">
+            <h4>📍 Join Performance Tips:</h4>
+            <ul>
+                <li><strong>Index create pannunga:</strong> Join pannura columns la index vekkanum</li>
+                <li><strong>Specific columns select pannunga:</strong> SELECT * avoid pannunga</li>
+                <li><strong>WHERE conditions add pannunga:</strong> Unnecessary data filter pannunga</li>
+                <li><strong>Join order optimize pannunga:</strong> Smaller table ah first la vekkalam</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📊 Flow Chart</h2>
+        <div class="flowchart">
+            <div class="diagram">
+                <h3>Joins Decision Making Process Flow</h3>
+                <pre style="font-family: monospace; text-align: left; background: white; padding: 15px; border-radius: 5px;">
+Shuru Panrom
+  ↓
+Enga Table la Data Iruku nu Identify Panrom
+  ↓
+┌─────────────────────────────────────────────┐
+│  Enna Data Venum?                           │
+│  ┌─── Common Data ────┐  ┌─── Full Data ───┐│
+│  │     Mattum         │  │   Venum          ││
+│  │  → INNER JOIN      │  │ → OUTER JOIN     ││
+│  └────────────────────┘  └──────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  Enga Table Primary?                        │
+│  ┌─── Left Table ────┐  ┌─── Right Table ──┐│
+│  │   Important       │  │   Important      ││
+│  │ → LEFT JOIN       │  │ → RIGHT JOIN     ││
+│  └───────────────────┘  └──────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  Same Table la Join Venum?                  │
+│  → YES: SELF JOIN                           │
+│  → NO: Different Tables JOIN                │
+└─────────────────────────────────────────────┘
+  ↓
+Join Condition Define Panrom (ON clause)
+  ↓
+WHERE Conditions Add Panrom (Filter ku)
+  ↓
+SELECT Specific Columns
+  ↓
+Query Execute Panrom
+  ↓
+Result Verify Panrom
+  ↓
+Mudinji
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🎯 Examples with Full Explanation</h2>
+        
+        <h3>1. INNER JOIN - Rendu table la matching data mattum</h3>
+        <div class="code-block">
+SELECT 
+    e.employee_name,
+    e.salary,
+    d.department_name
+FROM 
+    employees e
+INNER JOIN 
+    departments d ON e.department_id = d.department_id
+WHERE 
+    e.status = 'ACTIVE';
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT e.employee_name, e.salary, d.department_name</code> - Employee name, salary aur department name select panrom<br>
+            • <code>FROM employees e</code> - employees table ah main table ah eduthukrom, 'e' nu alias kuduththom<br>
+            • <code>INNER JOIN departments d</code> - departments table oda inner join panrom, 'd' alias<br>
+            • <code>ON e.department_id = d.department_id</code> - Join condition: employee oda dept ID match aaganum dept table oda ID oda<br>
+            • <code>WHERE e.status = 'ACTIVE'</code> - Active employees ah mattum filter panrom<br>
+            • <strong>Result:</strong> Matching department irukira active employees mattum varum
+        </div>
+
+        <h3>2. LEFT JOIN - Left table full data plus right table matching data</h3>
+        <div class="code-block">
+SELECT 
+    d.department_name,
+    COUNT(e.employee_id) AS total_employees,
+    COALESCE(AVG(e.salary), 0) AS avg_salary
+FROM 
+    departments d
+LEFT JOIN 
+    employees e ON d.department_id = e.department_id AND e.status = 'ACTIVE'
+GROUP BY 
+    d.department_id, d.department_name
+ORDER BY 
+    d.department_name;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT d.department_name, COUNT(e.employee_id) AS total_employees</code> - Dept name aur employees count select panrom<br>
+            • <code>COALESCE(AVG(e.salary), 0) AS avg_salary</code> - Average salary calculate panrom, NULL aana 0 show pannum<br>
+            • <code>FROM departments d</code> - departments table ah primary table ah vechchom<br>
+            • <code>LEFT JOIN employees e</code> - employees oda left join, ellam departments varum<br>
+            • <code>ON d.department_id = e.department_id AND e.status = 'ACTIVE'</code> - Join condition plus status filter<br>
+            • <code>GROUP BY d.department_id, d.department_name</code> - Department wise group panrom<br>
+            • <strong>Result:</strong> Ellam departments varum, employees illatha dept la count 0 show agum
+        </div>
+
+        <h3>3. RIGHT JOIN - Right table full data plus left table matching data</h3>
+        <div class="code-block">
+SELECT 
+    p.project_name,
+    e.employee_name,
+    pa.role_in_project,
+    pa.start_date
+FROM 
+    project_assignments pa
+RIGHT JOIN 
+    projects p ON pa.project_id = p.project_id
+LEFT JOIN 
+    employees e ON pa.employee_id = e.employee_id
+WHERE 
+    p.status = 'ACTIVE'
+ORDER BY 
+    p.project_name, e.employee_name;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT p.project_name, e.employee_name, pa.role_in_project, pa.start_date</code> - Project details, employee name, role select panrom<br>
+            • <code>FROM project_assignments pa</code> - Assignment table main table ah eduthukrom<br>
+            • <code>RIGHT JOIN projects p</code> - projects table oda right join, ellam projects varum<br>
+            • <code>LEFT JOIN employees e</code> - employees oda kooda left join panrom<br>
+            • <code>WHERE p.status = 'ACTIVE'</code> - Active projects mattum filter<br>
+            • <code>ORDER BY p.project_name, e.employee_name</code> - Project name apram employee name order la sort<br>
+            • <strong>Result:</strong> Ellam active projects varum, assignment illathavum include aagum
+        </div>
+
+        <h3>4. SELF JOIN - Same table ah thanne join panradhu</h3>
+        <div class="code-block">
+SELECT 
+    emp.employee_name AS employee_name,
+    mgr.employee_name AS manager_name,
+    emp.department_id,
+    emp.hire_date
+FROM 
+    employees emp
+LEFT JOIN 
+    employees mgr ON emp.manager_id = mgr.employee_id
+WHERE 
+    emp.status = 'ACTIVE'
+ORDER BY 
+    mgr.employee_name, emp.employee_name;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT emp.employee_name AS employee_name, mgr.employee_name AS manager_name</code> - Employee name aur manager name select panrom<br>
+            • <code>FROM employees emp</code> - employees table ah 'emp' alias la employee details ku use panrom<br>
+            • <code>LEFT JOIN employees mgr</code> - Same employees table ah 'mgr' alias la manager details ku use panrom<br>
+            • <code>ON emp.manager_id = mgr.employee_id</code> - Employee oda manager_id match aaganum manager oda employee_id oda<br>
+            • <code>WHERE emp.status = 'ACTIVE'</code> - Active employees mattum<br>
+            • <code>ORDER BY mgr.employee_name, emp.employee_name</code> - Manager name apram employee name order<br>
+            • <strong>Result:</strong> Employee aur avanga manager oda name oru saatha varum
+        </div>
+
+        <h3>5. Multiple JOIN - Moonu table ah onne join panradhu</h3>
+        <div class="code-block">
+SELECT 
+    e.employee_name,
+    d.department_name,
+    p.project_name,
+    pa.role_in_project,
+    pa.allocation_percentage
+FROM 
+    employees e
+INNER JOIN 
+    departments d ON e.department_id = d.department_id
+INNER JOIN 
+    project_assignments pa ON e.employee_id = pa.employee_id
+INNER JOIN 
+    projects p ON pa.project_id = p.project_id
+WHERE 
+    e.status = 'ACTIVE' 
+    AND p.status = 'ACTIVE'
+    AND pa.allocation_percentage > 50
+ORDER BY 
+    d.department_name, e.employee_name;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT e.employee_name, d.department_name, p.project_name</code> - Employee, department, project names select panrom<br>
+            • <code>FROM employees e</code> - employees main table<br>
+            • <code>INNER JOIN departments d ON e.department_id = d.department_id</code> - employees aur departments join<br>
+            • <code>INNER JOIN project_assignments pa ON e.employee_id = pa.employee_id</code> - employee aur assignment table join<br>
+            • <code>INNER JOIN projects p ON pa.project_id = p.project_id</code> - assignment aur projects table join<br>
+            • <code>WHERE e.status = 'ACTIVE' AND p.status = 'ACTIVE'</code> - Active employees aur projects filter<br>
+            • <code>AND pa.allocation_percentage > 50</code> - 50% kum athiga allocation irukira assignments mattum<br>
+            • <strong>Result:</strong> Full project assignment details with all related information
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🛠️ Use Cases (Real-world la Epidi Use Panalam)</h2>
+        
+        <div class="use-case">
+            <h4>1. E-commerce - Customer Order History</h4>
+            <p><strong>Situation:</strong> Customer details aur avanga order history ah oru saatha kaanika venum</p>
+            <div class="code-block">
+SELECT 
+    c.customer_name,
+    c.contact_number,
+    o.order_date,
+    o.total_amount,
+    oi.product_name,
+    oi.quantity,
+    oi.unit_price
+FROM 
+    customers c
+LEFT JOIN 
+    orders o ON c.customer_id = o.customer_id
+LEFT JOIN 
+    order_items oi ON o.order_id = oi.order_id
+WHERE 
+    c.status = 'ACTIVE'
+    AND (o.order_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH) OR o.order_date IS NULL)
+ORDER BY 
+    c.customer_name, o.order_date DESC;
+            </div>
+            <p><strong>Faayda:</strong> Customer support team ku complete customer history theriyum, better service provide panna mudiyum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. School Management - Student Performance Report</h4>
+            <p><strong>Situation:</strong> Student details, avanga class, subject marks ellam oru report la venum</p>
+            <div class="code-block">
+SELECT 
+    s.student_name,
+    s.roll_number,
+    c.class_name,
+    sub.subject_name,
+    m.marks,
+    m.grade,
+    CASE 
+        WHEN m.marks >= 90 THEN 'Excellent Performance'
+        WHEN m.marks >= 75 THEN 'Good Performance'
+        WHEN m.marks >= 50 THEN 'Average Performance'
+        ELSE 'Needs Improvement'
+    END AS performance_status
+FROM 
+    students s
+INNER JOIN 
+    classes c ON s.class_id = c.class_id
+INNER JOIN 
+    marks m ON s.student_id = m.student_id
+INNER JOIN 
+    subjects sub ON m.subject_id = sub.subject_id
+WHERE 
+    m.exam_term = 'FINAL'
+    AND m.academic_year = '2024-25'
+ORDER BY 
+    c.class_name, s.student_name, sub.subject_name;
+            </div>
+            <p><strong>Faayda:</strong> Teachers ku student performance clear ah theriyum, parents meeting la discuss panna mudiyum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Hospital Management - Patient Treatment History</h4>
+            <p><strong>Situation:</strong> Patient details, doctor information, treatment history ellam combine panna venum</p>
+            <div class="code-block">
+SELECT 
+    p.patient_name,
+    p.age,
+    p.contact_number,
+    d.doctor_name,
+    d.specialization,
+    a.appointment_date,
+    a.diagnosis,
+    a.prescribed_medicines
+FROM 
+    patients p
+INNER JOIN 
+    appointments a ON p.patient_id = a.patient_id
+INNER JOIN 
+    doctors d ON a.doctor_id = d.doctor_id
+WHERE 
+    a.appointment_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+    AND a.status = 'COMPLETED'
+ORDER BY 
+    p.patient_name, a.appointment_date DESC;
+            </div>
+            <p><strong>Faayda:</strong> Doctor ku patient oda complete medical history theriyum, better treatment plan panna mudiyum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Banking - Account Transaction Summary</h4>
+            <p><strong>Situation:</strong> Customer account details aur recent transactions ah oru dashboard la show panna venum</p>
+            <div class="code-block">
+SELECT 
+    c.customer_name,
+    a.account_number,
+    a.account_type,
+    a.current_balance,
+    t.transaction_date,
+    t.transaction_type,
+    t.amount,
+    t.description,
+    CASE 
+        WHEN t.transaction_type = 'CREDIT' THEN 'Money Received'
+        WHEN t.transaction_type = 'DEBIT' THEN 'Money Sent'
+        ELSE 'Other Transaction'
+    END AS transaction_meaning
+FROM 
+    customers c
+INNER JOIN 
+    accounts a ON c.customer_id = a.customer_id
+LEFT JOIN 
+    transactions t ON a.account_id = t.account_id
+WHERE 
+    a.status = 'ACTIVE'
+    AND (t.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) OR t.transaction_date IS NULL)
+ORDER BY 
+    c.customer_name, a.account_number, t.transaction_date DESC;
+            </div>
+            <p><strong>Faayda:</strong> Customer service team ku account status aur recent activities clear ah theriyum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>5. Inventory Management - Product Supplier Information</h4>
+            <p><strong>Situation:</strong> Product details, supplier information, stock levels ellam oru report la venum</p>
+            <div class="code-block">
+SELECT 
+    p.product_name,
+    p.product_code,
+    c.category_name,
+    s.supplier_name,
+    s.contact_person,
+    s.contact_number,
+    i.current_stock,
+    i.minimum_stock_level,
+    CASE 
+        WHEN i.current_stock <= i.minimum_stock_level THEN 'Reorder Required'
+        WHEN i.current_stock <= (i.minimum_stock_level * 1.5) THEN 'Low Stock Warning'
+        ELSE 'Stock OK'
+    END AS stock_status
+FROM 
+    products p
+INNER JOIN 
+    categories c ON p.category_id = c.category_id
+INNER JOIN 
+    suppliers s ON p.supplier_id = s.supplier_id
+LEFT JOIN 
+    inventory i ON p.product_id = i.product_id
+WHERE 
+    p.status = 'ACTIVE'
+    AND s.status = 'ACTIVE'
+ORDER BY 
+    stock_status, c.category_name, p.product_name;
+            </div>
+            <p><strong>Faayda:</strong> Inventory manager ku stock levels aur supplier contact details readily available, quick reordering possible</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>📚 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#" style="color: #64ffda;">📺 YouTube: dataengineeringvideos</a> |
+            <a href="#" style="color: #64ffda;">💼 LinkedIn: sbgowtham</a> |
+            <a href="#" style="color: #64ffda;">📸 Instagram: dataengineeringtamil</a>
+        </div>
+        <p style="margin-top: 15px;"><em>Joins master aagiduvenga! Ippove multiple table la irukira data ah easily combine panna mudiyum! 🚀</em></p>
+    </div>
+</body>
+</html>
