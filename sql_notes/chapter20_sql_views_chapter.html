@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 20: Views - SQL Book</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .author-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .social-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .content-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .flowchart {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .code-explanation {
+            background: #e6fffa;
+            padding: 10px;
+            border-left: 4px solid #38b2ac;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f56565;
+            margin: 15px 0;
+        }
+        .diagram {
+            text-align: center;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .function-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .function-table th, .function-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .function-table th {
+            background-color: #667eea;
+            color: white;
+        }
+        .types-box {
+            background: #f0fff4;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #48bb78;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background: #fffaf0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ed8936;
+            margin: 15px 0;
+        }
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 SQL Complete Guide</h1>
+        <h2>Chapter 20: Views</h2>
+        <p><em>Virtual Tables ah Create Panni Data ah Secure Panalam!</em></p>
+    </div>
+
+    <div class="author-info">
+        <h3 style="text-align: center; margin-bottom: 15px;">👨‍💻 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#">📺 YouTube: dataengineeringvideos</a>
+            <a href="#">💼 LinkedIn: sbgowtham</a>
+            <a href="#">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📖 Definition (Views enna?)</h2>
+        <p><strong>View</strong> na oru virtual table thaan. Idhu physically database la store agadhu, but oru SELECT query oda result ah table maari show pannum.</p>
+        <p>Views oda main features:</p>
+        <ul>
+            <li>Data security and privacy maintain panalam</li>
+            <li>Complex queries ah simplify panalam</li>
+            <li>User access control implement panalam</li>
+            <li>Data abstraction layer create panalam</li>
+            <li>Reusable query definitions store panalam</li>
+        </ul>
+        
+        <div class="types-box">
+            <h4>🎯 View Basic Structure:</h4>
+            <p><strong>CREATE VIEW view_name AS SELECT query;</strong></p>
+            <p>View use pannum bodhu normal table maari thaan query panalam!</p>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Important Points:</h4>
+            <ul>
+                <li>View la data physically store aagadhu</li>
+                <li>Underlying table data change aanalum view la reflect agum</li>
+                <li>Complex views la INSERT, UPDATE, DELETE panradhu limitations irukum</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🏛️ Standard (Views Types & Operations)</h2>
+        <p>MySQL la views ah different types la classify panalam:</p>
+        
+        <table class="function-table">
+            <thead>
+                <tr>
+                    <th>View Type</th>
+                    <th>Description</th>
+                    <th>Updatable</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Simple View</td>
+                    <td>Single table la irundhu create pandra view</td>
+                    <td>Yes (with conditions)</td>
+                </tr>
+                <tr>
+                    <td>Complex View</td>
+                    <td>Multiple tables, functions, GROUP BY use pandra view</td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td>Materialized View</td>
+                    <td>Result ah physically store pandra view (MySQL la direct support illa)</td>
+                    <td>Depends on implementation</td>
+                </tr>
+                <tr>
+                    <td>Updatable View</td>
+                    <td>INSERT, UPDATE, DELETE operations allow pandra view</td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td>Read-Only View</td>
+                    <td>Only SELECT operations allow pandra view</td>
+                    <td>No</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="types-box">
+            <h4>📍 View Operations:</h4>
+            <ul>
+                <li><strong>CREATE VIEW:</strong> New view create panna</li>
+                <li><strong>ALTER VIEW:</strong> Existing view modify panna</li>
+                <li><strong>DROP VIEW:</strong> View delete panna</li>
+                <li><strong>SHOW CREATE VIEW:</strong> View definition show panna</li>
+                <li><strong>DESCRIBE VIEW:</strong> View structure show panna</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📊 Flow Chart</h2>
+        <div class="flowchart">
+            <div class="diagram">
+                <h3>Views Creation and Usage Flow</h3>
+                <pre style="font-family: monospace; text-align: left; background: white; padding: 15px; border-radius: 5px;">
+Start
+  ↓
+Define Business Requirements
+  ↓
+┌─────────────────────────────────────────────┐
+│  View Purpose?                              │
+│  ┌─── Security ────┐  ┌─── Simplification ─┐│
+│  │  Data hiding    │  │  Complex queries   ││
+│  │  Access control │  │  User convenience  ││
+│  └─────────────────┘  └────────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+Write SELECT Query
+  ↓
+┌─────────────────────────────────────────────┐
+│  Test Query                                 │
+│  → Check performance                        │
+│  → Verify results                           │
+│  → Validate data types                      │
+└─────────────────────────────────────────────┘
+  ↓
+CREATE VIEW Statement
+  ↓
+┌─────────────────────────────────────────────┐
+│  View Type?                                 │
+│  ┌─── Simple View ──┐  ┌─── Complex View ──┐│
+│  │  Single table    │  │  Multiple tables  ││
+│  │  Updatable       │  │  Read-only        ││
+│  └──────────────────┘  └───────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+Grant Permissions (if needed)
+  ↓
+Test View Operations
+  ↓
+Document View Usage
+  ↓
+End
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🎯 Examples with Detailed Explanation</h2>
+        
+        <h3>1. Simple View Creation - Employee basic details view</h3>
+        <div class="code-block">
+CREATE VIEW employee_basic_info AS
+SELECT 
+    employee_id,
+    employee_name,
+    department_id,
+    hire_date
+FROM 
+    employees
+WHERE 
+    status = 'ACTIVE';
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>CREATE VIEW employee_basic_info AS</code> - 'employee_basic_info' name la view create panrom<br>
+            • <code>SELECT employee_id, employee_name, department_id, hire_date</code> - Basic employee details select panrom<br>
+            • <code>FROM employees</code> - employees table la irundhu data get panrom<br>
+            • <code>WHERE status = 'ACTIVE'</code> - Active employees ah mattum filter panrom<br>
+            • <strong>Usage:</strong> <code>SELECT * FROM employee_basic_info;</code> - Normal table maari use panalam
+        </div>
+
+        <h3>2. Complex View with JOIN - Employee department details view</h3>
+        <div class="code-block">
+CREATE VIEW employee_department_info AS
+SELECT 
+    e.employee_name,
+    e.salary,
+    d.department_name,
+    d.location
+FROM 
+    employees e
+JOIN 
+    departments d ON e.department_id = d.department_id
+WHERE 
+    e.status = 'ACTIVE';
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>CREATE VIEW employee_department_info AS</code> - Complex view create panrom<br>
+            • <code>SELECT e.employee_name, e.salary, d.department_name, d.location</code> - Employee and department details combine panrom<br>
+            • <code>FROM employees e</code> - employees table ku 'e' alias<br>
+            • <code>JOIN departments d ON e.department_id = d.department_id</code> - departments table oda join panrom<br>
+            • <code>WHERE e.status = 'ACTIVE'</code> - Active employees filter<br>
+            • <strong>Note:</strong> Idhu complex view, so direct ah update panna mudiyathu
+        </div>
+
+        <h3>3. View with Aggregate Functions - Department statistics view</h3>
+        <div class="code-block">
+CREATE VIEW department_statistics AS
+SELECT 
+    d.department_name,
+    COUNT(e.employee_id) AS total_employees,
+    AVG(e.salary) AS average_salary,
+    MAX(e.salary) AS highest_salary,
+    MIN(e.salary) AS lowest_salary
+FROM 
+    departments d
+LEFT JOIN 
+    employees e ON d.department_id = e.department_id
+WHERE 
+    e.status = 'ACTIVE' OR e.status IS NULL
+GROUP BY 
+    d.department_id, d.department_name;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>CREATE VIEW department_statistics AS</code> - Statistics view create panrom<br>
+            • <code>SELECT d.department_name, COUNT(e.employee_id) AS total_employees</code> - Department name and employee count<br>
+            • <code>AVG(e.salary) AS average_salary</code> - Department oda average salary calculate panrom<br>
+            • <code>MAX(e.salary) AS highest_salary, MIN(e.salary) AS lowest_salary</code> - Maximum and minimum salary find panrom<br>
+            • <code>LEFT JOIN employees e ON d.department_id = e.department_id</code> - All departments ah include panna LEFT JOIN use panrom<br>
+            • <code>GROUP BY d.department_id, d.department_name</code> - Department wise group panrom<br>
+            • <strong>Usage:</strong> Reporting and analytics ku useful
+        </div>
+
+        <h3>4. Updatable View with CHECK OPTION - Active employees salary view</h3>
+        <div class="code-block">
+CREATE VIEW active_employees_salary AS
+SELECT 
+    employee_id,
+    employee_name,
+    salary,
+    status
+FROM 
+    employees
+WHERE 
+    status = 'ACTIVE'
+WITH CHECK OPTION;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>CREATE VIEW active_employees_salary AS</code> - Updatable view create panrom<br>
+            • <code>SELECT employee_id, employee_name, salary, status</code> - Update pannavendum columns select panrom<br>
+            • <code>FROM employees</code> - Base table employees<br>
+            • <code>WHERE status = 'ACTIVE'</code> - Active employees mattum show panrom<br>
+            • <code>WITH CHECK OPTION</code> - View condition violate pandra updates ah prevent pannum<br>
+            • <strong>Benefit:</strong> INSERT/UPDATE pandrappo automatically status = 'ACTIVE' nu ensure pannum
+        </div>
+
+        <h3>5. View Management Operations - View modify and drop</h3>
+        <div class="code-block">
+-- View structure ah paakalam
+DESCRIBE employee_basic_info;
+
+-- View definition ah paakalam  
+SHOW CREATE VIEW employee_basic_info;
+
+-- View ah modify panalam
+ALTER VIEW employee_basic_info AS
+SELECT 
+    employee_id,
+    employee_name,
+    department_id,
+    hire_date,
+    salary
+FROM 
+    employees
+WHERE 
+    status = 'ACTIVE';
+
+-- View ah delete panalam
+DROP VIEW IF EXISTS employee_basic_info;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>DESCRIBE employee_basic_info;</code> - View oda column structure show pannum<br>
+            • <code>SHOW CREATE VIEW employee_basic_info;</code> - View create panna query ah show pannum<br>
+            • <code>ALTER VIEW employee_basic_info AS</code> - Existing view ah modify panrom<br>
+            • <code>SELECT employee_id, employee_name, department_id, hire_date, salary</code> - New columns add panrom (salary added)<br>
+            • <code>DROP VIEW IF EXISTS employee_basic_info;</code> - View ah safely delete panrom<br>
+            • <strong>Note:</strong> IF EXISTS use pannradhu errors avoid panna help pannum
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🛠️ Use Cases (Real-world Applications)</h2>
+        
+        <div class="use-case">
+            <h4>1. Data Security - Sensitive Information Protection</h4>
+            <p><strong>Scenario:</strong> HR department ku employee basic details mattum access kudukanum, salary details hide pananum</p>
+            <div class="code-block">
+CREATE VIEW hr_employee_view AS
+SELECT 
+    employee_id,
+    employee_name,
+    department_id,
+    hire_date,
+    contact_address,
+    status
+FROM 
+    employees;
+
+-- HR team ku mattum indha view access kudukalam
+GRANT SELECT ON hr_employee_view TO 'hr_team'@'localhost';
+            </div>
+            <p><strong>Benefit:</strong> Sensitive salary data hide panni, necessary details mattum share panalam</p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. Reporting Dashboard - Executive Summary View</h4>
+            <p><strong>Scenario:</strong> Management ku department wise performance summary venum</p>
+            <div class="code-block">
+CREATE VIEW executive_dashboard AS
+SELECT 
+    d.department_name,
+    COUNT(e.employee_id) AS total_staff,
+    ROUND(AVG(e.salary), 2) AS avg_salary,
+    SUM(p.project_budget) AS total_budget,
+    COUNT(p.project_id) AS active_projects
+FROM 
+    departments d
+LEFT JOIN 
+    employees e ON d.department_id = e.department_id
+LEFT JOIN 
+    projects p ON d.department_id = p.department_id
+WHERE 
+    (e.status = 'ACTIVE' OR e.status IS NULL)
+    AND (p.status = 'ACTIVE' OR p.status IS NULL)
+GROUP BY 
+    d.department_id, d.department_name;
+            </div>
+            <p><strong>Benefit:</strong> Complex joins ah hide panni, management ku simple interface provide panalam</p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Application Layer Abstraction - API Data Layer</h4>
+            <p><strong>Scenario:</strong> Mobile app ku customer order summary data venum, but complex table structure ah hide pananum</p>
+            <div class="code-block">
+CREATE VIEW customer_order_summary AS
+SELECT 
+    c.customer_id,
+    c.customer_name,
+    COUNT(o.order_id) AS total_orders,
+    ROUND(SUM(oi.quantity * oi.unit_price), 2) AS total_spent,
+    MAX(o.order_date) AS last_order_date,
+    CASE 
+        WHEN SUM(oi.quantity * oi.unit_price) > 10000 THEN 'Premium'
+        WHEN SUM(oi.quantity * oi.unit_price) > 5000 THEN 'Gold'
+        ELSE 'Regular'
+    END AS customer_tier
+FROM 
+    customers c
+LEFT JOIN 
+    orders o ON c.customer_id = o.customer_id
+LEFT JOIN 
+    order_items oi ON o.order_id = oi.order_id
+GROUP BY 
+    c.customer_id, c.customer_name;
+            </div>
+            <p><strong>Benefit:</strong> Application developers ku simple view kuduthu, complex business logic hide panalam</p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Data Warehouse - Dimension Table Views</h4>
+            <p><strong>Scenario:</strong> Analytics team ku clean and formatted dimension data venum</p>
+            <div class="code-block">
+CREATE VIEW dim_employee_clean AS
+SELECT 
+    employee_id,
+    TRIM(UPPER(employee_name)) AS employee_name_clean,
+    department_id,
+    CASE 
+        WHEN hire_date < '2020-01-01' THEN 'Experienced'
+        WHEN hire_date < '2023-01-01' THEN 'Mid-level'
+        ELSE 'New'
+    END AS experience_category,
+    CASE 
+        WHEN salary < 50000 THEN 'Entry'
+        WHEN salary < 80000 THEN 'Mid'
+        ELSE 'Senior'
+    END AS salary_grade
+FROM 
+    employees
+WHERE 
+    status = 'ACTIVE';
+            </div>
+            <p><strong>Benefit:</strong> ETL processes simplified agi, consistent data format maintain panalam</p>
+        </div>
+
+        <div class="use-case">
+            <h4>5. Multi-tenant Application - Tenant Isolation</h4>
+            <p><strong>Scenario:</strong> SaaS application la each company ku adha company data mattum access kudukanum</p>
+            <div class="code-block">
+CREATE VIEW company_employees AS
+SELECT 
+    employee_id,
+    employee_name,
+    department_name,
+    salary,
+    hire_date
+FROM 
+    employees e
+JOIN 
+    departments d ON e.department_id = d.department_id
+WHERE 
+    e.company_id = @current_company_id
+    AND e.status = 'ACTIVE';
+
+-- Session variable set panni tenant isolation implement panalam
+SET @current_company_id = 1001;
+SELECT * FROM company_employees;
+            </div>
+            <p><strong>Benefit:</strong> Data isolation ensure panni, security breaches prevent panalam</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>📚 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#" style="color: #64ffda;">📺 YouTube: dataengineeringvideos</a> |
+            <a href="#" style="color: #64ffda;">💼 LinkedIn: sbgowtham</a> |
+            <a href="#" style="color: #64ffda;">📸 Instagram: dataengineeringtamil</a>
+        </div>
+        <p style="margin-top: 15px;"><em>Views master aayiduvinga! Data security and abstraction ippove easy ah handle panalam! 🚀</em></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 7 - Different Types of CREATE TABLE</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .author-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .author-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.9em;
+        }
+        .social-link {
+            color: #74b9ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .social-link:hover {
+            color: #0984e3;
+        }
+        .chapter {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .definition-box {
+            background: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .types-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .type-card {
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .type-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .basic-card { background: #e8f5e8; border-color: #27ae60; }
+        .constraint-card { background: #e8f0ff; border-color: #3498db; }
+        .copy-card { background: #fff8e8; border-color: #f39c12; }
+        .temp-card { background: #ffe8e8; border-color: #e74c3c; }
+        .flowchart {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+        .flowchart-box {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #3498db;
+            color: white;
+            border-radius: 8px;
+            margin: 5px;
+            min-width: 150px;
+        }
+        .arrow {
+            font-size: 24px;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        .sql-code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .constraint-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .constraint-tag {
+            background: #3498db;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .use-case {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .tamil-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .nav-button {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        .nav-button:hover {
+            background: #2980b9;
+        }
+        .author-footer {
+            background: #2d3436;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .footer-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #74b9ff;
+        }
+        @media print {
+            body { background: white; }
+            .chapter { box-shadow: none; }
+            .navigation { display: none; }
+            .author-footer { background: #f8f9fa; color: #2c3e50; }
+        }
+        @media (max-width: 768px) {
+            .types-grid { grid-template-columns: 1fr; }
+            .social-links { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="author-header">
+        <div class="author-name">📚 SQL Complete Course - By Gowtham SB</div>
+        <div class="social-links">
+            <span>📱 Instagram: <a href="#" class="social-link">@dataengineeringtamil</a></span>
+            <span>💼 LinkedIn: <a href="#" class="social-link">sbgowtham</a></span>
+            <span>🎥 YouTube: <a href="#" class="social-link">dataengineeringvideos</a></span>
+        </div>
+    </div>
+
+    <div class="chapter">
+        <h1>Chapter 7: Different Types of CREATE TABLE</h1>
+
+        <h2>📖 Definition</h2>
+        <div class="definition-box">
+            <strong>CREATE TABLE Types:</strong> SQL-la table create panna <span class="tamil-text">different methods iruku</span>. <span class="tamil-text">Basic table create panradhu, constraints-oda create panradhu, existing table copy panradhu, temporary table create panradhu</span> - <span class="tamil-text">ellaam different purposes-ku use panrom</span>. <span class="tamil-text">Each method-ku specific advantages um use cases um iruku</span>.
+        </div>
+
+        <h2>🎯 CREATE TABLE Types Overview</h2>
+        <div class="types-grid">
+            <div class="type-card basic-card">
+                <h3>🏗️ Basic CREATE</h3>
+                <h4><span class="tamil-text">Simple Table Creation</span></h4>
+                <p><span class="tamil-text">Basic columns with data types</span></p>
+                <p><strong><span class="tamil-text">Use:</span></strong> Simple tables</p>
+            </div>
+            
+            <div class="type-card constraint-card">
+                <h3>🔒 With Constraints</h3>
+                <h4><span class="tamil-text">Rules & Validations</span></h4>
+                <p><span class="tamil-text">Primary keys, foreign keys, checks</span></p>
+                <p><strong><span class="tamil-text">Use:</span></strong> Data integrity</p>
+            </div>
+            
+            <div class="type-card copy-card">
+                <h3>📋 Copy Existing</h3>
+                <h4><span class="tamil-text">Clone Table Structure</span></h4>
+                <p><span class="tamil-text">Existing table structure copy</span></p>
+                <p><strong><span class="tamil-text">Use:</span></strong> Backup, testing</p>
+            </div>
+            
+            <div class="type-card temp-card">
+                <h3>⏰ Temporary Table</h3>
+                <h4><span class="tamil-text">Session-based Tables</span></h4>
+                <p><span class="tamil-text">Connection close-na auto delete</span></p>
+                <p><strong><span class="tamil-text">Use:</span></strong> Temp data processing</p>
+            </div>
+        </div>
+
+        <h2>📊 Table Creation Flow</h2>
+        <div class="flowchart">
+            <div class="flowchart-box" style="background: #27ae60;"><span class="tamil-text">Choose</span> Table Type</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box" style="background: #3498db;"><span class="tamil-text">Define</span> Columns</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box" style="background: #f39c12;"><span class="tamil-text">Add</span> Constraints</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box" style="background: #e74c3c;"><span class="tamil-text">Execute</span> CREATE</div>
+        </div>
+
+        <h2>🏗️ Type 1: Basic CREATE TABLE</h2>
+
+        <div class="sql-code">
+-- Simple table with basic data types
+CREATE TABLE products (
+    product_id INT,
+    product_name VARCHAR(100),
+    price DECIMAL(10,2),
+    quantity INT,
+    description TEXT
+);
+
+-- Another basic example
+CREATE TABLE customers (
+    customer_id INT,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100),
+    phone VARCHAR(15),
+    address TEXT,
+    registration_date DATE
+);
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Basic CREATE Explanation:</span></strong><br>
+            <strong>CREATE TABLE products</strong> - <span class="tamil-text">'products' naam-oda table create panrom</span><br>
+            <strong>product_id INT</strong> - <span class="tamil-text">Integer type-oda column create panrom</span><br>
+            <strong>VARCHAR(100)</strong> - <span class="tamil-text">Maximum 100 characters text field</span><br>
+            <strong>DECIMAL(10,2)</strong> - <span class="tamil-text">10 digits total, 2 decimal places price field</span><br>
+            <strong>TEXT</strong> - <span class="tamil-text">Long text-ku use panrom</span>
+        </div>
+
+        <h2>🔒 Type 2: CREATE TABLE with Constraints</h2>
+
+        <div class="sql-code">
+-- Table with comprehensive constraints
+CREATE TABLE employees (
+    employee_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(15),
+    salary DECIMAL(10,2) CHECK (salary > 0),
+    department_id INT,
+    hire_date DATE DEFAULT (CURDATE()),
+    status ENUM('Active', 'Inactive', 'Terminated') DEFAULT 'Active',
+    
+    -- Foreign key constraint
+    FOREIGN KEY (department_id) REFERENCES departments(dept_id)
+        ON DELETE SET NULL 
+        ON UPDATE CASCADE,
+    
+    -- Table-level constraints
+    CONSTRAINT chk_email_format CHECK (email LIKE '%@%.%'),
+    INDEX idx_lastname (last_name),
+    INDEX idx_department (department_id)
+);
+
+-- Create departments table first (for foreign key reference)
+CREATE TABLE departments (
+    dept_id INT AUTO_INCREMENT PRIMARY KEY,
+    dept_name VARCHAR(50) UNIQUE NOT NULL,
+    manager_id INT,
+    budget DECIMAL(12,2) DEFAULT 0
+);
+        </div>
+
+        <h2>🔧 Available Constraints</h2>
+        <div class="constraint-list">
+            <span class="constraint-tag">PRIMARY KEY</span>
+            <span class="constraint-tag">FOREIGN KEY</span>
+            <span class="constraint-tag">UNIQUE</span>
+            <span class="constraint-tag">NOT NULL</span>
+            <span class="constraint-tag">CHECK</span>
+            <span class="constraint-tag">DEFAULT</span>
+            <span class="constraint-tag">AUTO_INCREMENT</span>
+            <span class="constraint-tag">INDEX</span>
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Constraints Explanation:</span></strong><br>
+            <strong>AUTO_INCREMENT PRIMARY KEY</strong> - <span class="tamil-text">Automatic-a increment aagura unique ID</span><br>
+            <strong>NOT NULL</strong> - <span class="tamil-text">Empty value allow panna maatom</span><br>
+            <strong>UNIQUE</strong> - <span class="tamil-text">Duplicate values allow illa</span><br>
+            <strong>CHECK (salary > 0)</strong> - <span class="tamil-text">Salary 0-ku mela irukanum</span><br>
+            <strong>DEFAULT (CURDATE())</strong> - <span class="tamil-text">Value kudukkala-na current date set aagum</span><br>
+            <strong>ENUM('Active', 'Inactive')</strong> - <span class="tamil-text">Specific values mattum allow pannum</span><br>
+            <strong>FOREIGN KEY</strong> - <span class="tamil-text">Another table-oda connection create pannum</span>
+        </div>
+
+        <h2>📋 Type 3: CREATE TABLE from Existing Table</h2>
+
+        <div class="sql-code">
+-- Copy table structure only (no data)
+CREATE TABLE employees_backup LIKE employees;
+
+-- Copy table structure with data
+CREATE TABLE employees_archive 
+AS SELECT * FROM employees WHERE hire_date < '2020-01-01';
+
+-- Copy specific columns with data
+CREATE TABLE employee_summary 
+AS SELECT 
+    employee_id, 
+    CONCAT(first_name, ' ', last_name) AS full_name,
+    department_id,
+    salary 
+FROM employees 
+WHERE status = 'Active';
+
+-- Copy structure and modify
+CREATE TABLE temp_employees LIKE employees;
+ALTER TABLE temp_employees ADD COLUMN temp_duration INT;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Copy Methods Explanation:</span></strong><br>
+            <strong>CREATE TABLE ... LIKE</strong> - <span class="tamil-text">Structure mattum copy pannum, data illa</span><br>
+            <strong>CREATE TABLE ... AS SELECT</strong> - <span class="tamil-text">Structure + data rendu copy pannum</span><br>
+            <strong>WHERE hire_date < '2020-01-01'</strong> - <span class="tamil-text">Specific condition-oda data mattum copy pannum</span><br>
+            <strong>CONCAT(first_name, ' ', last_name)</strong> - <span class="tamil-text">Multiple columns combine panni oru column-a maatthurom</span>
+        </div>
+
+        <h2>⏰ Type 4: Temporary Tables</h2>
+
+        <div class="sql-code">
+-- Create temporary table
+CREATE TEMPORARY TABLE temp_sales (
+    sale_id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT,
+    customer_id INT,
+    sale_amount DECIMAL(10,2),
+    sale_date DATE DEFAULT (CURDATE())
+);
+
+-- Use temporary table
+INSERT INTO temp_sales (product_id, customer_id, sale_amount) 
+VALUES (1, 101, 2500.00), (2, 102, 1800.00);
+
+-- Process temporary data
+SELECT 
+    product_id,
+    COUNT(*) as total_sales,
+    SUM(sale_amount) as total_amount
+FROM temp_sales 
+GROUP BY product_id;
+
+-- Temporary table with complex processing
+CREATE TEMPORARY TABLE monthly_report 
+AS SELECT 
+    MONTH(sale_date) as month,
+    YEAR(sale_date) as year,
+    COUNT(*) as total_orders,
+    SUM(sale_amount) as monthly_revenue,
+    AVG(sale_amount) as avg_order_value
+FROM sales 
+WHERE sale_date >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+GROUP BY YEAR(sale_date), MONTH(sale_date);
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Temporary Tables Explanation:</span></strong><br>
+            <strong>CREATE TEMPORARY TABLE</strong> - <span class="tamil-text">Session-specific table create pannum</span><br>
+            <strong>Connection close-na auto delete</strong> - <span class="tamil-text">Manual-a delete panna vendaam</span><br>
+            <strong>Other users kan't see</strong> - <span class="tamil-text">Only current connection-ku visible</span><br>
+            <strong>Same name regular table irundhalum conflict illa</strong> - <span class="tamil-text">Temporary table priority kedaikum</span>
+        </div>
+
+        <h2>🎨 Type 5: CREATE TABLE with Advanced Features</h2>
+
+        <div class="sql-code">
+-- Table with storage engine and other options
+CREATE TABLE user_sessions (
+    session_id VARCHAR(128) PRIMARY KEY,
+    user_id INT NOT NULL,
+    login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_activity TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
+    
+    INDEX idx_user_id (user_id),
+    INDEX idx_login_time (login_time),
+    INDEX idx_active (is_active, last_activity)
+) ENGINE=InnoDB 
+  AUTO_INCREMENT=1000 
+  DEFAULT CHARSET=utf8mb4 
+  COLLATE=utf8mb4_unicode_ci
+  COMMENT='User session tracking table';
+
+-- Partitioned table (advanced)
+CREATE TABLE sales_by_year (
+    id INT AUTO_INCREMENT,
+    sale_date DATE NOT NULL,
+    amount DECIMAL(10,2),
+    customer_id INT,
+    PRIMARY KEY (id, sale_date)
+) 
+PARTITION BY RANGE (YEAR(sale_date)) (
+    PARTITION p2022 VALUES LESS THAN (2023),
+    PARTITION p2023 VALUES LESS THAN (2024),
+    PARTITION p2024 VALUES LESS THAN (2025),
+    PARTITION p_future VALUES LESS THAN MAXVALUE
+);
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Advanced Features Explanation:</span></strong><br>
+            <strong>TIMESTAMP DEFAULT CURRENT_TIMESTAMP</strong> - <span class="tamil-text">Current time automatic-a set aagum</span><br>
+            <strong>ON UPDATE CURRENT_TIMESTAMP</strong> - <span class="tamil-text">Update pannappo time update aagum</span><br>
+            <strong>BOOLEAN</strong> - <span class="tamil-text">True/False values store pannum</span><br>
+            <strong>ENGINE=InnoDB</strong> - <span class="tamil-text">Storage engine specify panrom</span><br>
+            <strong>DEFAULT CHARSET=utf8mb4</span> - <span class="tamil-text">Unicode support-ku character set</span><br>
+            <strong>PARTITION BY RANGE</strong> - <span class="tamil-text">Large tables-a small parts-a divide pannum</span>
+        </div>
+
+        <h2>🔧 Use Cases</h2>
+
+        <div class="use-case">
+            <h4>1. <span class="tamil-text">Basic CREATE - Learning Projects</span></h4>
+            <strong>When:</strong> <span class="tamil-text">Simple applications, learning phase</span><br>
+            <strong>Example:</strong> <span class="tamil-text">Personal blog, small websites</span><br>
+            <strong>Pros:</strong> <span class="tamil-text">Quick to create, simple structure</span>
+        </div>
+
+        <div class="use-case">
+            <h4>2. <span class="tamil-text">Constraints - Production Systems</span></h4>
+            <strong>When:</strong> <span class="tamil-text">Business applications, data integrity important</span><br>
+            <strong>Example:</strong> <span class="tamil-text">E-commerce, banking systems</span><br>
+            <strong>Pros:</strong> <span class="tamil-text">Data safety, automatic validation</span>
+        </div>
+
+        <div class="use-case">
+            <h4>3. <span class="tamil-text">Copy Tables - Backup & Testing</span></h4>
+            <strong>When:</strong> <span class="tamil-text">Data backup, testing new features</span><br>
+            <strong>Example:</strong> <span class="tamil-text">Monthly reports, data migration</span><br>
+            <strong>Pros:</strong> <span class="tamil-text">Quick backup, safe testing environment</span>
+        </div>
+
+        <div class="use-case">
+            <h4>4. <span class="tamil-text">Temporary Tables - Data Processing</span></h4>
+            <strong>When:</strong> <span class="tamil-text">Complex calculations, report generation</span><br>
+            <strong>Example:</strong> <span class="tamil-text">Monthly sales analysis, bulk operations</span><br>
+            <strong>Pros:</strong> <span class="tamil-text">No cleanup needed, fast processing</span>
+        </div>
+
+        <h2>⚠️ Best Practices & Tips</h2>
+
+        <div class="warning-box">
+            <h4><span class="tamil-text">Important Guidelines:</span></h4>
+            ✅ <strong><span class="tamil-text">Naming Convention:</span></strong> <span class="tamil-text">Consistent table names use pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Data Types:</span></strong> <span class="tamil-text">Appropriate data types choose pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Constraints:</span></strong> <span class="tamil-text">Data integrity-ku constraints add pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Indexes:</span></strong> <span class="tamil-text">Frequently queried columns-ku index create pannunga</span><br>
+            ⚠️ <strong><span class="tamil-text">Temporary Tables:</span></strong> <span class="tamil-text">Large temp tables memory use pannalam</span><br>
+            ⚠️ <strong><span class="tamil-text">Foreign Keys:</span></strong> <span class="tamil-text">Referenced table first create pannunga</span>
+        </div>
+
+        <h2>📝 Quick Reference</h2>
+        <ul>
+            <li><strong><span class="tamil-text">Basic:</span></strong> CREATE TABLE name (columns...)</li>
+            <li><strong><span class="tamil-text">With constraints:</span></strong> PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL</li>
+            <li><strong><span class="tamil-text">Copy structure:</span></strong> CREATE TABLE new_name LIKE old_name</li>
+            <li><strong><span class="tamil-text">Copy with data:</span></strong> CREATE TABLE new_name AS SELECT...</li>
+            <li><strong><span class="tamil-text">Temporary:</span></strong> CREATE TEMPORARY TABLE...</li>
+            <li><strong><span class="tamil-text">Advanced:</span></strong> ENGINE, CHARSET, PARTITION options</li>
+        </ul>
+
+        <div class="navigation">
+            <a href="#" class="nav-button">← <span class="tamil-text">Previous:</span> CRUD Operations</a>
+            <div style="text-align: center; color: #7f8c8d;">
+                <strong>Chapter 7 of 40+</strong><br>
+                <span class="tamil-text">CREATE TABLE Mastery!</span>
+            </div>
+            <a href="#" class="nav-button"><span class="tamil-text">Next:</span> ALTER Commands →</a>
+        </div>
+    </div>
+
+    <div class="author-footer">
+        <div class="footer-title">📘 Master Table Creation with Gowtham SB</div>
+        <div class="social-links">
+            <span>🎥 Advanced Table Design: <strong>YouTube/dataengineeringvideos</strong></span><br>
+            <span>📱 Daily SQL Tips: <strong>Instagram/@dataengineeringtamil</strong></span><br>
+            <span>💼 Connect for Career Guidance: <strong>LinkedIn/sbgowtham</strong></span>
+        </div>
+    </div>
+</body>
+</html>

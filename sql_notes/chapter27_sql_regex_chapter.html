@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 27: Regular Expressions (Regex) - SQL Book</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .author-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .social-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .content-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .flowchart {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .code-explanation {
+            background: #e6fffa;
+            padding: 10px;
+            border-left: 4px solid #38b2ac;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f56565;
+            margin: 15px 0;
+        }
+        .diagram {
+            text-align: center;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .function-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .function-table th, .function-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .function-table th {
+            background-color: #667eea;
+            color: white;
+        }
+        .types-box {
+            background: #f0fff4;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #48bb78;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background: #fffaf0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ed8936;
+            margin: 15px 0;
+        }
+        .tip-box {
+            background: #f5f0ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #9f7aea;
+            margin: 15px 0;
+        }
+        .regex-box {
+            background: #fff0f8;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #e53e3e;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .pattern-box {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #3182ce;
+            margin: 15px 0;
+        }
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 SQL Complete Guide</h1>
+        <h2>Chapter 27: Regular Expressions (Regex)</h2>
+        <p><em>Pattern Matching Expert Aagidunga! Text Data Ah Powerful Ah Search Pannalam!</em></p>
+    </div>
+
+    <div class="author-info">
+        <h3 style="text-align: center; margin-bottom: 15px;">👨‍💻 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#">📺 YouTube: dataengineeringvideos</a>
+            <a href="#">💼 LinkedIn: sbgowtham</a>
+            <a href="#">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📖 Definition (Regular Expressions Enna Thalaiva?)</h2>
+        <p><strong>Regular Expressions (Regex)</strong> na text data la specific patterns ah search panradhu, match panradhu, aur replace panradhu ku use agura powerful technique thaan. Idhu programming world oda Swiss Army Knife maari - text processing ku ellam solution irukum!</p>
+        
+        <p>MySQL la Regex oda super powers:</p>
+        <ul>
+            <li><strong>Pattern Matching:</strong> Complex text patterns ah precisely identify panna mudiyum</li>
+            <li><strong>Data Validation:</strong> Email, phone, postal codes validation super easy</li>
+            <li><strong>Text Extraction:</strong> String la specific portions ah extract panna mudiyum</li>
+            <li><strong>Data Cleaning:</strong> Unwanted characters, formats ah clean panna mudiyum</li>
+            <li><strong>Advanced Search:</strong> Simple LIKE operator vida powerful search operations</li>
+            <li><strong>Format Standardization:</strong> Different formats la irukra data ah uniform ah convert panalam</li>
+        </ul>
+        
+        <div class="regex-box">
+            <h4>🎯 MySQL Regex Functions:</h4>
+            <ul>
+                <li><strong>REGEXP / RLIKE:</strong> Pattern match checking (TRUE/FALSE return pannum)</li>
+                <li><strong>REGEXP_LIKE():</strong> Pattern match with additional options</li>
+                <li><strong>REGEXP_SUBSTR():</strong> First matching substring extract pannum</li>
+                <li><strong>REGEXP_REPLACE():</strong> Pattern-based text replacement</li>
+                <li><strong>REGEXP_INSTR():</strong> Pattern match position find pannum</li>
+            </ul>
+        </div>
+
+        <div class="pattern-box">
+            <h4>🔍 Common Regex Patterns:</h4>
+            <ul>
+                <li><strong>^:</strong> String start (line beginning)</li>
+                <li><strong>$:</strong> String end (line ending)</li>
+                <li><strong>.</strong> Any single character</li>
+                <li><strong>*:</strong> Zero or more occurrences</li>
+                <li><strong>+:</strong> One or more occurrences</li>
+                <li><strong>?:</strong> Zero or one occurrence</li>
+                <li><strong>[abc]:</strong> Any one of a, b, or c</li>
+                <li><strong>[0-9]:</strong> Any digit from 0 to 9</li>
+                <li><strong>\d:</strong> Any digit (equivalent to [0-9])</li>
+                <li><strong>\w:</strong> Any word character (alphanumeric + underscore)</li>
+            </ul>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Regex la Careful Ah Irukanume:</h4>
+            <ul>
+                <li><strong>Performance Impact:</strong> Complex regex patterns query speed slow pannum</li>
+                <li><strong>Case Sensitivity:</strong> Default ah case-sensitive matching aagum</li>
+                <li><strong>Special Characters:</strong> Meta characters ah escape pananum</li>
+                <li><strong>Pattern Complexity:</strong> Over-complex patterns maintain panna kashtam</li>
+                <li><strong>Index Usage:</strong> Regex conditions la index utilization limited</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🏛️ Standard (Regex Patterns aur Avanga Velai)</h2>
+        <p>MySQL la different types oda regex patterns use panna mudiyum, each one specific use cases ku optimized:</p>
+        
+        <table class="function-table">
+            <thead>
+                <tr>
+                    <th>Pattern Type</th>
+                    <th>Tamil la Explanation</th>
+                    <th>Example Pattern</th>
+                    <th>Use Case</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Character Classes</td>
+                    <td>Specific character sets ah match pannum</td>
+                    <td>[a-zA-Z0-9]</td>
+                    <td>Alphanumeric validation</td>
+                </tr>
+                <tr>
+                    <td>Quantifiers</td>
+                    <td>Pattern repetition specify pannum</td>
+                    <td>{2,4}, +, *, ?</td>
+                    <td>Length validation</td>
+                </tr>
+                <tr>
+                    <td>Anchors</td>
+                    <td>String position specify pannum</td>
+                    <td>^start, end$</td>
+                    <td>Exact matching</td>
+                </tr>
+                <tr>
+                    <td>Escape Sequences</td>
+                    <td>Special characters ah literal ah treat pannum</td>
+                    <td>\., \+, \*</td>
+                    <td>Special char matching</td>
+                </tr>
+                <tr>
+                    <td>Groups</td>
+                    <td>Patterns ah group panni capture pannum</td>
+                    <td>(pattern)</td>
+                    <td>Text extraction</td>
+                </tr>
+                <tr>
+                    <td>Alternatives</td>
+                    <td>Multiple options la oru match pannum</td>
+                    <td>option1|option2</td>
+                    <td>Multiple format support</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="types-box">
+            <h4>📍 Business Applications:</h4>
+            <ul>
+                <li><strong>Data Validation:</strong> Email, phone, PAN, Aadhar validation</li>
+                <li><strong>Log Analysis:</strong> Server logs la specific patterns extract pannum</li>
+                <li><strong>Data Cleaning:</strong> Inconsistent formats ah standardize pannum</li>
+                <li><strong>Security:</strong> Input validation, SQL injection prevention</li>
+                <li><strong>Analytics:</strong> Text data la insights extract pannum</li>
+            </ul>
+        </div>
+
+        <div class="tip-box">
+            <h4>💡 Regex Performance Tips:</h4>
+            <ul>
+                <li><strong>Simple First:</strong> Simple patterns use panni, complex patterns avoid pannunga</li>
+                <li><strong>Pre-filter Data:</strong> WHERE clause la basic filters use panni data reduce pannunga</li>
+                <li><strong>Index Strategy:</strong> Regex conditions ku before basic filtering pannunga</li>
+                <li><strong>Test Thoroughly:</strong> Different data sets la regex patterns test pannunga</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📊 Flow Chart</h2>
+        <div class="flowchart">
+            <div class="diagram">
+                <h3>Regex Pattern Development Flow</h3>
+                <pre style="font-family: monospace; text-align: left; background: white; padding: 15px; border-radius: 5px;">
+Text Processing Requirement Identify Panrom
+  ↓
+┌─────────────────────────────────────────────┐
+│  Pattern Type Decision                      │
+│  ┌─── Simple Match ───┐  ┌─── Complex ────┐│
+│  │   (LIKE enough)    │  │   Pattern       ││
+│  │ → Basic Operators  │  │ → Regex needed ││
+│  └────────────────────┘  └─────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  Pattern Components Design                  │
+│  ┌─── Character ─────┐  ┌─── Position ────┐│
+│  │    Classes        │  │   Anchors       ││
+│  │   [a-z], \d       │  │   ^, $          ││
+│  └───────────────────┘  └─────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  Quantifiers Add Panrom                     │
+│  ┌─── Exact Count ───┐  ┌─── Variable ────┐│
+│  │     {3}, {2,5}    │  │   +, *, ?       ││
+│  └───────────────────┘  └─────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+Pattern Testing aur Validation
+  ↓
+┌─────────────────────────────────────────────┐
+│  MySQL Function Select                      │
+│  ┌─── Check Only ────┐  ┌─── Extract/Replace │
+│  │    REGEXP/RLIKE   │  │   REGEXP_SUBSTR   ││
+│  │    REGEXP_LIKE    │  │   REGEXP_REPLACE  ││
+│  └───────────────────┘  └───────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+Query Implementation aur Performance Testing
+  ↓
+Regex Pattern Optimization Complete!
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🎯 Examples with Full Tamil Explanation</h2>
+        
+        <h3>1. Basic Pattern Matching - Simple regex operations</h3>
+        <div class="code-block">
+-- Email validation using regex
+SELECT 
+    customer_id,
+    customer_name,
+    email_address,
+    CASE 
+        WHEN email_address REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$' THEN 'Valid Email'
+        ELSE 'Invalid Email'
+    END AS email_status
+FROM 
+    customers
+WHERE 
+    email_address IS NOT NULL
+ORDER BY 
+    email_status,
+    customer_name;
+
+-- Phone number validation - Indian mobile numbers
+SELECT 
+    customer_id,
+    customer_name,
+    phone_number,
+    CASE 
+        WHEN phone_number REGEXP '^[6-9][0-9]{9}$' THEN 'Valid Mobile'
+        WHEN phone_number REGEXP '^(\+91)?[6-9][0-9]{9}$' THEN 'Valid with Country Code'
+        ELSE 'Invalid Number'
+    END AS phone_status
+FROM 
+    customers
+WHERE 
+    phone_number IS NOT NULL;
+
+-- PIN code validation
+SELECT 
+    address_id,
+    customer_id,
+    postal_code,
+    CASE 
+        WHEN postal_code REGEXP '^[1-9][0-9]{5}$' THEN 'Valid PIN Code'
+        ELSE 'Invalid PIN Code'
+    END AS pin_status
+FROM 
+    customer_addresses
+WHERE 
+    postal_code IS NOT NULL;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>email_address REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'</code> - Email format validation pattern<br>
+            • <code>^[A-Za-z0-9._%+-]+</code> - Email oda first part (username) - letters, numbers, special chars allowed<br>
+            • <code>@[A-Za-z0-9.-]+</code> - @ symbol apram domain name part<br>
+            • <code>\.[A-Za-z]{2,}$</code> - Dot apram minimum 2 letters domain extension (.com, .org, etc.)<br>
+            • <code>phone_number REGEXP '^[6-9][0-9]{9}$'</code> - Indian mobile number pattern (10 digits, 6-9 la start aaganum)<br>
+            • <code>'^(\+91)?[6-9][0-9]{9}$'</code> - Optional country code (+91) oda mobile number<br>
+            • <code>postal_code REGEXP '^[1-9][0-9]{5}$'</code> - Indian PIN code (6 digits, 1-9 la start aaganum, 0 la start aagakoodadhu)<br>
+            • <strong>Business Value:</strong> Data quality ensure pannum, invalid contacts identify panalam<br>
+            • <strong>Validation Power:</strong> Real-time data validation, user registration form validation
+        </div>
+
+        <h3>2. Text Extraction - Pattern based data extraction</h3>
+        <div class="code-block">
+-- Extract domain name from email addresses
+SELECT 
+    customer_id,
+    email_address,
+    REGEXP_SUBSTR(email_address, '@(.+)', 1, 1, '', 1) AS domain_name,
+    CASE 
+        WHEN REGEXP_SUBSTR(email_address, '@(.+)', 1, 1, '', 1) IN ('gmail.com', 'yahoo.com', 'hotmail.com') THEN 'Personal Email'
+        ELSE 'Business Email'
+    END AS email_type
+FROM 
+    customers
+WHERE 
+    email_address REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+ORDER BY 
+    domain_name;
+
+-- Extract area code from phone numbers
+SELECT 
+    customer_id,
+    phone_number,
+    CASE 
+        WHEN phone_number REGEXP '^\+91[6-9][0-9]{9}$' THEN 
+            REGEXP_SUBSTR(phone_number, '\+91([6-9][0-9]{2})', 1, 1, '', 1)
+        WHEN phone_number REGEXP '^[6-9][0-9]{9}$' THEN 
+            REGEXP_SUBSTR(phone_number, '^([6-9][0-9]{2})', 1, 1, '', 1)
+        ELSE NULL
+    END AS area_code,
+    LENGTH(phone_number) AS phone_length
+FROM 
+    customers
+WHERE 
+    phone_number IS NOT NULL
+    AND 
+    phone_number REGEXP '(^\+91[6-9][0-9]{9}$|^[6-9][0-9]{9}$)';
+
+-- Extract numbers from mixed text
+SELECT 
+    product_code,
+    product_name,
+    REGEXP_SUBSTR(product_name, '[0-9]+', 1, 1) AS first_number,
+    REGEXP_SUBSTR(product_name, '[0-9]+', 1, 2) AS second_number,
+    REGEXP_SUBSTR(product_name, '[A-Za-z]+', 1, 1) AS first_text_part
+FROM 
+    products
+WHERE 
+    product_name REGEXP '[0-9]+'
+ORDER BY 
+    product_code;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>REGEXP_SUBSTR(email_address, '@(.+)', 1, 1, '', 1) AS domain_name</code> - Email address la irundhu domain name extract panrom<br>
+            • <code>'@(.+)'</code> - @ symbol apram vara ellam characters ah capture panrom<br>
+            • <code>1, 1, '', 1</code> - Position 1 la irundhu start, first occurrence, no flags, capture group 1<br>
+            • <code>WHEN REGEXP_SUBSTR(...) IN ('gmail.com', 'yahoo.com', 'hotmail.com')</code> - Popular personal email domains check panrom<br>
+            • <code>REGEXP_SUBSTR(phone_number, '\+91([6-9][0-9]{2})', 1, 1, '', 1)</code> - Country code oda phone number la irundhu area code extract panrom<br>
+            • <code>'^([6-9][0-9]{2})'</code> - Phone number start la irundhu first 3 digits (area code) capture panrom<br>
+            • <code>REGEXP_SUBSTR(product_name, '[0-9]+', 1, 1)</code> - Product name la first number extract panrom<br>
+            • <code>REGEXP_SUBSTR(product_name, '[0-9]+', 1, 2)</code> - Product name la second number extract panrom<br>
+            • <strong>Data Mining:</strong> Structured data unstructured text la irundhu extract panalam<br>
+            • <strong>Analytics:</strong> Email domains, area codes, product codes analyze panalam
+        </div>
+
+        <h3>3. Data Cleaning and Standardization - Pattern-based replacement</h3>
+        <div class="code-block">
+-- Clean and standardize phone numbers
+SELECT 
+    customer_id,
+    phone_number AS original_phone,
+    REGEXP_REPLACE(phone_number, '[^0-9+]', '') AS digits_only,
+    CASE 
+        WHEN phone_number REGEXP '^\+91' THEN 
+            REGEXP_REPLACE(phone_number, '[^0-9]', '')
+        WHEN phone_number REGEXP '^91[6-9][0-9]{9}$' THEN 
+            CONCAT('+', REGEXP_REPLACE(phone_number, '[^0-9]', ''))
+        WHEN phone_number REGEXP '^[6-9][0-9]{9}$' THEN 
+            CONCAT('+91', REGEXP_REPLACE(phone_number, '[^0-9]', ''))
+        ELSE REGEXP_REPLACE(phone_number, '[^0-9]', '')
+    END AS standardized_phone
+FROM 
+    customers
+WHERE 
+    phone_number IS NOT NULL;
+
+-- Clean product codes and standardize format
+SELECT 
+    product_id,
+    product_code AS original_code,
+    UPPER(REGEXP_REPLACE(product_code, '[^A-Za-z0-9]', '')) AS clean_code,
+    CASE 
+        WHEN product_code REGEXP '^[A-Za-z]{2,3}[0-9]{3,6}$' THEN 
+            CONCAT(
+                UPPER(REGEXP_SUBSTR(product_code, '^[A-Za-z]+')), 
+                '-', 
+                REGEXP_SUBSTR(product_code, '[0-9]+$')
+            )
+        ELSE UPPER(REGEXP_REPLACE(product_code, '[^A-Za-z0-9]', ''))
+    END AS standardized_code
+FROM 
+    products
+WHERE 
+    product_code IS NOT NULL;
+
+-- Remove extra spaces and standardize names
+SELECT 
+    customer_id,
+    customer_name AS original_name,
+    TRIM(REGEXP_REPLACE(customer_name, '[[:space:]]+', ' ')) AS clean_name,
+    REGEXP_REPLACE(
+        TRIM(REGEXP_REPLACE(customer_name, '[[:space:]]+', ' ')), 
+        '^([a-z])', 
+        UPPER('\\1')
+    ) AS formatted_name
+FROM 
+    customers
+WHERE 
+    customer_name IS NOT NULL
+    AND 
+    customer_name REGEXP '[[:space:]]{2,}|^[a-z]';
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>REGEXP_REPLACE(phone_number, '[^0-9+]', '')</code> - Phone number la digits aur + sign except ella characters ah remove panrom<br>
+            • <code>'[^0-9+]'</code> - Numbers aur + sign allama other characters ah match panrum<br>
+            • <code>WHEN phone_number REGEXP '^\+91'</code> - +91 la start agura numbers identify panrom<br>
+            • <code>CONCAT('+91', REGEXP_REPLACE(phone_number, '[^0-9]', ''))</code> - Indian country code add panni standardize panrom<br>
+            • <code>UPPER(REGEXP_REPLACE(product_code, '[^A-Za-z0-9]', ''))</code> - Product code la special characters remove panni uppercase panrom<br>
+            • <code>REGEXP_SUBSTR(product_code, '^[A-Za-z]+')</code> - Product code start la irukra letters ah extract panrom<br>
+            • <code>REGEXP_SUBSTR(product_code, '[0-9]+$')</code> - Product code end la irukra numbers ah extract panrom<br>
+            • <code>TRIM(REGEXP_REPLACE(customer_name, '[[:space:]]+', ' '))</code> - Multiple spaces ah single space ah replace panrom<br>
+            • <code>'[[:space:]]+'</code> - One or more whitespace characters ah match panrum<br>
+            • <strong>Data Quality:</strong> Inconsistent formats ah uniform ah convert panalam<br>
+            • <strong>Database Integrity:</strong> Clean data storage, efficient searching
+        </div>
+
+        <h3>4. Advanced Pattern Matching - Complex business validation</h3>
+        <div class="code-block">
+-- PAN card validation (Indian tax identification)
+SELECT 
+    customer_id,
+    pan_number,
+    CASE 
+        WHEN pan_number REGEXP '^[A-Z]{5}[0-9]{4}[A-Z]{1}$' THEN 'Valid PAN Format'
+        ELSE 'Invalid PAN Format'
+    END AS pan_status,
+    REGEXP_SUBSTR(pan_number, '^[A-Z]{3}', 1, 1) AS pan_series,
+    REGEXP_SUBSTR(pan_number, '[A-Z]{2}', 1, 2) AS name_initials
+FROM 
+    customers
+WHERE 
+    pan_number IS NOT NULL;
+
+-- Aadhar number validation (Indian unique ID)
+SELECT 
+    customer_id,
+    aadhar_number,
+    CASE 
+        WHEN aadhar_number REGEXP '^[2-9][0-9]{3}[[:space:]][0-9]{4}[[:space:]][0-9]{4}$' THEN 'Valid Aadhar Format'
+        WHEN aadhar_number REGEXP '^[2-9][0-9]{11}$' THEN 'Valid Aadhar (No Spaces)'
+        ELSE 'Invalid Aadhar'
+    END AS aadhar_status,
+    REGEXP_REPLACE(aadhar_number, '[^0-9]', '') AS aadhar_digits_only
+FROM 
+    customers
+WHERE 
+    aadhar_number IS NOT NULL;
+
+-- Credit card validation (basic format check)
+SELECT 
+    payment_id,
+    card_number,
+    CASE 
+        WHEN card_number REGEXP '^4[0-9]{15}$' THEN 'Visa Card'
+        WHEN card_number REGEXP '^5[1-5][0-9]{14}$' THEN 'MasterCard'
+        WHEN card_number REGEXP '^3[47][0-9]{13}$' THEN 'American Express'
+        WHEN card_number REGEXP '^6(?:011|5[0-9]{2})[0-9]{12}$' THEN 'Discover Card'
+        ELSE 'Unknown Card Type'
+    END AS card_type,
+    REGEXP_REPLACE(card_number, '([0-9]{4})([0-9]{4})([0-9]{4})([0-9]{4})', '\\1-\\2-\\3-\\4') AS formatted_card_number
+FROM 
+    payment_methods
+WHERE 
+    card_number IS NOT NULL
+    AND 
+    payment_type = 'CREDIT_CARD';
+
+-- GST number validation (Indian business tax ID)
+SELECT 
+    business_id,
+    gst_number,
+    CASE 
+        WHEN gst_number REGEXP '^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$' THEN 'Valid GST Format'
+        ELSE 'Invalid GST Format'
+    END AS gst_status,
+    REGEXP_SUBSTR(gst_number, '^[0-9]{2}', 1, 1) AS state_code,
+    REGEXP_SUBSTR(gst_number, '[A-Z]{5}[0-9]{4}[A-Z]', 1, 1) AS pan_section
+FROM 
+    businesses
+WHERE 
+    gst_number IS NOT NULL;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>pan_number REGEXP '^[A-Z]{5}[0-9]{4}[A-Z]{1}$'</code> - PAN card format validation (5 letters, 4 numbers, 1 letter)<br>
+            • <code>'^[A-Z]{5}'</code> - Start la exactly 5 uppercase letters venum<br>
+            • <code>'[0-9]{4}'</code> - Aduth

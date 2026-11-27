@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adhyayam 32: Normalization-um Vakaigalum - SQL Nool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .author-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .author-info a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 5px;
+        }
+        .content-box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .definition {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .flowchart {
+            text-align: center;
+            background: #f0f8ff;
+            border: 2px dashed #4682b4;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .good-example {
+            background: #1a4d3a;
+            color: #90ee90;
+        }
+        .bad-example {
+            background: #4d1a1a;
+            color: #ff6b6b;
+        }
+        .sql-explanation {
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .use-case {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .chapter-title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .sample-chapter {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .normal-forms-box {
+            background: #fff8dc;
+            border: 2px solid #ffa500;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .problem-box {
+            background: #ffe6e6;
+            border: 2px solid #ff6b6b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .solution-box {
+            background: #e6ffe6;
+            border: 2px solid #4CAF50;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .nf-step {
+            background: #f0f0f0;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="chapter-title">Adhyayam 32: Normalization-um Vakaigalum</h1>
+        <p><strong>Ezhuthiyavar:</strong> Gowtham SB</p>
+        <div class="author-info">
+            <a href="https://linkedin.com/in/sbgowtham" target="_blank">📧 LinkedIn: sbgowtham</a>
+            <a href="https://youtube.com/@dataengineeringvideos" target="_blank">🎥 YouTube: dataengineeringvideos</a>
+            <a href="https://instagram.com/dataengineeringtamil" target="_blank">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Vilakkam (Definition)</h2>
+        <div class="definition">
+            <strong>Database Normalization:</strong> Database design la irukka duplicate data (punar takkaal) ah reduce panni, data integrity (takkaal nilai thanmai) ah maintain panna use panra technique. Itha pala normal forms la organize pannurom.<br><br>
+            <strong>Normalization Target:</strong> Data redundancy illa pannu, storage space save pannu, data inconsistency problems avoid pannu, update/insert/delete operations ah easy ah pannu.<br><br>
+            <strong>Normal Forms:</strong> 1NF, 2NF, 3NF, BCNF, 4NF, 5NF nu different levels irukku. Adhulayum mostly 1NF to 3NF varaikum use pannurom.
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Otta Padal (Flow Chart)</h2>
+        <div class="flowchart">
+            <div style="margin-bottom: 20px;">
+                <strong>NORMALIZATION PROCESS:</strong><br>
+                Unnormalized Table → 1NF (Atomic Values) → 2NF (Partial Dependency Remove) → 3NF (Transitive Dependency Remove) → BCNF (Advanced Normal Form)
+            </div>
+            <div style="border-top: 2px solid #4682b4; padding-top: 15px; margin-bottom: 20px;">
+                <strong>DENORMALIZATION PROCESS:</strong><br>
+                Normalized Tables → Performance Requirements → Join Tables → Add Redundancy → Query Optimization
+            </div>
+            <div style="border-top: 2px solid #4682b4; padding-top: 15px;">
+                <strong>NORMALIZATION BENEFITS:</strong><br>
+                Less Storage → No Data Duplication → Easy Maintenance → Better Data Integrity → Reduced Update Anomalies
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Normal Forms Vakaigal</h2>
+        <div class="normal-forms-box">
+            <h4>1. First Normal Form (1NF) - Muthal Nilai Uruvaakam</h4>
+            <p>Ellaa columns layum atomic values mattum irukanum. Oru cell la multiple values irukka koodaathu.</p>
+            
+            <h4>2. Second Normal Form (2NF) - Rendaam Nilai Uruvaakam</h4>
+            <p>1NF requirements meet pannanum + Partial dependency irukka koodaathu.</p>
+            
+            <h4>3. Third Normal Form (3NF) - Moondraam Nilai Uruvaakam</h4>
+            <p>2NF requirements meet pannanum + Transitive dependency irukka koodaathu.</p>
+            
+            <h4>4. Boyce-Codd Normal Form (BCNF)</h4>
+            <p>3NF ah vida advanced form. Ellaa functional dependencies layum left side super key ah irukanum.</p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Udaharanangal ooda Vilakkam</h2>
+        
+        <h3>Udaharanam 1: First Normal Form (1NF) - Muthal Nilai Uruvaakam</h3>
+        
+        <div class="problem-box">
+            <h4>Problem - Prachanaigal:</h4>
+            <p>Oru cell la multiple values irukku. Itha atomic ah illa.</p>
+        </div>
+
+        <div class="code-block bad-example">
+-- Thavaraana Vagai (Before 1NF)
+CREATE TABLE vidyarthigal_thavaraana (
+    id INT,
+    peyar VARCHAR(100),
+    vishayangal VARCHAR(200)  -- "Kanakkam, Ariviyal, Thamizh"
+);
+
+INSERT INTO vidyarthigal_thavaraana VALUES 
+(1, 'Ravi Kumar', 'Kanakkam, Ariviyal, Thamizh'),
+(2, 'Priya Devi', 'Varalaru, Puthagam Nilai, Kalai');
+        </div>
+        <div class="sql-explanation">
+            <strong>Thavaraana Vagai:</strong> vishayangal column la multiple subjects uh comma separate panni store pannurom<br>
+            <strong>Problem:</strong> Individual subject ah query panna mudiyaathu<br>
+            <strong>Search Issue:</strong> Specific subject irukkanu check panna complex ah irukum<br>
+            <strong>Update Problem:</strong> Oru subject ah mattum change panna mudiyaathu
+        </div>
+
+        <div class="solution-box">
+            <h4>Solution - Teervu:</h4>
+            <p>Ellaa values ayum atomic ah separate pannurom.</p>
+        </div>
+
+        <div class="code-block good-example">
+-- Sariyaana Vagai (After 1NF)
+CREATE TABLE vidyarthigal_sariyaana (
+    id INT,
+    peyar VARCHAR(100),
+    vishayam VARCHAR(50)
+);
+
+INSERT INTO vidyarthigal_sariyaana VALUES 
+(1, 'Ravi Kumar', 'Kanakkam'),
+(1, 'Ravi Kumar', 'Ariviyal'),
+(1, 'Ravi Kumar', 'Thamizh'),
+(2, 'Priya Devi', 'Varalaru'),
+(2, 'Priya Devi', 'Puthagam Nilai'),
+(2, 'Priya Devi', 'Kalai');
+        </div>
+        <div class="sql-explanation">
+            <strong>Sariyaana Vagai:</strong> Oru row la oru subject mattum store pannurom<br>
+            <strong>Atomic Values:</strong> Ellaa column layum single value mattum irukku<br>
+            <strong>Query Easy:</strong> Individual subject ah easily search pannalam<br>
+            <strong>Maintenance:</strong> Update/delete operations easy ah pannalam
+        </div>
+
+        <h3>Udaharanam 2: Second Normal Form (2NF) - Rendaam Nilai Uruvaakam</h3>
+        
+        <div class="problem-box">
+            <h4>Partial Dependency Problem:</h4>
+            <p>Non-key attribute uh, composite key oda part ah mattum depend pannuthu.</p>
+        </div>
+
+        <div class="code-block bad-example">
+-- 2NF illama irukka table
+CREATE TABLE vidyarthi_vishayam_thavaraana (
+    vidyarthi_id INT,
+    vishayam_id INT,
+    vishayam_peyar VARCHAR(100),  -- Partial dependency
+    adhyaapagar_peyar VARCHAR(100), -- Partial dependency
+    markku INT,
+    PRIMARY KEY (vidyarthi_id, vishayam_id)
+);
+        </div>
+        <div class="sql-explanation">
+            <strong>Partial Dependency:</strong> vishayam_peyar uh vishayam_id ah mattum depend pannuthu<br>
+            <strong>Problem:</strong> Same vishayam_peyar ellaa rows layum repeat aagum<br>
+            <strong>Redundancy:</strong> Storage space waste aagum<br>
+            <strong>Update Anomaly:</strong> Vishayam peyar change pannana ellaa places layum change pannanum
+        </div>
+
+        <div class="solution-box">
+            <h4>2NF Solution:</h4>
+            <p>Separate tables create panni partial dependency ah remove pannurom.</p>
+        </div>
+
+        <div class="code-block good-example">
+-- 2NF Form - Separate tables
+CREATE TABLE vidyarthigal (
+    vidyarthi_id INT PRIMARY KEY,
+    vidyarthi_peyar VARCHAR(100)
+);
+
+CREATE TABLE vishayangal (
+    vishayam_id INT PRIMARY KEY,
+    vishayam_peyar VARCHAR(100),
+    adhyaapagar_peyar VARCHAR(100)
+);
+
+CREATE TABLE markku_taalikka (
+    vidyarthi_id INT,
+    vishayam_id INT,
+    markku INT,
+    PRIMARY KEY (vidyarthi_id, vishayam_id),
+    FOREIGN KEY (vidyarthi_id) REFERENCES vidyarthigal(vidyarthi_id),
+    FOREIGN KEY (vishayam_id) REFERENCES vishayangal(vishayam_id)
+);
+        </div>
+        <div class="sql-explanation">
+            <strong>vidyarthigal table:</strong> Vidyarthi details mattum store pannurom<br>
+            <strong>vishayangal table:</strong> Subject details mattum separate ah store pannurom<br>
+            <strong>markku_taalikka:</strong> Marks mattum store panra junction table<br>
+            <strong>FOREIGN KEY:</strong> Tables ku naduvula relationship establish pannurom<br>
+            <strong>No Redundancy:</strong> Subject name ellaa places layum repeat aagaathu
+        </div>
+
+        <h3>Udaharanam 3: Third Normal Form (3NF) - Moondraam Nilai Uruvaakam</h3>
+        
+        <div class="problem-box">
+            <h4>Transitive Dependency Problem:</h4>
+            <p>Non-key attribute uh, vera oru non-key attribute ah depend pannuthu.</p>
+        </div>
+
+        <div class="code-block bad-example">
+-- 3NF illama irukka table
+CREATE TABLE alkalargal_thavaraana (
+    alkalkar_id INT PRIMARY KEY,
+    peyar VARCHAR(100),
+    vibhaagam VARCHAR(50),
+    vibhaaga_thalaivar VARCHAR(100)  -- Transitive dependency
+);
+
+INSERT INTO alkalargal_thavaraana VALUES 
+(1, 'Ravi', 'IT', 'Senthil Kumar'),
+(2, 'Priya', 'IT', 'Senthil Kumar'),
+(3, 'Arun', 'Accounts', 'Meena Devi');
+        </div>
+        <div class="sql-explanation">
+            <strong>Transitive Dependency:</strong> vibhaaga_thalaivar uh vibhaagam ah depend pannuthu<br>
+            <strong>Problem:</strong> Same department la irukka ellaarukkum same head repeat aagum<br>
+            <strong>Update Anomaly:</strong> Department head change aana ellaa rows layum change pannanum<br>
+            <strong>Storage Waste:</strong> Same data multiple times store aagum
+        </div>
+
+        <div class="solution-box">
+            <h4>3NF Solution:</h4>
+            <p>Department details ah separate table la move pannurom.</p>
+        </div>
+
+        <div class="code-block good-example">
+-- 3NF Form - Separate department table
+CREATE TABLE vibhaagangal (
+    vibhaaga_id INT PRIMARY KEY,
+    vibhaaga_peyar VARCHAR(50),
+    vibhaaga_thalaivar VARCHAR(100)
+);
+
+CREATE TABLE alkalargal_sariyaana (
+    alkalkar_id INT PRIMARY KEY,
+    peyar VARCHAR(100),
+    vibhaaga_id INT,
+    FOREIGN KEY (vibhaaga_id) REFERENCES vibhaagangal(vibhaaga_id)
+);
+
+INSERT INTO vibhaagangal VALUES 
+(1, 'IT', 'Senthil Kumar'),
+(2, 'Accounts', 'Meena Devi');
+
+INSERT INTO alkalargal_sariyaana VALUES 
+(1, 'Ravi', 1),
+(2, 'Priya', 1),
+(3, 'Arun', 2);
+        </div>
+        <div class="sql-explanation">
+            <strong>vibhaagangal table:</strong> Department details ah separate ah store pannurom<br>
+            <strong>alkalargal_sariyaana:</strong> Employee details layum department reference mattum<br>
+            <strong>vibhaaga_id:</strong> Foreign key use panni relationship maintain pannurom<br>
+            <strong>No Transitive Dependency:</strong> Department head direct ah depend aagaathu<br>
+            <strong>Easy Maintenance:</strong> Department head change aana oru place la mattum change pannaal podhum
+        </div>
+
+        <h3>Udaharanam 4: Denormalization - Punar Nilai Uruvaakkam</h3>
+        
+        <div class="definition">
+            <strong>Denormalization:</strong> Normalized tables ah purposely join panni performance increase pannuradhu. Read operations frequent ah irundha redundancy add panni query speed increase pannurom.
+        </div>
+
+        <div class="code-block">
+-- Normalized tables (Multiple joins required)
+SELECT a.peyar, v.vibhaaga_peyar, v.vibhaaga_thalaivar
+FROM alkalargal_sariyaana a
+JOIN vibhaagangal v ON a.vibhaaga_id = v.vibhaaga_id;
+
+-- Denormalized table (Single table query)
+CREATE TABLE alkalargal_denormalized (
+    alkalkar_id INT PRIMARY KEY,
+    peyar VARCHAR(100),
+    vibhaaga_peyar VARCHAR(50),
+    vibhaaga_thalaivar VARCHAR(100)
+);
+        </div>
+        <div class="sql-explanation">
+            <strong>Normalized Query:</strong> Rendu tables ah join panni data vaanganum<br>
+            <strong>Performance Issue:</strong> Join operations time consuming aagum<br>
+            <strong>Denormalized Table:</strong> Ellaam oru table layae store pannurom<br>
+            <strong>Performance Gain:</strong> Join venaam, single query podhum<br>
+            <strong>Trade-off:</strong> Storage increase aagum aana speed increase aagum
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Normalization Steps - Padal Muaigal</h2>
+        
+        <div class="nf-step">
+            <h4>Padal 1: 1NF ku Convert pannu</h4>
+            <p>• Ellaa columns layum atomic values mattum vaikka venumu<br>
+            • Multi-valued attributes ah separate rows ah convert pannu<br>
+            • Repeated groups ah eliminate pannu</p>
+        </div>
+
+        <div class="nf-step">
+            <h4>Padal 2: 2NF ku Convert pannu</h4>
+            <p>• 1NF requirements meet pannanum<br>
+            • Partial functional dependencies ah identify pannu<br>
+            • Separate tables create panni partial dependencies ah remove pannu</p>
+        </div>
+
+        <div class="nf-step">
+            <h4>Padal 3: 3NF ku Convert pannu</h4>
+            <p>• 2NF requirements meet pannanum<br>
+            • Transitive dependencies ah identify pannu<br>
+            • Non-key attributes ah separate tables la move pannu</p>
+        </div>
+
+        <div class="nf-step">
+            <h4>Padal 4: BCNF ku Convert pannu (Optional)</h4>
+            <p>• 3NF requirements meet pannanum<br>
+            • Ellaa functional dependencies layum left side super key ah irukanum<br>
+            • Advanced normalization technique</p>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Payan Paadu Nilai (Use Cases)</h2>
+        
+        <div class="use-case">
+            <h4>1. Kalvi Nuvana Muramai (Educational Management)</h4>
+            <p>Vidyarthi details, vishaya details, adhyaapagar details ellaam separate tables la normalize panni storage space save pannalam, data consistency maintain pannalam.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. Velai Paari Muramai (Employee Management)</h4>
+            <p>Alkalkar details, vibhaaga details, payir details ellaam normalize panni redundant data avoid pannalam, update operations easy ah pannalam.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Kadai Nilai Muramai (E-commerce System)</h4>
+            <p>Customer details, product details, order details ellaam proper ah normalize panni data integrity maintain pannalam, complex queries easy ah write pannalam.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Vaidya Muramai (Healthcare System)</h4>
+            <p>Patient details, doctor details, treatment details ellaam normalize panni duplicate data avoid pannalam, privacy and security maintain pannalam.</p>
+        </div>
+    </div>
+
+    <div class="sample-chapter">
+        <h2>Adutta Adhyayam Sample: SCD (Slowly Changing Dimensions)</h2>
+        
+        <h3>Vilakkam</h3>
+        <div class="definition">
+            <strong>SCD (Slowly Changing Dimensions):</strong> Data warehousing la dimension table la irukka data ah slowly change aagumbodhu adha handle panna use panra techniques. Customer address change aagradhu, employee designation change aagradhu pola historical data ah track pannurom.
+        </div>
+
+        <h3>SCD Type 1 Udaharanam:</h3>
+        <div class="code-block">
+-- SCD Type 1 - Overwrite method
+-- Pudhiya data vanthaale pazhaya data ah replace pannidurom
+
+UPDATE customers 
+SET address = 'Chennai New Area',
+    updated_date = NOW()
+WHERE customer_id = 101;
+        </div>
+        <div class="sql-explanation">
+            <strong>Type 1 Method:</strong> Pazhaya data ah completely overwrite pannurom<br>
+            <strong>UPDATE customers:</strong> Customer table la address ah update pannurom<br>
+            <strong>No History:</strong> Previous address history maintain pannurom illa<br>
+            <strong>Simple Method:</strong> Easy ah implement pannalam aana history illa
+        </div>
+
+        <p><em>Full adhyayam la Type 2, Type 3 SCD methods, practical examples, real-time scenarios ellaam detailed ah irukum!</em></p>
+    </div>
+
+    <div class="header" style="margin-top: 30px; text-align: center;">
+        <p><strong>Ennoda Details:</strong></p>
+        <div class="author-info" style="justify-content: center;">
+            <a href="https://linkedin.com/in/sbgowtham" target="_blank">LinkedIn: sbgowtham</a>
+            <a href="https://youtube.com/@dataengineeringvideos" target="_blank">YouTube: dataengineeringvideos</a>
+            <a href="https://instagram.com/dataengineeringtamil" target="_blank">Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+</body>
+</html>

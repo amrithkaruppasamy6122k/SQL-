@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 3 - MySQL Installation Linux</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .chapter {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .definition-box {
+            background: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .terminal-box {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .command-box {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .step-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            position: relative;
+        }
+        .step-number {
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #f39c12;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .distro-box {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .distro-item {
+            flex: 1;
+            margin: 0 10px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #ddd;
+        }
+        .distro-item:hover {
+            border-color: #3498db;
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .tamil-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .nav-button {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        .nav-button:hover {
+            background: #2980b9;
+        }
+        @media print {
+            body { background: white; }
+            .chapter { box-shadow: none; }
+            .navigation { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="chapter">
+        <h1>Chapter 3: MySQL Installation on Linux</h1>
+
+        <h2>📖 Definition</h2>
+        <div class="definition-box">
+            <strong>MySQL Linux Installation:</strong> Linux operating system-la MySQL database server-a <span class="tamil-text">install panradhu</span>. Linux-la MySQL <span class="tamil-text">package manager through</span> easy-ya install panalam. <span class="tamil-text">Production servers-la mostly</span> Linux dhaan <span class="tamil-text">use panrom</span>, so <span class="tamil-text">idhu</span> important skill.
+        </div>
+
+        <h2>🐧 Popular Linux Distributions</h2>
+        <div class="distro-box">
+            <div class="distro-item">
+                <h4>🟠 Ubuntu</h4>
+                <p><strong>apt</strong> package manager</p>
+                <p><span class="tamil-text">Most popular</span></p>
+            </div>
+            <div class="distro-item">
+                <h4>🔴 CentOS/RHEL</h4>
+                <p><strong>yum/dnf</strong> package manager</p>
+                <p><span class="tamil-text">Enterprise use</span></p>
+            </div>
+            <div class="distro-item">
+                <h4>🦎 openSUSE</h4>
+                <p><strong>zypper</strong> package manager</p>
+                <p><span class="tamil-text">German origin</span></p>
+            </div>
+        </div>
+
+        <h2>💡 Ubuntu/Debian Installation</h2>
+
+        <div class="step-box">
+            <div class="step-number">1</div>
+            <strong><span class="tamil-text">Update Package List</span></strong><br>
+            <span class="tamil-text">First-a</span> system package list-a update pannum
+        </div>
+        
+        <div class="terminal-box">
+sudo apt update
+sudo apt upgrade -y
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">2</div>
+            <strong><span class="tamil-text">Install MySQL Server</span></strong><br>
+            MySQL server package-a install pannum
+        </div>
+
+        <div class="terminal-box">
+sudo apt install mysql-server -y
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">3</div>
+            <strong><span class="tamil-text">Start MySQL Service</span></strong><br>
+            MySQL service-a start panni enable pannum
+        </div>
+
+        <div class="terminal-box">
+sudo systemctl start mysql
+sudo systemctl enable mysql
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">4</div>
+            <strong><span class="tamil-text">Secure Installation</span></strong><br>
+            <span class="tamil-text">Security script run panni</span> safe-ya setup pannum
+        </div>
+
+        <div class="terminal-box">
+sudo mysql_secure_installation
+        </div>
+
+        <div class="warning-box">
+            <strong><span class="tamil-text">Secure Installation Options:</span></strong><br>
+            • <strong>Root password:</strong> <span class="tamil-text">Strong password set pannum</span><br>
+            • <strong>Remove anonymous users:</strong> Y <span class="tamil-text">select pannum</span><br>
+            • <strong>Disallow root login remotely:</strong> Y<br>
+            • <strong>Remove test database:</strong> Y<br>
+            • <strong>Reload privilege tables:</strong> Y
+        </div>
+
+        <h2>💡 CentOS/RHEL Installation</h2>
+
+        <div class="step-box">
+            <div class="step-number">1</div>
+            <strong><span class="tamil-text">Update System</span></strong>
+        </div>
+
+        <div class="terminal-box">
+sudo yum update -y
+# Or for newer versions
+sudo dnf update -y
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">2</div>
+            <strong><span class="tamil-text">Install MySQL Repository</span></strong>
+        </div>
+
+        <div class="terminal-box">
+sudo yum install https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm -y
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">3</div>
+            <strong><span class="tamil-text">Install MySQL Server</span></strong>
+        </div>
+
+        <div class="terminal-box">
+sudo yum install mysql-community-server -y
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">4</div>
+            <strong><span class="tamil-text">Start and Enable Service</span></strong>
+        </div>
+
+        <div class="terminal-box">
+sudo systemctl start mysqld
+sudo systemctl enable mysqld
+        </div>
+
+        <h2>🔧 Post-Installation Configuration</h2>
+
+        <div class="step-box">
+            <div class="step-number">1</div>
+            <strong><span class="tamil-text">Check MySQL Status</span></strong><br>
+            Service properly <span class="tamil-text">running-a-nu</span> check pannum
+        </div>
+
+        <div class="command-box">
+sudo systemctl status mysql
+# Output should show "active (running)"
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">2</div>
+            <strong><span class="tamil-text">Find Temporary Root Password</span></strong><br>
+            <span class="tamil-text">Initial password</span> log file-la irukum
+        </div>
+
+        <div class="command-box">
+sudo grep 'temporary password' /var/log/mysqld.log
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">3</div>
+            <strong><span class="tamil-text">Login to MySQL</span></strong><br>
+            <span class="tamil-text">Root user-a</span> login pannum
+        </div>
+
+        <div class="terminal-box">
+mysql -u root -p
+# Enter the temporary password when prompted
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">4</div>
+            <strong><span class="tamil-text">Change Root Password</span></strong><br>
+            <span class="tamil-text">New password set pannum</span>
+        </div>
+
+        <div class="command-box">
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'YourNewPassword123!';
+FLUSH PRIVILEGES;
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">5</div>
+            <strong><span class="tamil-text">Create New User</span></strong><br>
+            <span class="tamil-text">Development-ku</span> separate user create pannum
+        </div>
+
+        <div class="command-box">
+CREATE USER 'developer'@'localhost' IDENTIFIED BY 'DevPassword123!';
+GRANT ALL PRIVILEGES ON *.* TO 'developer'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+        </div>
+
+        <h2>🔧 Testing Installation</h2>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">Basic Tests:</span></h4>
+            <div class="command-box">
+-- Check MySQL version
+SELECT VERSION();
+
+-- Check current user
+SELECT USER();
+
+-- Show databases
+SHOW DATABASES;
+
+-- Show MySQL status
+SHOW STATUS LIKE 'Uptime';
+            </div>
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">✓</div>
+            <strong><span class="tamil-text">Command Explanations:</span></strong><br>
+            <strong>SELECT VERSION();</strong> - MySQL version number <span class="tamil-text">show pannum</span><br>
+            <strong>SELECT USER();</strong> - <span class="tamil-text">Current login user</span> show pannum<br>
+            <strong>SHOW DATABASES;</strong> - <span class="tamil-text">Available databases list</span> pannum<br>
+            <strong>SHOW STATUS LIKE 'Uptime';</strong> - <span class="tamil-text">Server running time</span> show pannum
+        </div>
+
+        <h2>🔧 Firewall Configuration</h2>
+
+        <div class="step-box">
+            <div class="step-number">1</div>
+            <strong><span class="tamil-text">Ubuntu Firewall (UFW)</span></strong>
+        </div>
+
+        <div class="terminal-box">
+sudo ufw allow 3306
+sudo ufw enable
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">2</div>
+            <strong><span class="tamil-text">CentOS Firewall (firewalld)</span></strong>
+        </div>
+
+        <div class="terminal-box">
+sudo firewall-cmd --permanent --add-port=3306/tcp
+sudo firewall-cmd --reload
+        </div>
+
+        <h2>🔧 Use Cases</h2>
+
+        <div class="success-box">
+            <h4>1. <span class="tamil-text">Web Server Database</span></h4>
+            <strong>Purpose:</strong> <span class="tamil-text">Production websites-ku</span> backend database<br>
+            <strong>Setup:</strong> LAMP/LEMP stack <span class="tamil-text">part-a</span> MySQL use panrom
+        </div>
+
+        <div class="success-box">
+            <h4>2. <span class="tamil-text">Development Server</span></h4>
+            <strong>Purpose:</strong> <span class="tamil-text">Team development environment</span><br>
+            <strong>Setup:</strong> Multiple developers <span class="tamil-text">same database access pannalam</span>
+        </div>
+
+        <div class="success-box">
+            <h4>3. <span class="tamil-text">Data Analytics Server</span></h4>
+            <strong>Purpose:</strong> <span class="tamil-text">Big data processing</span><br>
+            <strong>Setup:</strong> High-performance server <span class="tamil-text">la large datasets process pannalam</span>
+        </div>
+
+        <h2>⚠️ Common Issues & Solutions</h2>
+
+        <div class="warning-box">
+            <h4><span class="tamil-text">Authentication Issues:</span></h4>
+            <strong>Problem:</strong> <span class="tamil-text">Root login access denied</span><br>
+            <strong>Solution:</strong>
+            <div class="terminal-box">
+sudo mysql
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+FLUSH PRIVILEGES;
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <h4><span class="tamil-text">Service Won't Start:</span></h4>
+            <strong>Check logs:</strong>
+            <div class="terminal-box">
+sudo journalctl -u mysql
+sudo tail -f /var/log/mysql/error.log
+            </div>
+        </div>
+
+        <div class="warning-box">
+            <h4><span class="tamil-text">Port Already in Use:</span></h4>
+            <strong>Check what's using port 3306:</strong>
+            <div class="terminal-box">
+sudo netstat -tlnp | grep :3306
+sudo lsof -i :3306
+            </div>
+        </div>
+
+        <h2>🛠️ Advanced Configuration</h2>
+
+        <div class="step-box">
+            <div class="step-number">1</div>
+            <strong><span class="tamil-text">Edit Configuration File</span></strong><br>
+            MySQL settings <span class="tamil-text">customize panradhu</span>
+        </div>
+
+        <div class="terminal-box">
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+# or
+sudo nano /etc/my.cnf
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">2</div>
+            <strong><span class="tamil-text">Common Configuration Options</span></strong>
+        </div>
+
+        <div class="command-box">
+[mysqld]
+# Basic Settings
+port = 3306
+bind-address = 127.0.0.1
+
+# Performance Settings
+max_connections = 200
+innodb_buffer_pool_size = 1G
+
+# Security Settings
+skip-networking = false
+skip-name-resolve
+
+# Logging
+general_log = 1
+general_log_file = /var/log/mysql/mysql.log
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">3</div>
+            <strong><span class="tamil-text">Restart After Configuration</span></strong>
+        </div>
+
+        <div class="terminal-box">
+sudo systemctl restart mysql
+sudo systemctl status mysql
+        </div>
+
+        <h2>📊 Performance Monitoring</h2>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">System Resource Check:</span></h4>
+            <div class="terminal-box">
+# Check memory usage
+free -h
+
+# Check disk usage
+df -h
+
+# Check MySQL processes
+ps aux | grep mysql
+
+# Check MySQL performance
+mysqladmin -u root -p status
+mysqladmin -u root -p processlist
+            </div>
+        </div>
+
+        <h2>🔄 Backup and Recovery Setup</h2>
+
+        <div class="step-box">
+            <div class="step-number">1</div>
+            <strong><span class="tamil-text">Create Backup Script</span></strong>
+        </div>
+
+        <div class="command-box">
+#!/bin/bash
+# backup.sh
+DATE=$(date +%Y%m%d_%H%M%S)
+BACKUP_DIR="/var/backups/mysql"
+mkdir -p $BACKUP_DIR
+
+mysqldump -u root -p --all-databases > $BACKUP_DIR/backup_$DATE.sql
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">2</div>
+            <strong><span class="tamil-text">Setup Cron Job</span></strong><br>
+            <span class="tamil-text">Daily automatic backup</span>
+        </div>
+
+        <div class="terminal-box">
+crontab -e
+# Add this line for daily backup at 2 AM
+0 2 * * * /path/to/backup.sh
+        </div>
+
+        <h2>🔐 Security Best Practices</h2>
+
+        <ul>
+            <li><strong><span class="tamil-text">Strong Passwords:</span></strong> Minimum 12 characters, mixed case, numbers, symbols</li>
+            <li><strong><span class="tamil-text">Firewall Rules:</span></strong> <span class="tamil-text">Only necessary ports open pannunga</span></li>
+            <li><strong><span class="tamil-text">Regular Updates:</span></strong> <span class="tamil-text">Security patches apply pannunga</span></li>
+            <li><strong><span class="tamil-text">User Privileges:</span></strong> <span class="tamil-text">Minimum required permissions mattum kudunga</span></li>
+            <li><strong><span class="tamil-text">SSL/TLS:</span></strong> <span class="tamil-text">Encrypted connections use pannunga</span></li>
+        </ul>
+
+        <h2>📝 Next Steps</h2>
+        <div class="definition-box">
+            <strong><span class="tamil-text">Installation Complete! Now:</span></strong><br>
+            ✅ <span class="tamil-text">Command line client practice pannunga</span><br>
+            ✅ <span class="tamil-text">Sample databases create pannunga</span><br>
+            ✅ <span class="tamil-text">Remote access setup pannunga</span><br>
+            ✅ <span class="tamil-text">Monitoring tools install pannunga</span><br>
+            ✅ <span class="tamil-text">Backup strategy implement pannunga</span>
+        </div>
+
+        <div class="navigation">
+            <a href="#" class="nav-button">← <span class="tamil-text">Previous:</span> Windows Installation</a>
+            <div style="text-align: center; color: #7f8c8d;">
+                <strong>Chapter 3 of 40+</strong><br>
+                <span class="tamil-text">Linux Installation Complete!</span>
+            </div>
+            <a href="#" class="nav-button"><span class="tamil-text">Next:</span> MySQL Notebooks →</a>
+        </div>
+    </div>
+</body>
+</html>

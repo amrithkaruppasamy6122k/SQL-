@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 23: Union and Union ALL - SQL Book</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .author-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .social-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .content-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .flowchart {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .code-explanation {
+            background: #e6fffa;
+            padding: 10px;
+            border-left: 4px solid #38b2ac;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f56565;
+            margin: 15px 0;
+        }
+        .diagram {
+            text-align: center;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .function-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .function-table th, .function-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .function-table th {
+            background-color: #667eea;
+            color: white;
+        }
+        .types-box {
+            background: #f0fff4;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #48bb78;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background: #fffaf0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ed8936;
+            margin: 15px 0;
+        }
+        .comparison-box {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4299e1;
+            margin: 15px 0;
+        }
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 SQL Complete Guide</h1>
+        <h2>Chapter 23: Union and Union ALL</h2>
+        <p><em>Multiple Query Results Ah Combine Panni Oru Single Result Set Panalam!</em></p>
+    </div>
+
+    <div class="author-info">
+        <h3 style="text-align: center; margin-bottom: 15px;">👨‍💻 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#">📺 YouTube: dataengineeringvideos</a>
+            <a href="#">💼 LinkedIn: sbgowtham</a>
+            <a href="#">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📖 Definition (Union Enna Machan?)</h2>
+        <p><strong>UNION</strong> na rendu yaa athiga SELECT queries oda results ah onu combine panni single result set aakki return panra operation thaan. Idhu vertical ah data combine pannum (rows add aagum, columns increase aagadhu).</p>
+        <p>Union operations oda mukkiya features:</p>
+        <ul>
+            <li><strong>Multiple queries combine:</strong> Rendu yaa athiga SELECT statements oda results onu aakkalam</li>
+            <li><strong>Same structure venum:</strong> Ellam queries layum same number of columns irukanum</li>
+            <li><strong>Data type compatible:</strong> Corresponding columns oda data types match aaganum</li>
+            <li><strong>Duplicate handling:</strong> UNION duplicate rows remove pannum, UNION ALL ellam rows keep pannum</li>
+            <li><strong>Vertical combination:</strong> Rows add aagum (horizontal ah illa)</li>
+        </ul>
+        
+        <div class="types-box">
+            <h4>🎯 Union Basic Syntax:</h4>
+            <p><strong>SELECT columns FROM table1 UNION SELECT columns FROM table2;</strong></p>
+            <p>Rendu SELECT statements layum same number of columns irukanum!</p>
+        </div>
+
+        <div class="comparison-box">
+            <h4>🔄 UNION vs UNION ALL Difference:</h4>
+            <ul>
+                <li><strong>UNION:</strong> Duplicate rows automatic ah remove pannum (slower but clean result)</li>
+                <li><strong>UNION ALL:</strong> Ellam rows as-is ah keep pannum (faster but duplicates irukalam)</li>
+            </ul>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Jaakkirathaya Kavanikanum:</h4>
+            <ul>
+                <li>Column count mismatch aana error varum</li>
+                <li>Data type incompatible aana implicit conversion try pannum</li>
+                <li>Performance ku UNION ALL better (sorting/deduplication illa)</li>
+                <li>ORDER BY last query ku after mattum use panalam</li>
+                <li>Column names first SELECT statement la irundhu edukum</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🏛️ Standard (Union Types aur Avanga Velai)</h2>
+        <p>MySQL la different types oda union operations use panna mudiyum:</p>
+        
+        <table class="function-table">
+            <thead>
+                <tr>
+                    <th>Operation Type</th>
+                    <th>Tamil la Explanation</th>
+                    <th>Performance</th>
+                    <th>Duplicates</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>UNION</td>
+                    <td>Duplicate rows remove panni clean result kudukum</td>
+                    <td>Slow (sorting required)</td>
+                    <td>Removed</td>
+                </tr>
+                <tr>
+                    <td>UNION ALL</td>
+                    <td>Ellam rows as-is ah combine pannum</td>
+                    <td>Fast (no sorting)</td>
+                    <td>Preserved</td>
+                </tr>
+                <tr>
+                    <td>UNION DISTINCT</td>
+                    <td>Same as UNION (explicit duplicate removal)</td>
+                    <td>Slow</td>
+                    <td>Removed</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="types-box">
+            <h4>📍 Union Requirements:</h4>
+            <ul>
+                <li><strong>Column count:</strong> Ellam SELECT statements layum same number of columns irukanum</li>
+                <li><strong>Data type compatibility:</strong> Corresponding positions la similar data types venum</li>
+                <li><strong>Column names:</strong> First SELECT oda column names use aagum final result la</li>
+                <li><strong>ORDER BY placement:</strong> Final result ku mattum use panalam (individual queries la illa)</li>
+            </ul>
+        </div>
+
+        <div class="comparison-box">
+            <h4>📊 Performance Comparison:</h4>
+            <p><strong>UNION ALL</strong> use panunga when:</p>
+            <ul>
+                <li>Duplicate rows problem illa nu therinja</li>
+                <li>Performance critical applications la</li>
+                <li>Large datasets combine pannum bodhu</li>
+            </ul>
+            <p><strong>UNION</strong> use panunga when:</p>
+            <ul>
+                <li>Clean, unique results venum</li>
+                <li>Data quality important</li>
+                <li>Small to medium datasets la</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📊 Flow Chart</h2>
+        <div class="flowchart">
+            <div class="diagram">
+                <h3>Union Operations Decision Flow</h3>
+                <pre style="font-family: monospace; text-align: left; background: white; padding: 15px; border-radius: 5px;">
+Multiple Queries Combine Pananum
+  ↓
+Query Structure Check Panrom
+  ↓
+┌─────────────────────────────────────────────┐
+│  Column Count Same Ah?                      │
+│  ┌─── YES ────────┐  ┌─── NO ─────────────┐ │
+│  │ Proceed        │  │ Error Varum        │ │
+│  │                │  │ Fix Structure      │ │
+│  └────────────────┘  └────────────────────┘ │
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  Data Types Compatible Ah?                  │
+│  ┌─── YES ────────┐  ┌─── NO ─────────────┐ │
+│  │ Continue       │  │ Implicit Convert   │ │
+│  │                │  │ Try Aagum          │ │
+│  └────────────────┘  └────────────────────┘ │
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  Duplicates Handle Pannanum?                │
+│  ┌─── YES ─────────┐  ┌─── NO ─────────────┐│
+│  │ UNION Use       │  │ UNION ALL Use     ││
+│  │ (Slow but Clean)│  │ (Fast Performance)││
+│  └─────────────────┘  └───────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+Individual Queries Execute Aagum
+  ↓
+Results Combine Aagum
+  ↓
+Sorting/Deduplication (If UNION)
+  ↓
+Final Result Set Return Aagum
+  ↓
+Query Mudinju
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🎯 Examples with Full Tamil Explanation</h2>
+        
+        <h3>1. Basic UNION - Duplicate rows remove panna</h3>
+        <div class="code-block">
+SELECT 
+    customer_name,
+    contact_number,
+    'Premium' AS customer_type
+FROM 
+    premium_customers
+UNION
+SELECT 
+    customer_name,
+    contact_number,
+    'Regular' AS customer_type
+FROM 
+    regular_customers
+ORDER BY 
+    customer_name;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT customer_name, contact_number, 'Premium' AS customer_type</code> - Premium customers details select panrom<br>
+            • <code>FROM premium_customers</code> - premium_customers table la irundhu data edukrom<br>
+            • <code>UNION</code> - First query result oda second query result combine panrom, duplicates remove aagum<br>
+            • <code>SELECT customer_name, contact_number, 'Regular' AS customer_type</code> - Regular customers details select panrom<br>
+            • <code>FROM regular_customers</code> - regular_customers table data<br>
+            • <code>ORDER BY customer_name</code> - Final combined result ah customer name wise sort panrom<br>
+            • <strong>Result:</strong> Rendu type customers um oru list la varum, duplicates automatically remove aagidum
+        </div>
+
+        <h3>2. UNION ALL - Ellam rows keep panradhu</h3>
+        <div class="code-block">
+SELECT 
+    transaction_date,
+    amount,
+    'Income' AS transaction_type,
+    description
+FROM 
+    income_transactions
+WHERE 
+    transaction_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+UNION ALL
+SELECT 
+    transaction_date,
+    amount,
+    'Expense' AS transaction_type,
+    description
+FROM 
+    expense_transactions
+WHERE 
+    transaction_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+ORDER BY 
+    transaction_date DESC;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT transaction_date, amount, 'Income' AS transaction_type, description</code> - Income transaction details select panrom<br>
+            • <code>FROM income_transactions</code> - income_transactions table data<br>
+            • <code>WHERE transaction_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)</code> - Last 30 days income transactions filter<br>
+            • <code>UNION ALL</code> - Income aur expense results combine panrom, duplicates preserve aagum<br>
+            • <code>SELECT transaction_date, amount, 'Expense' AS transaction_type, description</code> - Expense transaction details select panrom<br>
+            • <code>FROM expense_transactions</code> - expense_transactions table data<br>
+            • <code>WHERE transaction_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)</code> - Last 30 days expense transactions filter<br>
+            • <code>ORDER BY transaction_date DESC</code> - Combined result ah latest date first order la sort panrom<br>
+            • <strong>Usage:</strong> Complete financial transaction history paakradhu ku perfect
+        </div>
+
+        <h3>3. Multiple UNION - Moonu table ah combine panradhu</h3>
+        <div class="code-block">
+SELECT 
+    employee_id,
+    employee_name,
+    'Current' AS employment_status,
+    hire_date AS status_date
+FROM 
+    current_employees
+WHERE 
+    department_id = 101
+UNION
+SELECT 
+    employee_id,
+    employee_name,
+    'Former' AS employment_status,
+    termination_date AS status_date
+FROM 
+    former_employees
+WHERE 
+    department_id = 101
+UNION
+SELECT 
+    employee_id,
+    employee_name,
+    'Contract' AS employment_status,
+    contract_start_date AS status_date
+FROM 
+    contract_employees
+WHERE 
+    department_id = 101
+ORDER BY 
+    employment_status,
+    employee_name;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT employee_id, employee_name, 'Current' AS employment_status, hire_date AS status_date</code> - Current employees data with status label<br>
+            • <code>FROM current_employees WHERE department_id = 101</code> - Department 101 current employees filter<br>
+            • <code>UNION</code> - First query result oda second query combine panrom<br>
+            • <code>SELECT employee_id, employee_name, 'Former' AS employment_status, termination_date AS status_date</code> - Former employees data with different status<br>
+            • <code>FROM former_employees WHERE department_id = 101</code> - Same department former employees<br>
+            • <code>UNION</code> - Second UNION for third table combination<br>
+            • <code>SELECT employee_id, employee_name, 'Contract' AS employment_status, contract_start_date AS status_date</code> - Contract employees data<br>
+            • <code>FROM contract_employees WHERE department_id = 101</code> - Contract employees from same department<br>
+            • <code>ORDER BY employment_status, employee_name</code> - Employment type first, then name wise sort<br>
+            • <strong>Result:</strong> Department oda complete employee history (current + former + contract) oru list la varum
+        </div>
+
+        <h3>4. UNION with Different Column Names - Column aliasing</h3>
+        <div class="code-block">
+SELECT 
+    product_name AS item_name,
+    selling_price AS item_price,
+    'Product' AS item_category,
+    stock_quantity AS available_quantity
+FROM 
+    products
+WHERE 
+    status = 'ACTIVE'
+UNION ALL
+SELECT 
+    service_name AS item_name,
+    service_charge AS item_price,
+    'Service' AS item_category,
+    NULL AS available_quantity
+FROM 
+    services
+WHERE 
+    status = 'ACTIVE'
+ORDER BY 
+    item_category,
+    item_price DESC;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT product_name AS item_name, selling_price AS item_price</code> - Product details ah common names la alias panrom<br>
+            • <code>'Product' AS item_category, stock_quantity AS available_quantity</code> - Category label aur stock info select panrom<br>
+            • <code>FROM products WHERE status = 'ACTIVE'</code> - Active products mattum filter<br>
+            • <code>UNION ALL</code> - Products aur services combine panrom, performance ku ALL use panrom<br>
+            • <code>SELECT service_name AS item_name, service_charge AS item_price</code> - Service details ah same alias names la select panrom<br>
+            • <code>'Service' AS item_category, NULL AS available_quantity</code> - Services ku stock illa so NULL assign panrom<br>
+            • <code>FROM services WHERE status = 'ACTIVE'</code> - Active services filter<br>
+            • <code>ORDER BY item_category, item_price DESC</code> - Category first, price high to low sort<br>
+            • <strong>Key Point:</strong> Different table columns ah common names la alias panni combine panalam
+        </div>
+
+        <h3>5. UNION with Calculations - Calculated fields combine panradhu</h3>
+        <div class="code-block">
+SELECT 
+    'Q1' AS quarter,
+    SUM(revenue) AS total_revenue,
+    COUNT(*) AS total_transactions,
+    AVG(revenue) AS avg_transaction_value
+FROM 
+    sales_q1_2024
+UNION ALL
+SELECT 
+    'Q2' AS quarter,
+    SUM(revenue) AS total_revenue,
+    COUNT(*) AS total_transactions,
+    AVG(revenue) AS avg_transaction_value
+FROM 
+    sales_q2_2024
+UNION ALL
+SELECT 
+    'Q3' AS quarter,
+    SUM(revenue) AS total_revenue,
+    COUNT(*) AS total_transactions,
+    AVG(revenue) AS avg_transaction_value
+FROM 
+    sales_q3_2024
+UNION ALL
+SELECT 
+    'Q4' AS quarter,
+    SUM(revenue) AS total_revenue,
+    COUNT(*) AS total_transactions,
+    AVG(revenue) AS avg_transaction_value
+FROM 
+    sales_q4_2024
+ORDER BY 
+    quarter;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT 'Q1' AS quarter, SUM(revenue) AS total_revenue</code> - Q1 quarter label oda total revenue calculate panrom<br>
+            • <code>COUNT(*) AS total_transactions, AVG(revenue) AS avg_transaction_value</code> - Transaction count aur average value calculate panrom<br>
+            • <code>FROM sales_q1_2024</code> - Q1 sales data table<br>
+            • <code>UNION ALL</code> - Q1 aur Q2 results combine panrom (duplicates possible illa so ALL use panrom)<br>
+            • <code>SELECT 'Q2' AS quarter</code> - Q2 quarter ku same calculations<br>
+            • <code>FROM sales_q2_2024</code> - Q2 sales data<br>
+            • <code>UNION ALL SELECT 'Q3' AS quarter... FROM sales_q3_2024</code> - Q3 data combine<br>
+            • <code>UNION ALL SELECT 'Q4' AS quarter... FROM sales_q4_2024</code> - Q4 data combine<br>
+            • <code>ORDER BY quarter</code> - Quarter wise sort (Q1, Q2, Q3, Q4 order la varum)<br>
+            • <strong>Usage:</strong> Quarterly performance comparison panradhu ku excellent technique
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🛠️ Use Cases (Real-world la Epidi Use Pannalam)</h2>
+        
+        <div class="use-case">
+            <h4>1. E-commerce - Complete Product Catalog</h4>
+            <p><strong>Situation:</strong> Different categories la irukra products ellam oru master list la combine pannanum</p>
+            <div class="code-block">
+SELECT 
+    product_name,
+    price,
+    'Electronics' AS category,
+    brand,
+    warranty_period AS special_attribute
+FROM 
+    electronics_products
+WHERE 
+    status = 'AVAILABLE'
+UNION ALL
+SELECT 
+    product_name,
+    price,
+    'Clothing' AS category,
+    brand,
+    size AS special_attribute
+FROM 
+    clothing_products
+WHERE 
+    status = 'AVAILABLE'
+UNION ALL
+SELECT 
+    product_name,
+    price,
+    'Books' AS category,
+    author AS brand,
+    isbn AS special_attribute
+FROM 
+    books
+WHERE 
+    status = 'AVAILABLE'
+ORDER BY 
+    category,
+    price;
+            </div>
+            <p><strong>Faayda:</strong> Search functionality ku single query la ellam products access panalam, inventory management easy aagum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. HR Management - Complete Employee Directory</h4>
+            <p><strong>Situation:</strong> Full-time, part-time, contract employees ellam oru directory la venum</p>
+            <div class="code-block">
+SELECT 
+    employee_name,
+    employee_id,
+    department_name,
+    'Full-Time' AS employment_type,
+    salary AS compensation,
+    hire_date AS start_date
+FROM 
+    full_time_employees
+WHERE 
+    status = 'ACTIVE'
+UNION ALL
+SELECT 
+    employee_name,
+    employee_id,
+    department_name,
+    'Part-Time' AS employment_type,
+    hourly_rate * 20 AS compensation,
+    hire_date AS start_date
+FROM 
+    part_time_employees
+WHERE 
+    status = 'ACTIVE'
+UNION ALL
+SELECT 
+    contractor_name AS employee_name,
+    contract_id AS employee_id,
+    project_department AS department_name,
+    'Contract' AS employment_type,
+    monthly_payment AS compensation,
+    contract_start_date AS start_date
+FROM 
+    contractors
+WHERE 
+    contract_status = 'ACTIVE'
+ORDER BY 
+    department_name,
+    employment_type,
+    employee_name;
+            </div>
+            <p><strong>Faayda:</strong> HR team ku complete workforce overview kidaikum, resource planning aur communication easy aagum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Financial Reporting - Complete Transaction History</h4>
+            <p><strong>Situation:</strong> Bank account la ellam types oda transactions onu combine panni statement generate pannanum</p>
+            <div class="code-block">
+SELECT 
+    transaction_date,
+    transaction_id,
+    'Deposit' AS transaction_type,
+    amount,
+    depositor_name AS party_name,
+    branch_name AS location
+FROM 
+    deposits
+WHERE 
+    account_number = 'ACC123456'
+    AND 
+    transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+UNION ALL
+SELECT 
+    transaction_date,
+    transaction_id,
+    'Withdrawal' AS transaction_type,
+    -amount AS amount,
+    beneficiary_name AS party_name,
+    atm_location AS location
+FROM 
+    withdrawals
+WHERE 
+    account_number = 'ACC123456'
+    AND 
+    transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+UNION ALL
+SELECT 
+    transfer_date AS transaction_date,
+    transfer_id AS transaction_id,
+    'Transfer Out' AS transaction_type,
+    -transfer_amount AS amount,
+    recipient_name AS party_name,
+    'Online' AS location
+FROM 
+    money_transfers
+WHERE 
+    sender_account = 'ACC123456'
+    AND 
+    transfer_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+ORDER BY 
+    transaction_date DESC,
+    transaction_id;
+            </div>
+            <p><strong>Faayda:</strong> Customer ku complete account statement kidaikum, financial tracking easy aagum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Healthcare - Patient Medical Records Integration</h4>
+            <p><strong>Situation:</strong> Different systems la irukra patient data ellam onu combine panni complete medical history create pannanum</p>
+            <div class="code-block">
+SELECT 
+    patient_id,
+    record_date,
+    'Consultation' AS record_type,
+    doctor_name AS healthcare_provider,
+    diagnosis AS record_details,
+    consultation_fee AS cost
+FROM 
+    consultation_records
+WHERE 
+    patient_id = 'PAT001'
+    AND 
+    record_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+UNION ALL
+SELECT 
+    patient_id,
+    test_date AS record_date,
+    'Lab Test' AS record_type,
+    lab_technician AS healthcare_provider,
+    test_results AS record_details,
+    test_cost AS cost
+FROM 
+    lab_tests
+WHERE 
+    patient_id = 'PAT001'
+    AND 
+    test_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+UNION ALL
+SELECT 
+    patient_id,
+    prescription_date AS record_date,
+    'Prescription' AS record_type,
+    prescribing_doctor AS healthcare_provider,
+    medicine_details AS record_details,
+    medicine_cost AS cost
+FROM 
+    prescriptions
+WHERE 
+    patient_id = 'PAT001'
+    AND 
+    prescription_date >= DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+ORDER BY 
+    record_date DESC;
+            </div>
+            <p><strong>Faayda:</strong> Doctor ku patient oda complete medical timeline theriyum, better treatment decisions eduka mudiyum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>5. Educational Management - Student Academic History</h4>
+            <p><strong>Situation:</strong> Student oda ellam semesters marks, attendance, activities ellam onu combine panni academic profile create pannanum</p>
+            <div class="code-block">
+SELECT 
+    student_id,
+    semester_name AS academic_period,
+    'Academic Performance' AS record_category,
+    CONCAT('GPA: ', gpa) AS performance_metric,
+    total_credits AS credits_hours,
+    semester_end_date AS record_date
+FROM 
+    semester_results
+WHERE 
+    student_id = 'STU2024001'
+UNION ALL
+SELECT 
+    student_id,
+    activity_period AS academic_period,
+    'Extra Curricular' AS record_category,
+    activity_name AS performance_metric,
+    activity_hours AS credits_hours,
+    activity_end_date AS record_date
+FROM 
+    student_activities
+WHERE 
+    student_id = 'STU2024001'
+UNION ALL
+SELECT 
+    student_id,
+    CONCAT(academic_year, ' - ', semester) AS academic_period,
+    'Attendance Record' AS record_category,
+    CONCAT('Attendance: ', attendance_percentage, '%') AS performance_metric,
+    total_classes AS credits_hours,
+    semester_end_date AS record_date
+FROM 
+    attendance_records
+WHERE 
+    student_id = 'STU2024001'
+ORDER BY 
+    record_date DESC,
+    record_category;
+            </div>
+            <p><strong>Faayda:</strong> Academic advisor ku student oda complete academic journey theriyum, proper guidance provide panna mudiyum</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>📚 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#" style="color: #64ffda;">📺 YouTube: dataengineeringvideos</a> |
+            <a href="#" style="color: #64ffda;">💼 LinkedIn: sbgowtham</a> |
+            <a href="#" style="color: #64ffda;">📸 Instagram: dataengineeringtamil</a>
+        </div>
+        <p style="margin-top: 15px;"><em>Union operations master aagiduvenga! Multiple data sources ah easily combine panna mudiyum! 🚀</em></p>
+    </div>
+</body>
+</html>

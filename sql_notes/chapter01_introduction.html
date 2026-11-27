@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1 - Introduction to SQL</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .chapter {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .definition-box {
+            background: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .flowchart {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .flowchart-box {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .arrow {
+            font-size: 24px;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        .sql-code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .explanation {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .diagram {
+            text-align: center;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: #3498db;
+            color: white;
+        }
+        .tamil-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .comparison-table {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .comparison-item {
+            flex: 1;
+            margin: 0 10px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .nav-button {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        .nav-button:hover {
+            background: #2980b9;
+        }
+        @media print {
+            body { background: white; }
+            .chapter { box-shadow: none; }
+            .navigation { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="author-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 25px; border-radius: 10px; margin-bottom: 20px; text-align: center;">
+        <div style="font-size: 1.4em; font-weight: bold; margin-bottom: 8px;">📚 SQL Complete Course - By Gowtham SB</div>
+        <div style="display: flex; justify-content: center; gap: 20px; font-size: 0.9em;">
+            <span>📱 Instagram: <a href="#" style="color: #74b9ff; text-decoration: none; font-weight: bold;">@dataengineeringtamil</a></span>
+            <span>💼 LinkedIn: <a href="#" style="color: #74b9ff; text-decoration: none; font-weight: bold;">sbgowtham</a></span>
+            <span>🎥 YouTube: <a href="#" style="color: #74b9ff; text-decoration: none; font-weight: bold;">dataengineeringvideos</a></span>
+        </div>
+    </div>
+
+    <div class="chapter">
+        <h1>Chapter 1: Introduction to SQL</h1>
+
+        <h2>📖 Definition</h2>
+        <div class="definition-box">
+            <strong>SQL (Structured Query Language):</strong> SQL <span class="tamil-text">ennangra</span> Structured Query Language. <span class="tamil-text">Simple-a sonna</span>, database-la irukura data-va manage panraduku use panra <span class="tamil-text">special language</span>. <span class="tamil-text">Yarachu</span> database-oda <span class="tamil-text">pesanum-na</span> SQL dhaan <span class="tamil-text">main language</span>. <span class="tamil-text">Almost ella companies-layum</span> SQL use panrom data handle panraduku.
+        </div>
+
+        <h2>🎯 SQL Stand For</h2>
+        <div class="sql-code">
+S - Structured    (Structure-oda irukum)
+Q - Query         (Kelvigal kekkalam)  
+L - Language      (Oru language)
+        </div>
+
+        <h2>📊 SQL Evolution Flow Chart</h2>
+        <div class="flowchart">
+            <div class="flowchart-box">1970s - <span class="tamil-text">IBM Research</span></div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box">SEQUEL <span class="tamil-text">Development</span></div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box">SQL Standard <span class="tamil-text">Creation</span></div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box">1986 - SQL-86</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box">1989 - SQL-89</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box">1992 - SQL-92</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box">Modern SQL <span class="tamil-text">Versions</span></div>
+        </div>
+
+        <h2>📈 Database vs File System Comparison</h2>
+        <div class="diagram">
+            <h4><span class="tamil-text">Why Database Better than Files?</span></h4>
+            <table>
+                <tr>
+                    <th>Aspect</th>
+                    <th>File System</th>
+                    <th>Database</th>
+                </tr>
+                <tr>
+                    <td><span class="tamil-text">Data Organization</span></td>
+                    <td>Scattered files</td>
+                    <td>Structured tables</td>
+                </tr>
+                <tr>
+                    <td><span class="tamil-text">Data Sharing</span></td>
+                    <td>Difficult</td>
+                    <td>Easy & Safe</td>
+                </tr>
+                <tr>
+                    <td><span class="tamil-text">Security</span></td>
+                    <td>Limited</td>
+                    <td>Role-based access</td>
+                </tr>
+                <tr>
+                    <td><span class="tamil-text">Backup</span></td>
+                    <td>Manual process</td>
+                    <td>Automated</td>
+                </tr>
+                <tr>
+                    <td><span class="tamil-text">Relationships</span></td>
+                    <td>Not possible</td>
+                    <td>Foreign keys</td>
+                </tr>
+            </table>
+        </div>
+
+        <h2>💡 SQL Categories Overview</h2>
+        
+        <div class="comparison-table">
+            <div class="comparison-item">
+                <h4>DDL</h4>
+                <p><strong>Data Definition Language</strong></p>
+                <p><span class="tamil-text">Structure create/modify</span></p>
+                <div class="sql-code">CREATE, ALTER, DROP</div>
+            </div>
+            <div class="comparison-item">
+                <h4>DML</h4>
+                <p><strong>Data Manipulation Language</strong></p>
+                <p><span class="tamil-text">Data work panradhu</span></p>
+                <div class="sql-code">INSERT, UPDATE, DELETE</div>
+            </div>
+            <div class="comparison-item">
+                <h4>DQL</h4>
+                <p><strong>Data Query Language</strong></p>
+                <p><span class="tamil-text">Data retrieve panradhu</span></p>
+                <div class="sql-code">SELECT</div>
+            </div>
+        </div>
+
+        <h2>🔧 Popular Database Systems</h2>
+        
+        <div class="explanation">
+            <strong><span class="tamil-text">Different Database Systems:</span></strong><br>
+            <strong>MySQL</strong> - <span class="tamil-text">Most popular, free-ya kedaikum</span><br>
+            <strong>PostgreSQL</strong> - <span class="tamil-text">Advanced features, open source</span><br>
+            <strong>Oracle</strong> - <span class="tamil-text">Enterprise level, big companies use panrom</span><br>
+            <strong>SQL Server</strong> - <span class="tamil-text">Microsoft product</span><br>
+            <strong>SQLite</strong> - <span class="tamil-text">Small applications-ku perfect</span>
+        </div>
+
+        <h2>🔧 Use Cases</h2>
+        
+        <div class="use-case">
+            <h4>1. <span class="tamil-text">E-commerce Website</span></h4>
+            <strong>Scenario:</strong> Online store-la <span class="tamil-text">products, customers, orders</span> manage panradhu<br>
+            <strong>SQL Role:</strong> <span class="tamil-text">Product details store panradhu, customer orders track panradhu</span>
+        </div>
+
+        <div class="use-case">
+            <h4>2. <span class="tamil-text">Banking System</span></h4>
+            <strong>Scenario:</strong> Bank-la <span class="tamil-text">account details, transactions</span> handle panradhu<br>
+            <strong>SQL Role:</strong> <span class="tamil-text">Money transfer, balance check, transaction history</span>
+        </div>
+
+        <div class="use-case">
+            <h4>3. <span class="tamil-text">Social Media Platform</span></h4>
+            <strong>Scenario:</strong> Facebook, Instagram <span class="tamil-text">madhiri</span> apps<br>
+            <strong>SQL Role:</strong> <span class="tamil-text">User profiles, posts, likes, comments store panradhu</span>
+        </div>
+
+        <div class="use-case">
+            <h4>4. <span class="tamil-text">Hospital Management</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Patient records, doctor appointments</span><br>
+            <strong>SQL Role:</strong> <span class="tamil-text">Medical history, appointment booking, bill generation</span>
+        </div>
+
+        <h2>📝 Key Benefits of Learning SQL</h2>
+        <ul>
+            <li><strong><span class="tamil-text">High Demand:</span></strong> <span class="tamil-text">Almost ella IT jobs-la</span> SQL <span class="tamil-text">requirement</span></li>
+            <li><strong><span class="tamil-text">Easy to Learn:</span></strong> <span class="tamil-text">English madhiri</span> commands, <span class="tamil-text">easy-ya puriyum</span></li>
+            <li><strong><span class="tamil-text">Universal:</span></strong> <span class="tamil-text">Ella database systems-layum</span> same concepts</li>
+            <li><strong><span class="tamil-text">Powerful:</span></strong> <span class="tamil-text">Complex data analysis</span> easy-ya panalam</li>
+            <li><strong><span class="tamil-text">Career Growth:</span></strong> Data Analyst, Database Developer <span class="tamil-text">aagalam</span></li>
+        </ul>
+
+        <h2>🎯 What You'll Learn in This Course</h2>
+        <div class="definition-box">
+            <strong><span class="tamil-text">Complete Journey:</span></strong><br>
+            ✅ <strong>Installation:</strong> MySQL <span class="tamil-text">setup panradhu</span><br>
+            ✅ <strong>Basics:</strong> Tables create panradhu, data insert panradhu<br>
+            ✅ <strong>Queries:</strong> <span class="tamil-text">Complex data retrieval</span><br>
+            ✅ <strong>Advanced:</strong> Joins, Subqueries, Window Functions<br>
+            ✅ <strong>Performance:</strong> <span class="tamil-text">Fast queries ezhudha</span><br>
+            ✅ <strong>Real Projects:</strong> <span class="tamil-text">Practical experience</span>
+        </div>
+
+        <div class="navigation">
+            <a href="#" class="nav-button">← <span class="tamil-text">Back to Index</span></a>
+            <div style="text-align: center; color: #7f8c8d;">
+                <strong>Chapter 1 of 40+</strong><br>
+                <span class="tamil-text">Introduction Complete!</span>
+            </div>
+            <a href="#" class="nav-button"><span class="tamil-text">Next:</span> MySQL Installation →</a>
+        </div>
+    </div>
+
+    <div style="background: #2d3436; color: white; padding: 20px; border-radius: 10px; margin-top: 30px; text-align: center;">
+        <div style="font-size: 1.2em; margin-bottom: 10px; color: #74b9ff;">📘 Start Your SQL Journey with Gowtham SB</div>
+        <div style="display: flex; justify-content: center; gap: 20px; font-size: 0.9em;">
+            <span>🎥 Complete SQL Course: <strong>YouTube/dataengineeringvideos</strong></span><br>
+            <span>📱 Daily SQL Tips: <strong>Instagram/@dataengineeringtamil</strong></span><br>
+            <span>💼 Connect for Career Guidance: <strong>LinkedIn/sbgowtham</strong></span>
+        </div>
+    </div>
+</body>
+</html>

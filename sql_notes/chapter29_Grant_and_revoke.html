@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 29: Grant and Revoke - SQL Book</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .author-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .author-info a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 5px;
+        }
+        .content-box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .definition {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .flowchart {
+            text-align: center;
+            background: #f0f8ff;
+            border: 2px dashed #4682b4;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .sql-explanation {
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .use-case {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .chapter-title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .sample-chapter {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="chapter-title">Chapter 29: Grant and Revoke</h1>
+        <p><strong>Author:</strong> Gowtham SB</p>
+        <div class="author-info">
+            <a href="https://linkedin.com/in/sbgowtham" target="_blank">📧 LinkedIn: sbgowtham</a>
+            <a href="https://youtube.com/@dataengineeringvideos" target="_blank">🎥 YouTube: dataengineeringvideos</a>
+            <a href="https://instagram.com/dataengineeringtamil" target="_blank">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Definition (Vilakkam)</h2>
+        <div class="definition">
+            <strong>Grant:</strong> Database la irukka users ku specific permissions kudukka use panrom. Athavuthu yaaru database access pannalam, yenna operations pannalam nu control panrom.<br><br>
+            <strong>Revoke:</strong> Already kuduttha permissions ah wapas eduthukkalam. User ku access irundha atha remove pannalam.
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Flow Chart (Otta Padal)</h2>
+        <div class="flowchart">
+            <div style="margin-bottom: 15px;">
+                <strong>GRANT PROCESS:</strong><br>
+                Database Admin → User Select → Permission Type Choose → GRANT Command Execute → User Access Granted
+            </div>
+            <div>
+                <strong>REVOKE PROCESS:</strong><br>
+                Database Admin → User Select → Permission Type Identify → REVOKE Command Execute → User Access Removed
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Basic Syntax (Molip Vagai)</h2>
+        
+        <h3>GRANT Syntax:</h3>
+        <div class="code-block">
+GRANT permission_type ON database_object TO user_name;
+        </div>
+        
+        <h3>REVOKE Syntax:</h3>
+        <div class="code-block">
+REVOKE permission_type ON database_object FROM user_name;
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Examples with Explanation (Udaharanangal)</h2>
+        
+        <h3>Example 1: SELECT Permission Grant Pannurathu</h3>
+        <div class="code-block">
+GRANT SELECT ON students TO ravi;
+        </div>
+        <div class="sql-explanation">
+            <strong>GRANT:</strong> Permission kudukka command<br>
+            <strong>SELECT:</strong> Data padicka allow pannurom<br>
+            <strong>ON students:</strong> Students table la mattum<br>
+            <strong>TO ravi:</strong> Ravi user ku permission kodukurom
+        </div>
+
+        <h3>Example 2: Multiple Permissions Grant</h3>
+        <div class="code-block">
+GRANT SELECT, INSERT, UPDATE ON products TO manager_user;
+        </div>
+        <div class="sql-explanation">
+            <strong>SELECT, INSERT, UPDATE:</strong> Moonru permissions um kodukkurom<br>
+            <strong>ON products:</strong> Products table la mattum<br>
+            <strong>TO manager_user:</strong> Manager user ku access
+        </div>
+
+        <h3>Example 3: ALL Privileges Grant</h3>
+        <div class="code-block">
+GRANT ALL PRIVILEGES ON company_db.* TO admin_user;
+        </div>
+        <div class="sql-explanation">
+            <strong>ALL PRIVILEGES:</strong> Ellaa permissions um kodukkurom<br>
+            <strong>ON company_db.*:</strong> Company database la ella tables layum<br>
+            <strong>TO admin_user:</strong> Admin user ku full access
+        </div>
+
+        <h3>Example 4: SELECT Permission Revoke</h3>
+        <div class="code-block">
+REVOKE SELECT ON students FROM ravi;
+        </div>
+        <div class="sql-explanation">
+            <strong>REVOKE:</strong> Permission wapas edukkurom<br>
+            <strong>SELECT:</strong> Padicka permission remove pannurom<br>
+            <strong>FROM ravi:</strong> Ravi user la irundhu edukkurom
+        </div>
+
+        <h3>Example 5: Multiple Permissions Revoke</h3>
+        <div class="code-block">
+REVOKE INSERT, UPDATE ON products FROM manager_user;
+        </div>
+        <div class="sql-explanation">
+            <strong>INSERT, UPDATE:</strong> Rendu permissions um remove pannurom<br>
+            <strong>FROM manager_user:</strong> Manager user la irundhu edukurom
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Use Cases (Payan Paadu Nilai)</h2>
+        
+        <div class="use-case">
+            <h4>1. Employee Management System</h4>
+            <p>HR department ku employee data access venum aana salary details venam. Appo specific columns ku mattum permission kodukalam.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. E-commerce Application</h4>
+            <p>Customer service team ku order details paakka permission venum aana customer payment info access venam.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Banking System</h4>
+            <p>Junior staff ku account balance check panna permission venum aana transaction approve panna permission kudukka koodaathu.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Educational Portal</h4>
+            <p>Student ku own marks paakka permission venum aana other students marks paakka permission venam.</p>
+        </div>
+    </div>
+
+    <div class="sample-chapter">
+        <h2>Next Chapter Sample: Python JDBC Connectivity</h2>
+        
+        <h3>Definition (Vilakkam)</h3>
+        <div class="definition">
+            <strong>Python Database Connectivity:</strong> Python program la irundhu MySQL database ku connect panni data operations pannurathu. Ithukullu mysql-connector-python library use pannurom.
+        </div>
+
+        <h3>Basic Connection Example:</h3>
+        <div class="code-block">
+import mysql.connector
+
+connection = mysql.connector.connect(
+    host='localhost',
+    database='test_db',
+    user='root',
+    password='password123'
+)
+        </div>
+        <div class="sql-explanation">
+            <strong>import mysql.connector:</strong> MySQL library ah import pannurom<br>
+            <strong>host='localhost':</strong> Database server address<br>
+            <strong>database='test_db':</strong> Connect panna database name<br>
+            <strong>user='root':</strong> Database username<br>
+            <strong>password='password123':</strong> Database password
+        </div>
+
+        <p><em>Full chapter la detailed examples, error handling, and real-world use cases irukum!</em></p>
+    </div>
+
+    <div class="header" style="margin-top: 30px; text-align: center;">
+        <p><strong>Connect with me:</strong></p>
+        <div class="author-info" style="justify-content: center;">
+            <a href="https://linkedin.com/in/sbgowtham" target="_blank">LinkedIn: sbgowtham</a>
+            <a href="https://youtube.com/@dataengineeringvideos" target="_blank">YouTube: dataengineeringvideos</a>
+            <a href="https://instagram.com/dataengineeringtamil" target="_blank">Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+</body>
+</html>

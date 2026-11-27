@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 19: Sub Queries - SQL Book</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .author-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .social-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .content-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .flowchart {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .code-explanation {
+            background: #e6fffa;
+            padding: 10px;
+            border-left: 4px solid #38b2ac;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f56565;
+            margin: 15px 0;
+        }
+        .diagram {
+            text-align: center;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .function-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .function-table th, .function-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .function-table th {
+            background-color: #667eea;
+            color: white;
+        }
+        .types-box {
+            background: #f0fff4;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #48bb78;
+            margin: 15px 0;
+        }
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 SQL Complete Guide</h1>
+        <h2>Chapter 19: Sub Queries</h2>
+        <p><em>Query ku ulla Query ah? Sub Queries Master Panalam!</em></p>
+    </div>
+
+    <div class="author-info">
+        <h3 style="text-align: center; margin-bottom: 15px;">👨‍💻 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#">📺 YouTube: dataengineeringvideos</a>
+            <a href="#">💼 LinkedIn: sbgowtham</a>
+            <a href="#">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📖 Definition (Sub Queries enna?)</h2>
+        <p><strong>Sub Query</strong> na oru main query kulla execute agra another query thaan. Idha <em>nested query</em> or <em>inner query</em> nu kooda solvanga.</p>
+        <p>Sub queries oda main purpose:</p>
+        <ul>
+            <li>Complex data filtering panna</li>
+            <li>Dynamic values ku based ah conditions vekkalam</li>
+            <li>Multiple tables la irundhu related data get panalam</li>
+            <li>Conditional logic implement panalam</li>
+            <li>Data comparison operations perform panalam</li>
+        </ul>
+        
+        <div class="types-box">
+            <h4>🎯 Sub Query Basic Structure:</h4>
+            <p><strong>Outer Query (Main Query)</strong> + <strong>Inner Query (Sub Query)</strong></p>
+            <code>SELECT column1 FROM table1 WHERE column2 = (SELECT column3 FROM table2 WHERE condition);</code>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🏛️ Standard (Sub Queries Types & Standards)</h2>
+        <p>MySQL la sub queries ah different categories la classify panalam:</p>
+        
+        <table class="function-table">
+            <thead>
+                <tr>
+                    <th>Sub Query Type</th>
+                    <th>Description</th>
+                    <th>Usage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Single Row Sub Query</td>
+                    <td>Oru single value return pannum</td>
+                    <td>=, !=, &lt;, &gt; operators oda use panalam</td>
+                </tr>
+                <tr>
+                    <td>Multiple Row Sub Query</td>
+                    <td>Multiple values return pannum</td>
+                    <td>IN, NOT IN, ANY, ALL operators use pananum</td>
+                </tr>
+                <tr>
+                    <td>Correlated Sub Query</td>
+                    <td>Outer query oda dependency irukum</td>
+                    <td>Row-by-row processing pannum</td>
+                </tr>
+                <tr>
+                    <td>Non-Correlated Sub Query</td>
+                    <td>Independent ah execute agum</td>
+                    <td>Once execute aachu, result ah reuse pannum</td>
+                </tr>
+                <tr>
+                    <td>Scalar Sub Query</td>
+                    <td>Single value return pannum</td>
+                    <td>SELECT clause la use panalam</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="types-box">
+            <h4>📍 Sub Query Positions:</h4>
+            <ul>
+                <li><strong>WHERE clause:</strong> Filtering conditions ku</li>
+                <li><strong>FROM clause:</strong> Virtual table ah use panna</li>
+                <li><strong>SELECT clause:</strong> Calculated columns ku</li>
+                <li><strong>HAVING clause:</strong> Group filtering ku</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📊 Flow Chart</h2>
+        <div class="flowchart">
+            <div class="diagram">
+                <h3>Sub Query Execution Process Flow</h3>
+                <pre style="font-family: monospace; text-align: left; background: white; padding: 15px; border-radius: 5px;">
+Start
+  ↓
+Parse Main Query
+  ↓
+Identify Sub Query Location
+  ↓
+┌─────────────────────────────────────────────┐
+│  Sub Query Type?                            │
+│  ┌─── Correlated ────┐  ┌─── Non-Correlated │
+│  │                   │  │                   │
+│  ↓                   │  ↓                   │
+│  Execute per         │  Execute Once        │
+│  outer row           │  Store Result        │
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  Return Type?                               │
+│  ┌─── Single Row ────┐  ┌─── Multiple Row ─┐│
+│  │  (=, !=, <, >)    │  │  (IN, ANY, ALL)  ││
+│  └───────────────────┘  └──────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+Execute Sub Query
+  ↓
+Get Sub Query Result
+  ↓
+Apply Result to Main Query
+  ↓
+Execute Main Query with Sub Query Result
+  ↓
+Return Final Result Set
+  ↓
+End
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🎯 Examples with Detailed Explanation</h2>
+        
+        <h3>1. Single Row Sub Query - Maximum salary ah earn pandra employee find panna</h3>
+        <div class="code-block">
+SELECT 
+    employee_name, 
+    salary
+FROM 
+    employees
+WHERE 
+    salary = (SELECT MAX(salary) FROM employees);
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>SELECT employee_name, salary</code> - Employee name and salary columns ah select panrom<br>
+            • <code>FROM employees</code> - employees table la irundhu data retrieve panrom<br>
+            • <code>WHERE salary =</code> - Salary column ku condition apply panrom<br>
+            • <code>(SELECT MAX(salary) FROM employees)</code> - Sub query: employees table la maximum salary ah find pannum<br>
+            • <strong>Process:</strong> First sub query execute agi maximum salary value return pannum, aprom main query adha use panni matching employee ah find pannum
+        </div>
+
+        <h3>2. Multiple Row Sub Query - IT department employees ah find panna</h3>
+        <div class="code-block">
+SELECT 
+    employee_name, 
+    department_id
+FROM 
+    employees
+WHERE 
+    department_id IN (SELECT department_id FROM departments WHERE department_name = 'IT');
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>SELECT employee_name, department_id</code> - Employee details select panrom<br>
+            • <code>FROM employees</code> - Main table employees<br>
+            • <code>WHERE department_id IN</code> - department_id check panna IN operator use panrom<br>
+            • <code>(SELECT department_id FROM departments WHERE department_name = 'IT')</code> - Sub query: IT department oda ID ah find pannum<br>
+            • <strong>Process:</strong> Sub query IT department oda IDs return pannum, main query adha match panni employees ah filter pannum
+        </div>
+
+        <h3>3. Correlated Sub Query - Each department la average salary vida high earn pandravan find panna</h3>
+        <div class="code-block">
+SELECT 
+    e1.employee_name, 
+    e1.salary, 
+    e1.department_id
+FROM 
+    employees e1
+WHERE 
+    e1.salary > (SELECT AVG(e2.salary) FROM employees e2 WHERE e2.department_id = e1.department_id);
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>SELECT e1.employee_name, e1.salary, e1.department_id</code> - Outer query employee details select pannum<br>
+            • <code>FROM employees e1</code> - Main table ku e1 alias kuduthom<br>
+            • <code>WHERE e1.salary ></code> - Salary comparison condition<br>
+            • <code>(SELECT AVG(e2.salary) FROM employees e2</code> - Sub query: average salary calculate pannum<br>
+            • <code>WHERE e2.department_id = e1.department_id)</code> - Same department employees ku filter pannum<br>
+            • <strong>Process:</strong> Each row ku sub query execute agi, adha department oda average salary calculate panni compare pannum
+        </div>
+
+        <h3>4. Sub Query in FROM clause - Department wise employee count</h3>
+        <div class="code-block">
+SELECT 
+    d.department_name, 
+    emp_count.total_employees
+FROM 
+    departments d
+JOIN 
+    (SELECT department_id, COUNT(*) AS total_employees FROM employees GROUP BY department_id) emp_count
+ON 
+    d.department_id = emp_count.department_id;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>SELECT d.department_name, emp_count.total_employees</code> - Department name and employee count select panrom<br>
+            • <code>FROM departments d</code> - departments table main table ah use panrom<br>
+            • <code>JOIN</code> - Sub query result oda join panrom<br>
+            • <code>(SELECT department_id, COUNT(*) AS total_employees FROM employees GROUP BY department_id)</code> - Sub query: department wise employee count calculate pannum<br>
+            • <code>emp_count</code> - Sub query result ku alias name<br>
+            • <code>ON d.department_id = emp_count.department_id</code> - Join condition<br>
+            • <strong>Process:</strong> Sub query department wise count return pannum, main query adha department name oda join panni final result kudukum
+        </div>
+
+        <h3>5. EXISTS Operator with Sub Query - Project assign aana employees ah find panna</h3>
+        <div class="code-block">
+SELECT 
+    employee_name, 
+    employee_id
+FROM 
+    employees e
+WHERE 
+    EXISTS (SELECT 1 FROM project_assignments pa WHERE pa.employee_id = e.employee_id);
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line explanation:</strong><br>
+            • <code>SELECT employee_name, employee_id</code> - Employee details select panrom<br>
+            • <code>FROM employees e</code> - employees table la irundhu data get panrom<br>
+            • <code>WHERE EXISTS</code> - EXISTS condition check panrom<br>
+            • <code>(SELECT 1 FROM project_assignments pa</code> - Sub query: project assignments table check pannum<br>
+            • <code>WHERE pa.employee_id = e.employee_id)</code> - Current employee ku project assignment iruka nu check pannum<br>
+            • <strong>Process:</strong> Each employee ku sub query run agi, project assignment irundha TRUE return pannum, illana FALSE
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🛠️ Use Cases (Real-world Applications)</h2>
+        
+        <div class="use-case">
+            <h4>1. E-commerce: Best Selling Products Analysis</h4>
+            <p><strong>Scenario:</strong> Average sales vida athiga sell aana products ah find pannum</p>
+            <div class="code-block">
+SELECT 
+    product_name, 
+    total_sales
+FROM 
+    products p
+WHERE 
+    (SELECT SUM(quantity) FROM order_items oi WHERE oi.product_id = p.product_id) 
+    > 
+    (SELECT AVG(total_quantity) FROM (SELECT SUM(quantity) AS total_quantity FROM order_items GROUP BY product_id) AS avg_sales);
+            </div>
+            <p><strong>Benefit:</strong> High performing products ah identify panni inventory planning panalam</p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. HR Management: Department Performance Comparison</h4>
+            <p><strong>Scenario:</strong> Company average salary vida high pay pandra departments find pannum</p>
+            <div class="code-block">
+SELECT 
+    d.department_name,
+    AVG(e.salary) AS avg_department_salary
+FROM 
+    departments d
+JOIN 
+    employees e ON d.department_id = e.department_id
+GROUP BY 
+    d.department_name
+HAVING 
+    AVG(e.salary) > (SELECT AVG(salary) FROM employees);
+            </div>
+            <p><strong>Benefit:</strong> Budget allocation and salary benchmarking ku use panalam</p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Banking: Loan Approval System</h4>
+            <p><strong>Scenario:</strong> Customer oda credit history based ah loan approve pannanuma decide pannum</p>
+            <div class="code-block">
+SELECT 
+    customer_id, 
+    loan_amount, 
+    credit_score
+FROM 
+    loan_applications la
+WHERE 
+    credit_score > (SELECT AVG(credit_score) FROM customers WHERE loan_status = 'APPROVED')
+    AND 
+    NOT EXISTS (SELECT 1 FROM defaulted_loans dl WHERE dl.customer_id = la.customer_id);
+            </div>
+            <p><strong>Benefit:</strong> Risk assessment accurate ah panni better loan decisions edukalam</p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Inventory Management: Reorder Point Calculation</h4>
+            <p><strong>Scenario:</strong> Average consumption vida kamiya irukra products ah identify pannum</p>
+            <div class="code-block">
+SELECT 
+    product_name, 
+    current_stock
+FROM 
+    inventory i
+WHERE 
+    current_stock < (SELECT AVG(monthly_consumption) FROM sales_history sh WHERE sh.product_id = i.product_id AND sale_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH));
+            </div>
+            <p><strong>Benefit:</strong> Stock-out situations avoid panni customer satisfaction maintain panalam</p>
+        </div>
+
+        <div class="use-case">
+            <h4>5. Student Management: Top Performers Identification</h4>
+            <p><strong>Scenario:</strong> Each subject la class average vida high marks vaanga students find pannum</p>
+            <div class="code-block">
+SELECT 
+    s.student_name, 
+    s.student_id, 
+    sub.subject_name
+FROM 
+    students s
+JOIN 
+    marks m ON s.student_id = m.student_id
+JOIN 
+    subjects sub ON m.subject_id = sub.subject_id
+WHERE 
+    m.marks > (SELECT AVG(m2.marks) FROM marks m2 WHERE m2.subject_id = m.subject_id);
+            </div>
+            <p><strong>Benefit:</strong> Scholarship allocation and merit recognition ku use panalam</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>📚 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#" style="color: #64ffda;">📺 YouTube: dataengineeringvideos</a> |
+            <a href="#" style="color: #64ffda;">💼 LinkedIn: sbgowtham</a> |
+            <a href="#" style="color: #64ffda;">📸 Instagram: dataengineeringtamil</a>
+        </div>
+        <p style="margin-top: 15px;"><em>Sub Queries master aayiduvinga! Complex data retrieval ippove easy ah irukum! 🚀</em></p>
+    </div>
+</body>
+</html>

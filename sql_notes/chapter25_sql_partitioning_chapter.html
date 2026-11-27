@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 25: Database Partitioning - SQL Book</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        .special-badge {
+            background: linear-gradient(45deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            margin: 10px 0;
+            display: inline-block;
+        }
+        .author-info {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .social-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        .social-links a:hover {
+            color: #667eea;
+        }
+        .content-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+        .section-title {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        .flowchart {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e6f3ff 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            border: 2px solid #4a5568;
+        }
+        .code-explanation {
+            background: linear-gradient(135deg, #e6fffa 0%, #f0fff4 100%);
+            padding: 15px;
+            border-left: 5px solid #38b2ac;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .use-case {
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #f56565;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(245, 101, 101, 0.1);
+        }
+        .diagram {
+            text-align: center;
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 2px dashed #667eea;
+        }
+        .function-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .function-table th, .function-table td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: left;
+        }
+        .function-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+        .function-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .types-box {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #48bb78;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(72, 187, 120, 0.1);
+        }
+        .warning-box {
+            background: linear-gradient(135deg, #fffaf0 0%, #feebc8 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #ed8936;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(237, 137, 54, 0.1);
+        }
+        .performance-box {
+            background: linear-gradient(135deg, #f0f8ff 0%, #bee3f8 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #4169e1;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(65, 105, 225, 0.1);
+        }
+        .tip-box {
+            background: linear-gradient(135deg, #f5f0ff 0%, #e9d8fd 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #9f7aea;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(159, 122, 234, 0.1);
+        }
+        .advanced-box {
+            background: linear-gradient(135deg, #fff0f5 0%, #fbb6ce 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #d53f8c;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(213, 63, 140, 0.1);
+        }
+        .footer {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 30px;
+            box-shadow: 0 10px 25px rgba(45, 55, 72, 0.3);
+        }
+        .highlight-text {
+            background: linear-gradient(45deg, #ffd89b, #19547b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 SQL Complete Guide</h1>
+        <div class="special-badge">⭐ SPECIAL CHAPTER ⭐</div>
+        <h2>Chapter 25: Database Partitioning</h2>
+        <p><em>Massive Data Ah Efficiently Handle Panni Performance Ah Sky-high Pannalam!</em></p>
+        <p class="highlight-text">The Art of Dividing to Conquer Data!</p>
+    </div>
+
+    <div class="author-info">
+        <h3 style="text-align: center; margin-bottom: 15px;">👨‍💻 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#">📺 YouTube: dataengineeringvideos</a>
+            <a href="#">💼 LinkedIn: sbgowtham</a>
+            <a href="#">📸 Instagram: dataengineeringtamil</a>
+        </div>
+        <p style="text-align: center; margin-top: 15px; font-style: italic; color: #666;">
+            <em>"Partitioning is not just about splitting data, it's about unlocking the true potential of your database architecture!"</em>
+        </p>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📖 Definition (Partitioning - The Ultimate Data Strategy!)</h2>
+        <p><strong>Database Partitioning</strong> na oru large table ah logical yaa physical ah smaller, manageable pieces la divide panra advanced technique thaan. Idhu data management oda holy grail nu solvanga - massive datasets ah efficiently handle panradhu ku!</p>
+        
+        <div class="advanced-box">
+            <h4>🎯 Partitioning Philosophy:</h4>
+            <p><strong>"Divide and Conquer"</strong> - Ancient strategy ah database world la apply panrathuthan partitioning. Oru 100 million rows irukra table ah 10 partitions ah divide pannina, each partition la 10 million rows mattum irukum. Query pannumpothu MySQL only relevant partition ah scan pannum - not the entire table!</p>
+        </div>
+        
+        <p>Partitioning oda <strong>Super Powers</strong>:</p>
+        <ul>
+            <li><strong>Lightning Fast Queries:</strong> Partition pruning - only relevant partitions scan pannum</li>
+            <li><strong>Parallel Processing:</strong> Multiple partitions simultaneously process panna mudiyum</li>
+            <li><strong>Storage Optimization:</strong> Old partitions ah cheaper storage la move panalam</li>
+            <li><strong>Maintenance Efficiency:</strong> Individual partition maintenance possible</li>
+            <li><strong>Backup Strategy:</strong> Partition-wise backup and recovery possible</li>
+            <li><strong>Data Lifecycle Management:</strong> Time-based data archival super easy</li>
+            <li><strong>Horizontal Scaling:</strong> Load distribute across multiple storage devices</li>
+        </ul>
+        
+        <div class="performance-box">
+            <h4>⚡ Performance Impact Examples:</h4>
+            <ul>
+                <li><strong>Without Partitioning:</strong> 1 billion rows table la search - 45 seconds</li>
+                <li><strong>With Partitioning:</strong> Same search - 2.5 seconds (18x faster!)</li>
+                <li><strong>Index Size:</strong> Partition-wise smaller indexes - memory efficient</li>
+                <li><strong>Concurrent Operations:</strong> Multiple partitions parallel ah work pannum</li>
+            </ul>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Partitioning Master Rules:</h4>
+            <ul>
+                <li><strong>Choose Partition Key Wisely:</strong> Query patterns based ah select pananum</li>
+                <li><strong>Avoid Cross-Partition Queries:</strong> Multiple partitions touch panra queries slow aagum</li>
+                <li><strong>Plan for Growth:</strong> Future data volume predict panni design pananum</li>
+                <li><strong>Monitor Partition Balance:</strong> Data skew avoid pananum</li>
+                <li><strong>Understand Limitations:</strong> Foreign key constraints across partitions not possible</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🏛️ Standard (Partitioning Types - The Complete Arsenal)</h2>
+        <p>MySQL la powerful partitioning strategies irukku - each one specific use cases ku optimized:</p>
+        
+        <table class="function-table">
+            <thead>
+                <tr>
+                    <th>Partition Type</th>
+                    <th>Tamil la Full Explanation</th>
+                    <th>Best Use Cases</th>
+                    <th>Performance Impact</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>RANGE Partitioning</strong></td>
+                    <td>Numeric yaa date ranges based ah data divide pannum. Time-series data ku perfect!</td>
+                    <td>Sales data (year-wise), Log data (month-wise), Transaction history</td>
+                    <td>🚀 Excellent for time-based queries</td>
+                </tr>
+                <tr>
+                    <td><strong>LIST Partitioning</strong></td>
+                    <td>Specific values list based ah partition pannum. Discrete categories ku ideal!</td>
+                    <td>Region-wise data, Status-based partitions, Category divisions</td>
+                    <td>⚡ Perfect for categorical data</td>
+                </tr>
+                <tr>
+                    <td><strong>HASH Partitioning</strong></td>
+                    <td>Hash function use panni data equally distribute pannum. Load balancing champion!</td>
+                    <td>User data distribution, Load balancing, Even data spread</td>
+                    <td>🎯 Uniform distribution guaranteed</td>
+                </tr>
+                <tr>
+                    <td><strong>KEY Partitioning</strong></td>
+                    <td>MySQL internal hash function use pannum. Primary key based distribution!</td>
+                    <td>Primary key based splitting, Auto-balanced partitions</td>
+                    <td>🔧 MySQL optimized distribution</td>
+                </tr>
+                <tr>
+                    <td><strong>Subpartitioning</strong></td>
+                    <td>Partition kulla kooda partition! Advanced level partitioning technique!</td>
+                    <td>Complex data patterns, Multi-dimensional partitioning</td>
+                    <td>🎪 Ultimate performance for complex queries</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="advanced-box">
+            <h4>🎓 Advanced Partitioning Strategies:</h4>
+            <ul>
+                <li><strong>Partition Pruning:</strong> MySQL automatically irrelevant partitions ah skip pannum</li>
+                <li><strong>Partition-wise Joins:</strong> Matching partitions ah parallel ah join pannum</li>
+                <li><strong>Partition Exchange:</strong> Data ah partitions between ah quickly move panalam</li>
+                <li><strong>Online Partition Management:</strong> Live tables la partition add/drop panalam</li>
+            </ul>
+        </div>
+
+        <div class="tip-box">
+            <h4>💡 Pro Partitioning Tips:</h4>
+            <ul>
+                <li><strong>Monitor Query Plans:</strong> EXPLAIN use panni partition pruning verify pannunga</li>
+                <li><strong>Partition Statistics:</strong> information_schema.PARTITIONS la monitor pannunga</li>
+                <li><strong>Balanced Distribution:</strong> Data skew avoid panna regular checks pannunga</li>
+                <li><strong>Future Planning:</strong> Growth projections based ah partition strategy design pannunga</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📊 Flow Chart - Partitioning Decision Matrix</h2>
+        <div class="flowchart">
+            <div class="diagram">
+                <h3>Comprehensive Partitioning Strategy Flow</h3>
+                <pre style="font-family: monospace; text-align: left; background: white; padding: 20px; border-radius: 8px;">
+Large Table Performance Issues Identify Pannalam
+  ↓
+Data Analysis & Query Pattern Study Pannalam
+  ↓
+┌─────────────────────────────────────────────────────────┐
+│  Data Type & Access Pattern Analysis                   │
+│  ┌─── Time-based Data ────┐  ┌─── Categorical Data ───┐│
+│  │  (Orders, Logs,        │  │  (Regions, Status,     ││
+│  │   Transactions)        │  │   Types, Categories)   ││
+│  │  → RANGE Partitioning  │  │  → LIST Partitioning   ││
+│  └────────────────────────┘  └────────────────────────┘│
+└─────────────────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────────────────┐
+│  Distribution Requirements Check Pannalam               │
+│  ┌─── Even Distribution ──┐  ┌─── Key-based Split ───┐ │
+│  │   Required             │  │   Required             │ │
+│  │  → HASH Partitioning   │  │  → KEY Partitioning    │ │
+│  └────────────────────────┘  └────────────────────────┘ │
+└─────────────────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────────────────┐
+│  Complex Requirements Check                             │
+│  ┌─── Multi-dimensional ──┐  ┌─── Simple Single ─────┐ │
+│  │   Partitioning         │  │   Dimension            │ │
+│  │  → Subpartitioning     │  │  → Basic Partitioning  │ │
+│  └────────────────────────┘  └────────────────────────┘ │
+└─────────────────────────────────────────────────────────┘
+  ↓
+Partition Key Selection (Most Important Step!)
+  ↓
+┌─────────────────────────────────────────────────────────┐
+│  Partition Key Validation                               │
+│  • Query Pattern Match Check                            │
+│  • Data Distribution Analysis                           │
+│  • Future Growth Consideration                          │
+│  • Cross-partition Query Minimization                   │
+└─────────────────────────────────────────────────────────┘
+  ↓
+CREATE TABLE with PARTITION BY Implementation
+  ↓
+┌─────────────────────────────────────────────────────────┐
+│  Post-Implementation Validation                         │
+│  • EXPLAIN Query Plans Analysis                         │
+│  • Performance Benchmarking                             │
+│  • Partition Pruning Verification                       │
+│  • Resource Utilization Monitoring                      │
+└─────────────────────────────────────────────────────────┘
+  ↓
+Ongoing Maintenance & Optimization
+  ↓
+Partitioning Success! Performance Sky-high! 🚀
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🎯 Advanced Examples with Deep Tamil Explanations</h2>
+        
+        <h3>1. RANGE Partitioning - Time-based Data Mastery</h3>
+        <div class="code-block">
+-- E-commerce sales data - year wise partition panalam
+CREATE TABLE sales_transactions (
+    transaction_id BIGINT AUTO_INCREMENT,
+    customer_id INT NOT NULL,
+    transaction_date DATE NOT NULL,
+    amount DECIMAL(12,2) NOT NULL,
+    product_category VARCHAR(50),
+    payment_method VARCHAR(30),
+    sales_person_id INT,
+    PRIMARY KEY (transaction_id, transaction_date)
+) PARTITION BY RANGE (YEAR(transaction_date)) (
+    PARTITION p_2020 VALUES LESS THAN (2021),
+    PARTITION p_2021 VALUES LESS THAN (2022),
+    PARTITION p_2022 VALUES LESS THAN (2023),
+    PARTITION p_2023 VALUES LESS THAN (2024),
+    PARTITION p_2024 VALUES LESS THAN (2025),
+    PARTITION p_future VALUES LESS THAN MAXVALUE
+);
+
+-- Partition pruning demonstrate pannalam
+EXPLAIN PARTITIONS
+SELECT 
+    SUM(amount) AS total_sales,
+    COUNT(*) AS transaction_count
+FROM 
+    sales_transactions
+WHERE 
+    transaction_date >= '2024-01-01'
+    AND 
+    transaction_date < '2025-01-01';
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Advanced Tamil Explanation:</strong><br>
+            • <code>CREATE TABLE sales_transactions</code> - E-commerce sales data store panra table create panrom<br>
+            • <code>PRIMARY KEY (transaction_id, transaction_date)</code> - Composite primary key, transaction_date partition key la include pannirukrom<br>
+            • <code>PARTITION BY RANGE (YEAR(transaction_date))</code> - Transaction date oda year extract panni range partitioning apply panrom<br>
+            • <code>PARTITION p_2020 VALUES LESS THAN (2021)</code> - 2020 year data ku separate partition create panrom<br>
+            • <code>PARTITION p_future VALUES LESS THAN MAXVALUE</code> - Future data ku fallback partition create panrom<br>
+            • <code>EXPLAIN PARTITIONS SELECT</code> - Query execution plan la which partitions use aagudhunu show pannum<br>
+            • <strong>Performance Magic:</strong> 2024 data query pannumpothu only p_2024 partition scan aagum!<br>
+            • <strong>Maintenance Benefit:</strong> Old year partitions ah easily archive yaa drop panna mudiyum<br>
+            • <strong>Storage Optimization:</strong> Each year data separate files la store aagum
+        </div>
+
+        <h3>2. LIST Partitioning - Geographic Data Distribution</h3>
+        <div class="code-block">
+-- Regional customer data - state wise partition panalam
+CREATE TABLE customer_profiles (
+    customer_id BIGINT AUTO_INCREMENT,
+    customer_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    phone VARCHAR(15),
+    state_code VARCHAR(5) NOT NULL,
+    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    customer_tier ENUM('BRONZE', 'SILVER', 'GOLD', 'PLATINUM'),
+    total_orders INT DEFAULT 0,
+    lifetime_value DECIMAL(12,2) DEFAULT 0.00,
+    PRIMARY KEY (customer_id, state_code)
+) PARTITION BY LIST COLUMNS(state_code) (
+    PARTITION p_south VALUES IN ('TN', 'KA', 'KL', 'AP', 'TS'),
+    PARTITION p_west VALUES IN ('MH', 'GJ', 'RJ', 'MP', 'GOA'),
+    PARTITION p_north VALUES IN ('DL', 'UP', 'PB', 'HR', 'HP'),
+    PARTITION p_east VALUES IN ('WB', 'BH', 'JH', 'OD', 'AS'),
+    PARTITION p_northeast VALUES IN ('MN', 'MZ', 'NL', 'TR', 'SK'),
+    PARTITION p_others VALUES IN ('JK', 'LA', 'CH', 'PY', 'DN', 'AN')
+);
+
+-- Regional analysis query - super fast execution
+EXPLAIN PARTITIONS
+SELECT 
+    state_code,
+    customer_tier,
+    COUNT(*) AS customer_count,
+    AVG(lifetime_value) AS avg_customer_value
+FROM 
+    customer_profiles
+WHERE 
+    state_code IN ('TN', 'KA', 'KL')
+    AND 
+    customer_tier IN ('GOLD', 'PLATINUM')
+GROUP BY 
+    state_code,
+    customer_tier
+ORDER BY 
+    avg_customer_value DESC;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Advanced Tamil Explanation:</strong><br>
+            • <code>CREATE TABLE customer_profiles</code> - Customer master data store panra table with rich attributes<br>
+            • <code>PRIMARY KEY (customer_id, state_code)</code> - Primary key la partition key include pannirukrom for optimal performance<br>
+            • <code>PARTITION BY LIST COLUMNS(state_code)</code> - State code based ah explicit list partitioning create panrom<br>
+            • <code>PARTITION p_south VALUES IN ('TN', 'KA', 'KL', 'AP', 'TS')</code> - South Indian states ah oru partition la group panrom<br>
+            • <code>PARTITION p_west VALUES IN ('MH', 'GJ', 'RJ', 'MP', 'GOA')</code> - Western states separate partition<br>
+            • <code>WHERE state_code IN ('TN', 'KA', 'KL')</code> - South Indian states query pannumpothu only p_south partition scan aagum<br>
+            • <strong>Business Logic:</strong> Regional managers ku separate partition access kodukalam<br>
+            • <strong>Data Locality:</strong> Same region customers oru partition la irundha regional analysis lightning fast<br>
+            • <strong>Maintenance:</strong> Region-wise data backup, archive, cleanup operations easy aagum
+        </div>
+
+        <h3>3. HASH Partitioning - Perfect Load Distribution</h3>
+        <div class="code-block">
+-- User activity logs - hash partitioning for load balancing
+CREATE TABLE user_activity_logs (
+    log_id BIGINT AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    activity_type VARCHAR(50) NOT NULL,
+    activity_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    session_id VARCHAR(100),
+    page_url VARCHAR(500),
+    response_time_ms INT,
+    http_status_code INT,
+    PRIMARY KEY (log_id, user_id)
+) PARTITION BY HASH(user_id) PARTITIONS 16;
+
+-- Hash distribution effectiveness check pannalam
+SELECT 
+    PARTITION_NAME,
+    TABLE_ROWS,
+    AVG_ROW_LENGTH,
+    DATA_LENGTH,
+    INDEX_LENGTH
+FROM 
+    information_schema.PARTITIONS
+WHERE 
+    TABLE_NAME = 'user_activity_logs'
+    AND 
+    TABLE_SCHEMA = DATABASE()
+ORDER BY 
+    PARTITION_ORDINAL_POSITION;
+
+-- User specific query - only one partition scan
+EXPLAIN PARTITIONS
+SELECT 
+    activity_type,
+    COUNT(*) AS activity_count,
+    AVG(response_time_ms) AS avg_response_time
+FROM 
+    user_activity_logs
+WHERE 
+    user_id = 12345
+    AND 
+    activity_timestamp >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+GROUP BY 
+    activity_type
+ORDER BY 
+    activity_count DESC;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Advanced Tamil Explanation:</strong><br>
+            • <code>CREATE TABLE user_activity_logs</code> - High-volume user activity data ku table create panrom<br>
+            • <code>PARTITION BY HASH(user_id) PARTITIONS 16</code> - user_id hash panni 16 equal partitions la distribute panrom<br>
+            • <code>PRIMARY KEY (log_id, user_id)</code> - Auto-increment ID oda user_id composite key for partition optimization<br>
+            • <code>SELECT PARTITION_NAME, TABLE_ROWS FROM information_schema.PARTITIONS</code> - Each partition la evlo rows irukunu check panrom<br>
+            • <code>WHERE user_id = 12345</code> - Specific user query pannumpothu hash calculation panni only one partition access aagum<br>
+            • <strong>Load Balancing:</strong> User IDs uniformly distribute aaguradha MySQL hash function guarantee pannum<br>
+            • <strong>Parallel Processing:</strong> 16 partitions parallel ah access panna mudiyum for better performance<br>
+            • <strong>Scalability:</strong> New partitions add pannalam online without downtime<br>
+            • <strong>Storage Distribution:</strong> Each partition separate disk files la store aagi I/O load distribute aagum
+        </div>
+
+        <h3>4. Subpartitioning - The Ultimate Data Organization</h3>
+        <div class="code-block">
+-- Advanced e-commerce orders - date range + region subpartitioning
+CREATE TABLE order_details (
+    order_id BIGINT AUTO_INCREMENT,
+    customer_id BIGINT NOT NULL,
+    order_date DATE NOT NULL,
+    region_code VARCHAR(10) NOT NULL,
+    total_amount DECIMAL(12,2) NOT NULL,
+    order_status ENUM('PENDING', 'CONFIRMED', 'SHIPPED', 'DELIVERED', 'CANCELLED'),
+    payment_status ENUM('PENDING', 'PAID', 'FAILED', 'REFUNDED'),
+    delivery_address TEXT,
+    special_instructions TEXT,
+    PRIMARY KEY (order_id, order_date, region_code)
+) PARTITION BY RANGE (YEAR(order_date))
+SUBPARTITION BY HASH(CRC32(region_code))
+SUBPARTITIONS 4 (
+    PARTITION p_2022 VALUES LESS THAN (2023),
+    PARTITION p_2023 VALUES LESS THAN (2024), 
+    PARTITION p_2024 VALUES LESS THAN (2025),
+    PARTITION p_future VALUES LESS THAN MAXVALUE
+);
+
+-- Complex query with both time and region filters
+EXPLAIN PARTITIONS
+SELECT 
+    region_code,
+    order_status,
+    COUNT(*) AS order_count,
+    SUM(total_amount) AS revenue,
+    AVG(total_amount) AS avg_order_value
+FROM 
+    order_details
+WHERE 
+    order_date >= '2024-01-01'
+    AND 
+    order_date < '2024-12-31'
+    AND 
+    region_code IN ('SOUTH', 'WEST')
+    AND 
+    order_status IN ('DELIVERED', 'SHIPPED')
+GROUP BY 
+    region_code,
+    order_status
+ORDER BY 
+    revenue DESC;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Advanced Tamil Explanation:</strong><br>
+            • <code>CREATE TABLE order_details</code> - Complex e-commerce order data ku advanced table structure<br>
+            • <code>PARTITION BY RANGE (YEAR(order_date))</code> - Primary partitioning year wise panrom<br>
+            • <code>

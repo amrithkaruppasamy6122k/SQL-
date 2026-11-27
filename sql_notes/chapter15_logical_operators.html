@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 15 - Logical Operators (NOT IN, AND, OR, IN, ALIAS)</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .author-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .author-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.9em;
+        }
+        .social-link {
+            color: #74b9ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .social-link:hover {
+            color: #0984e3;
+        }
+        .chapter {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .definition-box {
+            background: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .operators-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .operator-card {
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .operator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .and-card { background: #e8f5e8; border-color: #27ae60; }
+        .or-card { background: #e8f0ff; border-color: #3498db; }
+        .in-card { background: #fff8e8; border-color: #f39c12; }
+        .notin-card { background: #ffe8e8; border-color: #e74c3c; }
+        .alias-card { background: #f3e5f5; border-color: #9b59b6; }
+        .sql-code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .data-table th {
+            background: #3498db;
+            color: white;
+        }
+        .data-table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .result-highlight {
+            background: #d4edda !important;
+            font-weight: bold;
+        }
+        .use-case {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .tamil-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+        }
+        .and-highlight { background: #e8f5e8 !important; }
+        .or-highlight { background: #e8f0ff !important; }
+        .author-footer {
+            background: #2d3436;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .footer-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #74b9ff;
+        }
+        @media print {
+            body { background: white; }
+            .chapter { box-shadow: none; }
+            .author-footer { background: #f8f9fa; color: #2c3e50; }
+        }
+        @media (max-width: 768px) {
+            .operators-grid { grid-template-columns: 1fr; }
+            .social-links { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="author-header">
+        <div class="author-name">📚 SQL Complete Course - By Gowtham SB</div>
+        <div class="social-links">
+            <span>📱 Instagram: <a href="#" class="social-link">@dataengineeringtamil</a></span>
+            <span>💼 LinkedIn: <a href="#" class="social-link">sbgowtham</a></span>
+            <span>🎥 YouTube: <a href="#" class="social-link">dataengineeringvideos</a></span>
+        </div>
+    </div>
+
+    <div class="chapter">
+        <h1>Chapter 15: Logical Operators (NOT IN, AND, OR, IN, ALIAS)</h1>
+
+        <h2>📖 Definition</h2>
+        <div class="definition-box">
+            <strong>Logical Operators:</strong> Logical operators <span class="tamil-text">use panni</span> multiple conditions combine pannalam, complex filtering <span class="tamil-text">pannalam</span>. <span class="tamil-text">AND, OR, NOT operators</span> mathematical logic principles follow pannum. <span class="tamil-text">IN and NOT IN operators</span> multiple values check panna use panrom. <span class="tamil-text">ALIAS</span> column names and table names-ku <span class="tamil-text">short names</span> or <span class="tamil-text">meaningful names kudukka</span> use panrom.
+        </div>
+
+        <h2>🎯 Logical Operators Overview</h2>
+        <div class="operators-grid">
+            <div class="operator-card and-card">
+                <h3>🔗 AND</h3>
+                <h4><span class="tamil-text">All Conditions True</span></h4>
+                <p><span class="tamil-text">All conditions satisfy aana mattum result</span></p>
+                <div style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                    condition1 AND condition2
+                </div>
+            </div>
+            
+            <div class="operator-card or-card">
+                <h3>🔀 OR</h3>
+                <h4><span class="tamil-text">Any Condition True</span></h4>
+                <p><span class="tamil-text">Any one condition true-na enough</span></p>
+                <div style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                    condition1 OR condition2
+                </div>
+            </div>
+            
+            <div class="operator-card in-card">
+                <h3>📝 IN</h3>
+                <h4><span class="tamil-text">Value in List</span></h4>
+                <p><span class="tamil-text">Value given list-la iruka check pannum</span></p>
+                <div style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                    column IN (value1, value2)
+                </div>
+            </div>
+            
+            <div class="operator-card notin-card">
+                <h3>🚫 NOT IN</h3>
+                <h4><span class="tamil-text">Value Not in List</span></h4>
+                <p><span class="tamil-text">Value given list-la illa-nu check pannum</span></p>
+                <div style="font-family: monospace; background: #f8f9fa; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                    column NOT IN (value1, value2)
+                </div>
+            </div>
+        </div>
+
+        <h2>📊 Sample Database Setup</h2>
+        <div class="sql-code">-- Create employee database for examples
+CREATE TABLE employees (
+    emp_id INT AUTO_INCREMENT PRIMARY KEY,
+    emp_name VARCHAR(100) NOT NULL,
+    department VARCHAR(50) NOT NULL,
+    salary DECIMAL(10,2) NOT NULL,
+    age INT NOT NULL,
+    city VARCHAR(50) NOT NULL,
+    joining_date DATE NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+-- Insert sample data (using generic, safe patterns)
+INSERT INTO employees 
+    (emp_name, department, salary, age, city, joining_date, is_active) 
+VALUES
+    ('Employee_A', 'IT', 55000.00, 28, 'Chennai', '2022-01-15', TRUE),
+    ('Employee_B', 'HR', 45000.00, 32, 'Mumbai', '2021-03-20', TRUE),
+    ('Employee_C', 'Finance', 60000.00, 29, 'Bangalore', '2020-05-10', TRUE),
+    ('Employee_D', 'IT', 52000.00, 26, 'Chennai', '2023-02-28', TRUE),
+    ('Employee_E', 'Marketing', 48000.00, 35, 'Delhi', '2019-08-12', FALSE),
+    ('Employee_F', 'Finance', 65000.00, 31, 'Mumbai', '2021-11-05', TRUE),
+    ('Employee_G', 'IT', 58000.00, 27, 'Bangalore', '2022-07-18', TRUE),
+    ('Employee_H', 'HR', 42000.00, 30, 'Delhi', '2020-12-01', FALSE);
+        </div>
+
+        <h4><span class="tamil-text">Sample Data Preview:</span></h4>
+        <table class="data-table">
+            <tr>
+                <th>emp_id</th>
+                <th>emp_name</th>
+                <th>department</th>
+                <th>salary</th>
+                <th>age</th>
+                <th>city</th>
+                <th>is_active</th>
+            </tr>
+            <tr><td>1</td><td>Employee_A</td><td>IT</td><td>55000</td><td>28</td><td>Chennai</td><td>TRUE</td></tr>
+            <tr><td>2</td><td>Employee_B</td><td>HR</td><td>45000</td><td>32</td><td>Mumbai</td><td>TRUE</td></tr>
+            <tr><td>3</td><td>Employee_C</td><td>Finance</td><td>60000</td><td>29</td><td>Bangalore</td><td>TRUE</td></tr>
+            <tr><td>4</td><td>Employee_D</td><td>IT</td><td>52000</td><td>26</td><td>Chennai</td><td>TRUE</td></tr>
+            <tr><td>5</td><td>Employee_E</td><td>Marketing</td><td>48000</td><td>35</td><td>Delhi</td><td>FALSE</td></tr>
+        </table>
+
+        <h2>🔗 AND Operator</h2>
+
+        <div class="sql-code">-- Basic AND examples - all conditions must be true
+
+-- Find IT employees with salary > 50000
+SELECT emp_name, department, salary, city
+FROM employees
+WHERE department = 'IT' 
+  AND salary > 50000;
+
+-- Find employees in Chennai with age < 30
+SELECT emp_name, age, city, department
+FROM employees
+WHERE city = 'Chennai' 
+  AND age < 30;
+
+-- Multiple AND conditions
+SELECT emp_name, department, salary, age, city
+FROM employees
+WHERE department = 'IT' 
+  AND salary > 50000 
+  AND age < 30 
+  AND is_active = TRUE;
+
+-- AND with date conditions
+SELECT emp_name, department, joining_date
+FROM employees
+WHERE joining_date >= '2022-01-01' 
+  AND joining_date <= '2023-12-31' 
+  AND is_active = TRUE;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">AND Operator Explanation:</span></strong><br>
+            <strong>department = 'IT' AND salary > 50000</strong> - <span class="tamil-text">IT department-la irukkanum AND salary 50000-ku mela irukkanum</span><br>
+            <strong>Multiple AND conditions</strong> - <span class="tamil-text">Ella conditions-um true aana mattum result varum</span><br>
+            <strong>Date range with AND</strong> - <span class="tamil-text">Specific period-la join aana employees mattum</span><br>
+            <strong>Boolean with AND</strong> - <span class="tamil-text">Active employees mattum filter pannum</span>
+        </div>
+
+        <h2>🔀 OR Operator</h2>
+
+        <div class="sql-code">-- Basic OR examples - any condition can be true
+
+-- Find employees in IT OR Finance departments
+SELECT emp_name, department, salary
+FROM employees
+WHERE department = 'IT' 
+   OR department = 'Finance';
+
+-- Find employees with high salary OR senior age
+SELECT emp_name, salary, age, department
+FROM employees
+WHERE salary > 55000 
+   OR age > 32;
+
+-- Find employees in specific cities
+SELECT emp_name, city, department
+FROM employees
+WHERE city = 'Chennai' 
+   OR city = 'Mumbai' 
+   OR city = 'Bangalore';
+
+-- Complex OR with parentheses
+SELECT emp_name, department, salary, age
+FROM employees
+WHERE (department = 'IT' OR department = 'Finance') 
+  AND (salary > 50000 OR age < 30);
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">OR Operator Explanation:</span></strong><br>
+            <strong>department = 'IT' OR department = 'Finance'</strong> - <span class="tamil-text">IT illa Finance-la yaarachu irundhaa enough</span><br>
+            <strong>salary > 55000 OR age > 32</strong> - <span class="tamil-text">High salary illa senior age-la yaaravadhu irundhaa select aagum</span><br>
+            <strong>Multiple OR conditions</strong> - <span class="tamil-text">Any one condition true-na result varum</span><br>
+            <strong>Parentheses with OR</strong> - <span class="tamil-text">Complex conditions-ku priority set panna use panrom</span>
+        </div>
+
+        <h2>📊 AND vs OR Truth Table</h2>
+        <table class="comparison-table">
+            <tr>
+                <th>Condition 1</th>
+                <th>Condition 2</th>
+                <th class="and-highlight">AND Result</th>
+                <th class="or-highlight">OR Result</th>
+            </tr>
+            <tr>
+                <td>TRUE</td>
+                <td>TRUE</td>
+                <td class="and-highlight"><strong>TRUE</strong></td>
+                <td class="or-highlight"><strong>TRUE</strong></td>
+            </tr>
+            <tr>
+                <td>TRUE</td>
+                <td>FALSE</td>
+                <td class="and-highlight">FALSE</td>
+                <td class="or-highlight"><strong>TRUE</strong></td>
+            </tr>
+            <tr>
+                <td>FALSE</td>
+                <td>TRUE</td>
+                <td class="and-highlight">FALSE</td>
+                <td class="or-highlight"><strong>TRUE</strong></td>
+            </tr>
+            <tr>
+                <td>FALSE</td>
+                <td>FALSE</td>
+                <td class="and-highlight">FALSE</td>
+                <td class="or-highlight">FALSE</td>
+            </tr>
+        </table>
+
+        <h2>📝 IN Operator</h2>
+
+        <div class="sql-code">-- Basic IN examples - check if value exists in list
+
+-- Find employees in specific departments
+SELECT emp_name, department, salary
+FROM employees
+WHERE department IN ('IT', 'Finance', 'HR');
+
+-- Find employees with specific ages
+SELECT emp_name, age, department
+FROM employees
+WHERE age IN (26, 28, 30, 32);
+
+-- Find employees in metro cities
+SELECT emp_name, city, department, salary
+FROM employees
+WHERE city IN ('Chennai', 'Mumbai', 'Bangalore', 'Delhi');
+
+-- IN with numbers - find specific salary ranges
+SELECT emp_name, salary, department
+FROM employees
+WHERE salary IN (45000.00, 55000.00, 60000.00);
+
+-- IN with subquery (advanced example)
+SELECT emp_name, department, salary
+FROM employees
+WHERE department IN (
+    SELECT DISTINCT department 
+    FROM employees 
+    WHERE salary > 50000
+);
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">IN Operator Explanation:</span></strong><br>
+            <strong>department IN ('IT', 'Finance', 'HR')</strong> - <span class="tamil-text">Department inda 3-la yaadhavadhu irundha select aagum</span><br>
+            <strong>age IN (26, 28, 30, 32)</strong> - <span class="tamil-text">Age inda values-la yaadhavadhu match aana select aagum</span><br>
+            <strong>IN with subquery</strong> - <span class="tamil-text">Another query result-a IN list-a use pannalam</span><br>
+            <strong>IN vs OR</strong> - <span class="tamil-text">IN use panradhu short and clean, multiple OR conditions replace pannum</span>
+        </div>
+
+        <h2>🚫 NOT IN Operator</h2>
+
+        <div class="sql-code">-- Basic NOT IN examples - exclude values from list
+
+-- Find employees NOT in specific departments
+SELECT emp_name, department, salary
+FROM employees
+WHERE department NOT IN ('Marketing', 'HR');
+
+-- Find employees NOT in specific age range
+SELECT emp_name, age, department, city
+FROM employees
+WHERE age NOT IN (26, 35);
+
+-- Find employees NOT in tier-2 cities
+SELECT emp_name, city, department, salary
+FROM employees
+WHERE city NOT IN ('Pune', 'Hyderabad', 'Ahmedabad');
+
+-- NOT IN with NULL handling (important!)
+SELECT emp_name, department, salary
+FROM employees
+WHERE emp_id NOT IN (
+    SELECT emp_id 
+    FROM employees 
+    WHERE salary < 50000 
+      AND emp_id IS NOT NULL
+);
+
+-- Complex NOT IN with multiple conditions
+SELECT emp_name, department, salary, age
+FROM employees
+WHERE department NOT IN ('Marketing') 
+  AND age NOT IN (35, 32) 
+  AND is_active = TRUE;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">NOT IN Operator Explanation:</span></strong><br>
+            <strong>department NOT IN ('Marketing', 'HR')</strong> - <span class="tamil-text">Marketing and HR illa-na mathavanga select aagum</span><br>
+            <strong>age NOT IN (26, 35)</strong> - <span class="tamil-text">26 and 35 age illa-na mathavanga</span><br>
+            <strong>NOT IN with subquery</strong> - <span class="tamil-text">Subquery result-la illa-na records select pannum</span><br>
+            <strong>NULL handling important</strong> - <span class="tamil-text">NOT IN with NULL values unexpected results kudukum</span>
+        </div>
+
+        <h2>🏷️ ALIAS (Column and Table Aliases)</h2>
+
+        <div class="sql-code">-- Column aliases - give meaningful names to columns
+
+-- Basic column aliases
+SELECT 
+    emp_name AS employee_name,
+    department AS dept,
+    salary AS monthly_salary,
+    age AS employee_age
+FROM employees
+WHERE salary > 50000;
+
+-- Aliases with calculations
+SELECT 
+    emp_name AS name,
+    salary AS current_salary,
+    salary * 12 AS annual_salary,
+    salary * 1.1 AS salary_after_10_percent_hike,
+    YEAR(CURDATE()) - YEAR(joining_date) AS years_of_experience
+FROM employees;
+
+-- Table aliases for shorter queries
+SELECT 
+    e.emp_name,
+    e.department,
+    e.salary,
+    e.city
+FROM employees AS e
+WHERE e.salary > 50000 
+  AND e.is_active = TRUE;
+
+-- Multiple table aliases (when using joins)
+SELECT 
+    e.emp_name,
+    e.department,
+    d.department_head,
+    d.budget
+FROM employees AS e
+JOIN departments AS d ON e.department = d.dept_name
+WHERE e.salary > 50000;
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">ALIAS Explanation:</span></strong><br>
+            <strong>emp_name AS employee_name</strong> - <span class="tamil-text">Result-la column name 'employee_name'-a show aagum</span><br>
+            <strong>salary * 12 AS annual_salary</strong> - <span class="tamil-text">Calculation result-ku meaningful name kudukurom</span><br>
+            <strong>employees AS e</strong> - <span class="tamil-text">Table name-ku short alias kudukkurom</span><br>
+            <strong>e.emp_name</strong> - <span class="tamil-text">Table alias use panni column specify pannurom</span>
+        </div>
+
+        <h2>🔄 Complex Combinations</h2>
+
+        <div class="sql-code">-- Complex logical combinations with parentheses
+
+-- Find IT or Finance employees in specific cities with good salary
+SELECT 
+    emp_name AS name,
+    department AS dept,
+    salary AS pay,
+    city AS location,
+    age
+FROM employees AS e
+WHERE (e.department = 'IT' OR e.department = 'Finance') 
+  AND (e.city IN ('Chennai', 'Mumbai', 'Bangalore')) 
+  AND e.salary > 50000 
+  AND e.is_active = TRUE;
+
+-- Find employees with high salary OR (specific department AND age)
+SELECT 
+    emp_name AS employee,
+    department,
+    salary,
+    age,
+    city
+FROM employees
+WHERE salary > 60000 
+   OR (department = 'IT' AND age BETWEEN 25 AND 30)
+   OR (city IN ('Chennai', 'Mumbai') AND is_active = TRUE);
+
+-- Complex NOT IN with multiple conditions
+SELECT 
+    emp_name AS name,
+    department,
+    salary,
+    city,
+    CASE 
+        WHEN salary > 60000 THEN 'High'
+        WHEN salary > 50000 THEN 'Medium'
+        ELSE 'Standard'
+    END AS salary_category
+FROM employees AS e
+WHERE e.department NOT IN ('Marketing', 'Admin') 
+  AND e.age NOT IN (35, 40, 45) 
+  AND (e.city = 'Chennai' OR e.salary > 55000) 
+  AND e.is_active = TRUE;
+        </div>
+
+        <h2>🔧 Use Cases</h2>
+
+        <div class="use-case">
+            <h4>1. <span class="tamil-text">HR Employee Filtering</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">HR-ku specific criteria-oda employees list venum</span><br>
+            <div class="sql-code">-- Find active employees in IT/Finance with good salary
+SELECT 
+    emp_name AS employee_name,
+    department,
+    salary AS monthly_pay,
+    city AS work_location
+FROM employees
+WHERE department IN ('IT', 'Finance') 
+  AND salary > 50000 
+  AND is_active = TRUE 
+  AND city NOT IN ('Remote', 'Offshore');
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>2. <span class="tamil-text">Payroll Processing</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Salary increment eligible employees find pannum</span><br>
+            <div class="sql-code">-- Find employees eligible for increment
+SELECT 
+    emp_name AS employee,
+    department AS dept,
+    salary AS current_salary,
+    salary * 1.15 AS new_salary_15_percent_hike,
+    age,
+    YEAR(CURDATE()) - YEAR(joining_date) AS experience_years
+FROM employees
+WHERE (salary < 55000 OR age < 30) 
+  AND department NOT IN ('Marketing') 
+  AND is_active = TRUE 
+  AND joining_date <= '2022-12-31';
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>3. <span class="tamil-text">Performance Analysis</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">Department-wise employee analysis</span><br>
+            <div class="sql-code">-- Analyze employees by performance criteria
+SELECT 
+    department AS dept,
+    COUNT(*) AS total_employees,
+    AVG(salary) AS avg_salary,
+    COUNT(CASE WHEN salary > 55000 THEN 1 END) AS high_earners,
+    COUNT(CASE WHEN age < 30 THEN 1 END) AS young_employees
+FROM employees
+WHERE department IN ('IT', 'Finance', 'HR') 
+  AND is_active = TRUE
+GROUP BY department
+HAVING AVG(salary) > 50000;
+            </div>
+        </div>
+
+        <div class="use-case">
+            <h4>4. <span class="tamil-text">Location-based Reporting</span></h4>
+            <strong>Scenario:</strong> <span class="tamil-text">City-wise employee distribution</span><br>
+            <div class="sql-code">-- City-wise active employee report
+SELECT 
+    city AS location,
+    department AS dept,
+    COUNT(*) AS employee_count,
+    ROUND(AVG(salary), 2) AS average_salary,
+    MIN(age) AS youngest_employee_age,
+    MAX(age) AS oldest_employee_age
+FROM employees
+WHERE city IN ('Chennai', 'Mumbai', 'Bangalore', 'Delhi') 
+  AND is_active = TRUE 
+  AND salary NOT IN (0, NULL)
+GROUP BY city, department
+ORDER BY location, employee_count DESC;
+            </div>
+        </div>
+
+        <h2>⚠️ Common Mistakes & Best Practices</h2>
+
+        <div class="warning-box">
+            <h4><span class="tamil-text">Common Mistakes to Avoid:</span></h4>
+            ❌ <strong><span class="tamil-text">NULL with NOT IN:</span></strong> <span class="tamil-text">NOT IN list-la NULL irundha unexpected results varum</span><br>
+            ❌ <strong><span class="tamil-text">Operator Precedence:</span></strong> <span class="tamil-text">AND has higher precedence than OR - parentheses use pannunga</span><br>
+            ❌ <strong><span class="tamil-text">Too Many OR:</span></strong> <span class="tamil-text">Multiple OR conditions-ku bajama IN use pannunga</span><br>
+            ❌ <strong><span class="tamil-text">Case Sensitivity:</span></strong> <span class="tamil-text">String comparisons case sensitive-a check pannunga</span><br>
+            ❌ <strong><span class="tamil-text">Long Alias Names:</span></strong> <span class="tamil-text">Alias names simple and meaningful-a venga</span>
+        </div>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">Best Practices:</span></h4>
+            ✅ <strong><span class="tamil-text">Use Parentheses:</span></strong> <span class="tamil-text">Complex conditions-ku parentheses use panni clarity improve pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Meaningful Aliases:</span></strong> <span class="tamil-text">Column aliases descriptive and business-friendly-a venga</span><br>
+            ✅ <strong><span class="tamil-text">IN vs OR:</span></strong> <span class="tamil-text">Multiple values check panna IN use pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Handle NULLs:</span></strong> <span class="tamil-text">NOT IN with subqueries-la NULL check pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Index Usage:</span></strong> <span class="tamil-text">WHERE clause columns-ku index create pannunga performance-ku</span><br>
+            ✅ <strong><span class="tamil-text">Test Queries:</span></strong> <span class="tamil-text">Complex conditions small data set-la test pannunga</span>
+        </div>
+
+        <h2>📊 Performance Tips</h2>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">Optimization Techniques:</span></h4>
+            ⚡ <strong><span class="tamil-text">Index Strategy:</span></strong> <span class="tamil-text">Frequently used WHERE columns-ku composite index create pannunga</span><br>
+            ⚡ <strong><span class="tamil-text">Order Conditions:</span></strong> <span class="tamil-text">Most selective condition first-a venga</span><br>
+            ⚡ <strong><span class="tamil-text">Use EXISTS:</span></strong> <span class="tamil-text">Large subqueries-ku NOT IN bajama NOT EXISTS use pannunga</span><br>
+            ⚡ <strong><span class="tamil-text">LIMIT Results:</span></strong> <span class="tamil-text">Large result sets-ku LIMIT use pannunga</span><br>
+            ⚡ <strong><span class="tamil-text">Avoid Functions:</span></strong> <span class="tamil-text">WHERE clause-la column functions avoid pannunga</span>
+        </div>
+
+        <h2>🔄 Alternative Approaches</h2>
+
+        <div class="sql-code">-- Instead of multiple OR conditions, use IN
+-- ❌ Avoid this:
+SELECT emp_name, department 
+FROM employees 
+WHERE department = 'IT' 
+   OR department = 'Finance' 
+   OR department = 'HR';
+
+-- ✅ Use this instead:
+SELECT emp_name, department 
+FROM employees 
+WHERE department IN ('IT', 'Finance', 'HR');
+
+-- Instead of NOT IN with NULLs, use NOT EXISTS
+-- ❌ Problematic with NULLs:
+SELECT emp_name 
+FROM employees 
+WHERE emp_id NOT IN (
+    SELECT manager_id 
+    FROM departments
+);
+
+-- ✅ Better approach:
+SELECT emp_name 
+FROM employees e
+WHERE NOT EXISTS (
+    SELECT 1 
+    FROM departments d 
+    WHERE d.manager_id = e.emp_id
+);
+
+-- Use CASE with logical operators for complex conditions
+SELECT 
+    emp_name,
+    department,
+    salary,
+    CASE 
+        WHEN department = 'IT' AND salary > 55000 THEN 'IT Senior'
+        WHEN department = 'Finance' AND salary > 60000 THEN 'Finance Senior'
+        WHEN department IN ('HR', 'Marketing') AND age > 30 THEN 'Experienced'
+        ELSE 'Standard'
+    END AS employee_category
+FROM employees
+WHERE is_active = TRUE;
+        </div>
+
+        <h2>📈 Advanced Examples</h2>
+
+        <div class="sql-code">-- Complex business logic with multiple operators
+SELECT 
+    e.emp_name AS employee_name,
+    e.department AS dept,
+    e.salary AS current_salary,
+    e.city AS location,
+    e.age,
+    CASE 
+        WHEN e.salary > 60000 AND e.age < 35 THEN 'High Potential'
+        WHEN e.department IN ('IT', 'Finance') AND e.salary > 50000 THEN 'Core Contributor'
+        WHEN e.age > 32 AND e.salary > 45000 THEN 'Experienced Professional'
+        ELSE 'Standard Employee'
+    END AS employee_tier,
+    
+    -- Calculate bonus eligibility
+    CASE 
+        WHEN (e.department = 'IT' AND e.salary > 50000) 
+          OR (e.department = 'Finance' AND e.salary > 55000)
+          OR (e.age < 30 AND e.salary > 45000) THEN 'Bonus Eligible'
+        ELSE 'Not Eligible'
+    END AS bonus_status
+    
+FROM employees AS e
+WHERE e.is_active = TRUE 
+  AND e.city NOT IN ('Remote', 'Contractor') 
+  AND (
+    (e.department IN ('IT', 'Finance') AND e.salary > 45000) 
+    OR (e.department = 'HR' AND e.age BETWEEN 25 AND 40)
+    OR (e.department NOT IN ('Marketing', 'Admin') AND e.salary > 55000)
+  )
+ORDER BY 
+    CASE e.department 
+        WHEN 'IT' THEN 1 
+        WHEN 'Finance' THEN 2 
+        WHEN 'HR' THEN 3 
+        ELSE 4 
+    END,
+    e.salary DESC;
+
+-- Dynamic filtering with multiple logical conditions
+SELECT 
+    dept_summary.department,
+    dept_summary.total_employees,
+    dept_summary.avg_salary,
+    dept_summary.salary_range,
+    CASE 
+        WHEN dept_summary.avg_salary > 55000 THEN 'High Paying'
+        WHEN dept_summary.avg_salary > 45000 THEN 'Competitive'
+        ELSE 'Standard'
+    END AS department_category
+FROM (
+    SELECT 
+        department,
+        COUNT(*) AS total_employees,
+        ROUND(AVG(salary), 2) AS avg_salary,
+        CONCAT('₹', FORMAT(MIN(salary), 2), ' - ₹', FORMAT(MAX(salary), 2)) AS salary_range
+    FROM employees
+    WHERE is_active = TRUE 
+      AND department NOT IN ('Admin', 'Intern')
+      AND (salary > 40000 OR age < 35)
+    GROUP BY department
+    HAVING COUNT(*) > 1 
+       AND AVG(salary) > 40000
+) AS dept_summary
+WHERE dept_summary.total_employees > 1
+ORDER BY dept_summary.avg_salary DESC;
+        </div>
+
+        <h2>📚 Quick Reference</h2>
+        <ul>
+            <li><strong>AND:</strong> <span class="tamil-text">All conditions must be true</span></li>
+            <li><strong>OR:</strong> <span class="tamil-text">Any condition can be true</span></li>
+            <li><strong>IN (list):</strong> <span class="tamil-text">Value exists in given list</span></li>
+            <li><strong>NOT IN (list):</strong> <span class="tamil-text">Value does not exist in given list</span></li>
+            <li><strong>column AS alias:</strong> <span class="tamil-text">Give column a different name in result</span></li>
+            <li><strong>table AS alias:</strong> <span class="tamil-text">Give table a short name for easier reference</span></li>
+            <li><strong>Parentheses ():</strong> <span class="tamil-text">Control operator precedence</span></li>
+            <li><strong>NULL handling:</strong> <span class="tamil-text">Be careful with NOT IN and NULL values</span></li>
+        </ul>
+
+        <h2>🎯 Summary</h2>
+        <div class="success-box">
+            <h4><span class="tamil-text">Key Takeaways:</span></h4>
+            🎯 <strong><span class="tamil-text">Logical operators</span></strong> complex filtering-ku essential tools<br>
+            🎯 <strong><span class="tamil-text">AND</span></strong> requires all conditions true, <strong>OR</strong> requires any condition true<br>
+            🎯 <strong><span class="tamil-text">IN operator</span></strong> multiple OR conditions-ku better alternative<br>
+            🎯 <strong><span class="tamil-text">NOT IN</span></strong> NULL values-oda careful-a use pannanum<br>
+            🎯 <strong><span class="tamil-text">ALIAS</span></strong> readability and maintenance-ku improve pannum<br>
+            🎯 <strong><span class="tamil-text">Parentheses</span></strong> complex logic-ku clarity provide pannum<br>
+            🎯 <strong><span class="tamil-text">Performance</span></strong> consider panni proper indexing pannanum
+        </div>
+    </div>
+
+    <div class="author-footer">
+        <div class="footer-title">📘 Master SQL Logic with Gowtham SB</div>
+        <div class="social-links">
+            <span>🎥 Advanced SQL Tutorials: <strong>YouTube/dataengineeringvideos</strong></span><br>
+            <span>📱 Daily SQL Tips: <strong>Instagram/@dataengineeringtamil</strong></span><br>
+            <span>💼 Connect for Career Guidance: <strong>LinkedIn/sbgowtham</strong></span>
+        </div>
+    </div>
+</body>
+</html>
+            ✅

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4 - MySQL Notebooks</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .chapter {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .definition-box {
+            background: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .flowchart {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .flowchart-box {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .arrow {
+            font-size: 24px;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        .tool-comparison {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            gap: 15px;
+        }
+        .tool-card {
+            flex: 1;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+        }
+        .tool-card:hover {
+            border-color: #3498db;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .sql-code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .feature-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .step-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            position: relative;
+        }
+        .step-number {
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #f39c12;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .tamil-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .nav-button {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        .nav-button:hover {
+            background: #2980b9;
+        }
+        @media print {
+            body { background: white; }
+            .chapter { box-shadow: none; }
+            .navigation { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="chapter">
+        <h1>Chapter 4: MySQL Notebooks & Practice Environment</h1>
+
+        <h2>📖 Definition</h2>
+        <div class="definition-box">
+            <strong>MySQL Notebooks:</strong> <span class="tamil-text">Interactive environment</span> where SQL queries write panni immediately results <span class="tamil-text">paakalam</span>. <span class="tamil-text">Jupyter notebooks madhiri</span>, SQL learning and experimenting-ku <span class="tamil-text">perfect tool</span>. <span class="tamil-text">Code, notes, results ellam</span> oru place-la keep panalam.
+        </div>
+
+        <h2>🎯 Popular SQL Notebook Tools</h2>
+        <div class="tool-comparison">
+            <div class="tool-card">
+                <h4>📓 MySQL Workbench</h4>
+                <p><strong><span class="tamil-text">Official Tool</span></strong></p>
+                <p>GUI + Query Editor</p>
+                <p><span class="tamil-text">Free & Powerful</span></p>
+            </div>
+            <div class="tool-card">
+                <h4>🐍 Jupyter + SQL</h4>
+                <p><strong><span class="tamil-text">Python Integration</span></strong></p>
+                <p>Data Analysis</p>
+                <p><span class="tamil-text">Popular choice</span></p>
+            </div>
+            <div class="tool-card">
+                <h4>🌐 Online Editors</h4>
+                <p><strong><span class="tamil-text">Browser-based</span></strong></p>
+                <p>No Installation</p>
+                <p><span class="tamil-text">Quick Practice</span></p>
+            </div>
+        </div>
+
+        <h2>📊 Notebook Workflow</h2>
+        <div class="flowchart">
+            <div class="flowchart-box"><span class="tamil-text">Write</span> SQL Query</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box"><span class="tamil-text">Execute</span> Query</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box"><span class="tamil-text">View</span> Results</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box"><span class="tamil-text">Add</span> Notes/Comments</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box"><span class="tamil-text">Save</span> Notebook</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box"><span class="tamil-text">Share</span> with Others</div>
+        </div>
+
+        <h2>💡 MySQL Workbench Setup</h2>
+
+        <div class="step-box">
+            <div class="step-number">1</div>
+            <strong><span class="tamil-text">Open MySQL Workbench</span></strong><br>
+            <span class="tamil-text">Installation-oda part-a</span> already install <span class="tamil-text">aayirukkum</span>
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">2</div>
+            <strong><span class="tamil-text">Create New Connection</span></strong><br>
+            Home screen-la "+" icon <span class="tamil-text">click panni</span> new connection create pannum
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">3</div>
+            <strong><span class="tamil-text">Connection Details</span></strong><br>
+            • <strong>Connection Name:</strong> Local MySQL<br>
+            • <strong>Hostname:</strong> localhost<br>
+            • <strong>Port:</strong> 3306<br>
+            • <strong>Username:</strong> root
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">4</div>
+            <strong><span class="tamil-text">Open SQL Editor</span></strong><br>
+            Connection-a <span class="tamil-text">double-click panna</span> SQL editor open <span class="tamil-text">aagum</span>
+        </div>
+
+        <h2>🔧 Workbench Interface Features</h2>
+
+        <div class="feature-box">
+            <h4><span class="tamil-text">Query Editor Features:</span></h4>
+            ✅ <strong>Syntax Highlighting:</strong> <span class="tamil-text">SQL keywords color-la highlight aagum</span><br>
+            ✅ <strong>Auto-complete:</strong> <span class="tamil-text">Table names, column names suggest pannurum</span><br>
+            ✅ <strong>Query History:</strong> <span class="tamil-text">Previous queries save aagum</span><br>
+            ✅ <strong>Result Tabs:</strong> <span class="tamil-text">Multiple queries results compare pannalam</span><br>
+            ✅ <strong>Export Options:</strong> <span class="tamil-text">Results-a CSV, JSON-la export pannalam</span>
+        </div>
+
+        <h2>💡 Basic Notebook Example</h2>
+
+        <div class="sql-code">
+-- Chapter 4: First SQL Notebook
+-- Date: Today's Date
+-- Topic: Basic Database Operations
+
+-- 1. Check MySQL Version
+SELECT VERSION() AS mysql_version;
+
+-- 2. Show Available Databases  
+SHOW DATABASES;
+
+-- 3. Create Practice Database
+CREATE DATABASE IF NOT EXISTS practice_db;
+
+-- 4. Use Practice Database
+USE practice_db;
+
+-- 5. Show Current Database
+SELECT DATABASE() AS current_database;
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">✓</div>
+            <strong><span class="tamil-text">Query Explanations:</span></strong><br>
+            <strong>VERSION()</strong> - <span class="tamil-text">MySQL version number return pannum</span><br>
+            <strong>SHOW DATABASES</strong> - <span class="tamil-text">Available databases list pannurum</span><br>
+            <strong>CREATE DATABASE</strong> - <span class="tamil-text">New database create pannum</span><br>
+            <strong>USE database_name</strong> - <span class="tamil-text">Specific database select pannum</span><br>
+            <strong>DATABASE()</strong> - <span class="tamil-text">Current active database name return pannum</span>
+        </div>
+
+        <h2>🐍 Jupyter Notebook with SQL</h2>
+
+        <div class="step-box">
+            <div class="step-number">1</div>
+            <strong><span class="tamil-text">Install Required Packages</span></strong>
+        </div>
+
+        <div class="sql-code">
+pip install jupyter
+pip install mysql-connector-python
+pip install sqlalchemy
+pip install ipython-sql
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">2</div>
+            <strong><span class="tamil-text">Load SQL Extension</span></strong>
+        </div>
+
+        <div class="sql-code">
+%load_ext sql
+%sql mysql://username:password@localhost/database_name
+        </div>
+
+        <div class="step-box">
+            <div class="step-number">3</div>
+            <strong><span class="tamil-text">Write SQL in Jupyter</span></strong>
+        </div>
+
+        <div class="sql-code">
+%%sql
+SELECT 
+    TABLE_NAME,
+    TABLE_ROWS,
+    DATA_LENGTH
+FROM 
+    INFORMATION_SCHEMA.TABLES 
+WHERE 
+    TABLE_SCHEMA = 'practice_db';
+        </div>
+
+        <h2>🌐 Online SQL Practice Tools</h2>
+
+        <div class="tool-comparison">
+            <div class="tool-card">
+                <h4>🔗 SQLiteOnline</h4>
+                <p><strong><span class="tamil-text">Browser-based</span></strong></p>
+                <p><span class="tamil-text">Instant practice</span></p>
+            </div>
+            <div class="tool-card">
+                <h4>🔗 DB Fiddle</h4>
+                <p><strong><span class="tamil-text">Multiple DB support</span></strong></p>
+                <p><span class="tamil-text">Share queries</span></p>
+            </div>
+            <div class="tool-card">
+                <h4>🔗 W3Schools</h4>
+                <p><strong><span class="tamil-text">Learning focused</span></strong></p>
+                <p><span class="tamil-text">Step-by-step</span></p>
+            </div>
+        </div>
+
+        <h2>🔧 Best Practices for SQL Notebooks</h2>
+
+        <div class="feature-box">
+            <h4><span class="tamil-text">Organization Tips:</span></h4>
+            📝 <strong><span class="tamil-text">Comments:</span></strong> <span class="tamil-text">Query purpose explain pannunga</span><br>
+            📁 <strong><span class="tamil-text">Sections:</span></strong> <span class="tamil-text">Related queries group pannunga</span><br>
+            🏷️ <strong><span class="tamil-text">Naming:</span></strong> <span class="tamil-text">Meaningful notebook names kudunga</span><br>
+            💾 <strong><span class="tamil-text">Version Control:</span></strong> <span class="tamil-text">Git-la notebooks save pannunga</span><br>
+            🔄 <strong><span class="tamil-text">Regular Backup:</span></strong> <span class="tamil-text">Important queries backup edunga</span>
+        </div>
+
+        <h2>🔧 Use Cases</h2>
+
+        <div class="feature-box">
+            <h4>1. <span class="tamil-text">Learning & Practice</span></h4>
+            <strong>Purpose:</strong> <span class="tamil-text">SQL concepts practice panradhu</span><br>
+            <strong>Benefits:</strong> <span class="tamil-text">Interactive learning, immediate feedback</span>
+        </div>
+
+        <div class="feature-box">
+            <h4>2. <span class="tamil-text">Data Analysis Projects</span></h4>
+            <strong>Purpose:</strong> <span class="tamil-text">Business data analysis panradhu</span><br>
+            <strong>Benefits:</strong> <span class="tamil-text">Query + visualization + notes oru place-la</span>
+        </div>
+
+        <div class="feature-box">
+            <h4>3. <span class="tamil-text">Documentation</span></strong><br>
+            <strong>Purpose:</strong> <span class="tamil-text">Database procedures document panradhu</span><br>
+            <strong>Benefits:</strong> <span class="tamil-text">Team members-ku easy-ya share pannalam</span>
+        </div>
+
+        <div class="feature-box">
+            <h4>4. <span class="tamil-text">Query Development</span></h4>
+            <strong>Purpose:</strong> <span class="tamil-text">Complex queries step-by-step develop panradhu</span><br>
+            <strong>Benefits:</strong> <span class="tamil-text">Testing, debugging easy-ya pannalam</span>
+        </div>
+
+        <h2>⚠️ Tips & Warnings</h2>
+
+        <div class="warning-box">
+            <h4><span class="tamil-text">Important Points:</span></h4>
+            ⚠️ <strong><span class="tamil-text">Production Data:</span></strong> <span class="tamil-text">Live data-la practice panna koodadhu</span><br>
+            💾 <strong><span class="tamil-text">Save Frequently:</span></strong> <span class="tamil-text">Important queries-a regular-a save pannunga</span><br>
+            🔒 <strong><span class="tamil-text">Credentials:</span></strong> <span class="tamil-text">Database passwords notebooks-la store panna koodadhu</span><br>
+            📊 <strong><span class="tamil-text">Large Results:</span></strong> <span class="tamil-text">Big query results notebook slow pannalam</span>
+        </div>
+
+        <div class="navigation">
+            <a href="#" class="nav-button">← <span class="tamil-text">Previous:</span> Linux Installation</a>
+            <div style="text-align: center; color: #7f8c8d;">
+                <strong>Chapter 4 of 40+</strong><br>
+                <span class="tamil-text">Practice Environment Ready!</span>
+            </div>
+            <a href="#" class="nav-button"><span class="tamil-text">Next:</span> SQL Categories →</a>
+        </div>
+    </div>
+</body>
+</html>

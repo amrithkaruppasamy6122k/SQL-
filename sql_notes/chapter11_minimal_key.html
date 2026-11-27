@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 11 - Minimal Key Complete Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .author-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .author-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 0.9em;
+        }
+        .social-link {
+            color: #74b9ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .social-link:hover {
+            color: #0984e3;
+        }
+        .chapter {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        .definition-box {
+            background: #ecf0f1;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .key-types-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .key-card {
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .key-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .minimal-card { background: #e8f5e8; border-color: #27ae60; }
+        .composite-card { background: #e8f0ff; border-color: #3498db; }
+        .simple-card { background: #fff8e8; border-color: #f39c12; }
+        .compound-card { background: #ffe8e8; border-color: #e74c3c; }
+        .flowchart {
+            text-align: center;
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+        .flowchart-box {
+            display: inline-block;
+            padding: 12px 20px;
+            background: #3498db;
+            color: white;
+            border-radius: 8px;
+            margin: 8px;
+            min-width: 140px;
+        }
+        .arrow {
+            font-size: 24px;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        .sql-code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .example-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        .data-table th {
+            background: #3498db;
+            color: white;
+        }
+        .data-table tr:nth-child(even) {
+            background: #f2f2f2;
+        }
+        .highlight-row {
+            background: #fff3cd !important;
+        }
+        .comparison-box {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .before-box, .after-box {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .before-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        .after-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+        .key-properties {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .property-tag {
+            background: #27ae60;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+        .use-case {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .tamil-text {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .warning-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .author-footer {
+            background: #2d3436;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+        .footer-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #74b9ff;
+        }
+        @media print {
+            body { background: white; }
+            .chapter { box-shadow: none; }
+            .author-footer { background: #f8f9fa; color: #2c3e50; }
+        }
+        @media (max-width: 768px) {
+            .key-types-grid { grid-template-columns: 1fr; }
+            .comparison-box { flex-direction: column; }
+            .social-links { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="author-header">
+        <div class="author-name">📚 SQL Complete Course - By Gowtham SB</div>
+        <div class="social-links">
+            <span>📱 Instagram: <a href="#" class="social-link">@dataengineeringtamil</a></span>
+            <span>💼 LinkedIn: <a href="#" class="social-link">sbgowtham</a></span>
+            <span>🎥 YouTube: <a href="#" class="social-link">dataengineeringvideos</a></span>
+        </div>
+    </div>
+
+    <div class="chapter">
+        <h1>Chapter 11: Minimal Key Complete Guide</h1>
+
+        <h2>📖 Definition</h2>
+        <div class="definition-box">
+            <strong>Minimal Key:</strong> Minimal Key <span class="tamil-text">ennanagra</span> table-la irukura <span class="tamil-text">smallest combination of columns</span> using which <span class="tamil-text">each record-a uniquely identify panna mudiyum</span>. <span class="tamil-text">Simple-a sonna</span> minimum columns use panni <span class="tamil-text">maximum uniqueness achieve panradhu</span>. <span class="tamil-text">Idhu database design-la romba important concept</span> - <span class="tamil-text">unnecessary columns avoid panni efficiency improve pannalam</span>.
+        </div>
+
+        <h2>🎯 Key Types Overview</h2>
+        <div class="key-types-grid">
+            <div class="key-card minimal-card">
+                <h3>🔑 Minimal Key</h3>
+                <h4><span class="tamil-text">Smallest Unique Combination</span></h4>
+                <p><span class="tamil-text">Minimum columns needed for uniqueness</span></p>
+                <p><strong><span class="tamil-text">Property:</span></strong> Cannot remove any column</p>
+            </div>
+            
+            <div class="key-card composite-card">
+                <h3>🔗 Composite Key</h3>
+                <h4><span class="tamil-text">Multiple Column Key</span></h4>
+                <p><span class="tamil-text">Two or more columns combination</span></p>
+                <p><strong><span class="tamil-text">Property:</span></strong> All columns needed</p>
+            </div>
+            
+            <div class="key-card simple-card">
+                <h3>⭐ Simple Key</h3>
+                <h4><span class="tamil-text">Single Column Key</span></h4>
+                <p><span class="tamil-text">Only one column for uniqueness</span></p>
+                <p><strong><span class="tamil-text">Property:</span></strong> Simplest form</p>
+            </div>
+            
+            <div class="key-card compound-card">
+                <h3>📊 Compound Key</h3>
+                <h4><span class="tamil-text">Complex Key Structure</span></h4>
+                <p><span class="tamil-text">Multiple attributes combined</span></p>
+                <p><strong><span class="tamil-text">Property:</span></strong> Business logic based</p>
+            </div>
+        </div>
+
+        <h2>🔍 Minimal Key Properties</h2>
+        <div class="key-properties">
+            <span class="property-tag">Uniqueness</span>
+            <span class="property-tag">Non-redundancy</span>
+            <span class="property-tag">Minimality</span>
+            <span class="property-tag">Irreducibility</span>
+            <span class="property-tag">Efficiency</span>
+        </div>
+
+        <h2>📊 Finding Minimal Key Process</h2>
+        <div class="flowchart">
+            <div class="flowchart-box" style="background: #27ae60;"><span class="tamil-text">Analyze</span> Table Data</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box" style="background: #3498db;"><span class="tamil-text">Identify</span> Candidate Keys</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box" style="background: #f39c12;"><span class="tamil-text">Test</span> Combinations</div>
+            <div class="arrow">↓</div>
+            <div class="flowchart-box" style="background: #e74c3c;"><span class="tamil-text">Select</span> Minimal Key</div>
+        </div>
+
+        <h2>💡 Example 1: Student Registration System</h2>
+
+        <div class="sql-code">
+-- Student registration table
+CREATE TABLE student_courses (
+    student_id INT NOT NULL,
+    course_code VARCHAR(10) NOT NULL,
+    semester VARCHAR(10) NOT NULL,
+    year INT NOT NULL,
+    grade CHAR(2),
+    instructor_name VARCHAR(100)
+);
+
+-- Sample data insert (using safe, generic data)
+INSERT INTO student_courses VALUES
+(101, 'CS001', 'Fall', 2024, 'A', 'Prof_Alpha'),
+(101, 'CS002', 'Fall', 2024, 'B', 'Prof_Beta'),
+(101, 'CS001', 'Spring', 2024, 'A', 'Prof_Gamma'),
+(102, 'CS001', 'Fall', 2024, 'B', 'Prof_Alpha'),
+(102, 'CS002', 'Spring', 2024, 'A', 'Prof_Delta'),
+(103, 'CS001', 'Fall', 2024, 'C', 'Prof_Alpha');
+        </div>
+
+        <h4><span class="tamil-text">Sample Data Analysis:</span></h4>
+        <table class="data-table">
+            <tr>
+                <th>student_id</th>
+                <th>course_code</th>
+                <th>semester</th>
+                <th>year</th>
+                <th>grade</th>
+                <th>instructor_name</th>
+            </tr>
+            <tr><td>101</td><td>CS001</td><td>Fall</td><td>2024</td><td>A</td><td>Prof_Alpha</td></tr>
+            <tr class="highlight-row"><td>101</td><td>CS002</td><td>Fall</td><td>2024</td><td>B</td><td>Prof_Beta</td></tr>
+            <tr><td>101</td><td>CS001</td><td>Spring</td><td>2024</td><td>A</td><td>Prof_Gamma</td></tr>
+            <tr><td>102</td><td>CS001</td><td>Fall</td><td>2024</td><td>B</td><td>Prof_Alpha</td></tr>
+            <tr><td>102</td><td>CS002</td><td>Spring</td><td>2024</td><td>A</td><td>Prof_Delta</td></tr>
+            <tr><td>103</td><td>CS001</td><td>Fall</td><td>2024</td><td>C</td><td>Prof_Alpha</td></tr>
+        </table>
+
+        <h2>🔍 Finding Minimal Key Steps</h2>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Step 1: Test Single Columns</span></strong><br>
+            <strong>student_id:</strong> <span class="tamil-text">101 appears 3 times - Not unique</span><br>
+            <strong>course_code:</strong> <span class="tamil-text">CS001 appears 3 times - Not unique</span><br>
+            <strong>semester:</strong> <span class="tamil-text">Fall appears 4 times - Not unique</span><br>
+            <strong>year:</strong> <span class="tamil-text">2024 appears 6 times - Not unique</span><br>
+            <strong><span class="tamil-text">Result:</span></strong> No single column is minimal key
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Step 2: Test Two Column Combinations</span></strong><br>
+            <strong>(student_id, course_code):</strong> <span class="tamil-text">(101, CS001) appears 2 times - Not unique</span><br>
+            <strong>(student_id, semester):</strong> <span class="tamil-text">(101, Fall) appears 2 times - Not unique</span><br>
+            <strong>(course_code, semester):</strong> <span class="tamil-text">(CS001, Fall) appears 3 times - Not unique</span><br>
+            <strong><span class="tamil-text">Result:</span></strong> Two columns not enough
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Step 3: Test Three Column Combinations</span></strong><br>
+            <strong>(student_id, course_code, semester):</strong> <span class="tamil-text">All combinations unique!</span><br>
+            <strong>(student_id, course_code, year):</strong> <span class="tamil-text">(101, CS001, 2024) appears 2 times - Not unique</span><br>
+            <strong><span class="tamil-text">Result:</span></strong> (student_id, course_code, semester) is minimal key
+        </div>
+
+        <div class="sql-code">
+-- Create table with minimal key as primary key
+CREATE TABLE student_courses_final (
+    student_id INT NOT NULL,
+    course_code VARCHAR(10) NOT NULL,
+    semester VARCHAR(10) NOT NULL,
+    year INT NOT NULL,
+    grade CHAR(2),
+    instructor_name VARCHAR(100),
+    
+    -- Minimal key as composite primary key
+    PRIMARY KEY (student_id, course_code, semester),
+    
+    -- Additional indexes for better performance
+    INDEX idx_student (student_id),
+    INDEX idx_course (course_code),
+    INDEX idx_semester (semester)
+);
+        </div>
+
+        <h2>💡 Example 2: Product Inventory System</h2>
+
+        <div class="sql-code">
+-- Product inventory table
+CREATE TABLE product_inventory (
+    product_code VARCHAR(20) NOT NULL,
+    warehouse_id INT NOT NULL,
+    location_zone VARCHAR(10) NOT NULL,
+    shelf_number INT NOT NULL,
+    quantity INT,
+    last_updated DATE
+);
+
+-- Sample data (using safe, generic patterns)
+INSERT INTO product_inventory VALUES
+('PROD_A001', 1, 'Zone_A', 101, 50, '2024-01-15'),
+('PROD_A001', 2, 'Zone_B', 201, 30, '2024-01-16'),
+('PROD_B002', 1, 'Zone_A', 102, 25, '2024-01-17'),
+('PROD_A001', 1, 'Zone_C', 301, 40, '2024-01-18'),
+('PROD_C003', 2, 'Zone_A', 102, 60, '2024-01-19');
+        </div>
+
+        <div class="comparison-box">
+            <div class="before-box">
+                <h4><span class="tamil-text">❌ Wrong Key Selection:</span></h4>
+                <strong>Only product_code:</strong>
+                <ul>
+                    <li><span class="tamil-text">Same product multiple warehouses-la irukalam</span></li>
+                    <li><span class="tamil-text">Duplicate entries allow aagum</span></li>
+                    <li><span class="tamil-text">Data integrity problems</span></li>
+                </ul>
+            </div>
+            <div class="after-box">
+                <h4><span class="tamil-text">✅ Correct Minimal Key:</span></h4>
+                <strong>(product_code, warehouse_id, location_zone):</strong>
+                <ul>
+                    <li><span class="tamil-text">Unique identification possible</span></li>
+                    <li><span class="tamil-text">No redundancy</span></li>
+                    <li><span class="tamil-text">Business logic satisfied</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="sql-code">
+-- Correct table design with minimal key
+CREATE TABLE product_inventory_correct (
+    product_code VARCHAR(20) NOT NULL,
+    warehouse_id INT NOT NULL,
+    location_zone VARCHAR(10) NOT NULL,
+    shelf_number INT NOT NULL,
+    quantity INT DEFAULT 0,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- Minimal key as primary key
+    PRIMARY KEY (product_code, warehouse_id, location_zone),
+    
+    -- Foreign key reference (if warehouse table exists)
+    -- FOREIGN KEY (warehouse_id) REFERENCES warehouses(warehouse_id),
+    
+    -- Check constraints
+    CONSTRAINT chk_quantity CHECK (quantity >= 0),
+    CONSTRAINT chk_shelf CHECK (shelf_number > 0)
+);
+        </div>
+
+        <h2>🔍 Minimal Key vs Other Keys</h2>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">Minimal Key Characteristics:</span></h4>
+            ✅ <strong><span class="tamil-text">Uniqueness:</span></strong> <span class="tamil-text">Each record uniquely identify pannalam</span><br>
+            ✅ <strong><span class="tamil-text">Non-redundancy:</span></strong> <span class="tamil-text">Extra columns illa</span><br>
+            ✅ <strong><span class="tamil-text">Irreducibility:</span></strong> <span class="tamil-text">Any column remove panna uniqueness lost aagum</span><br>
+            ✅ <strong><span class="tamil-text">Efficiency:</span></strong> <span class="tamil-text">Storage and index space save aagum</span><br>
+            ✅ <strong><span class="tamil-text">Performance:</span></strong> <span class="tamil-text">Faster queries and joins</span>
+        </div>
+
+        <h2>💡 Example 3: Order Management System</h2>
+
+        <div class="sql-code">
+-- Order line items table
+CREATE TABLE order_line_items (
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    line_number INT NOT NULL,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10,2) NOT NULL,
+    discount_percent DECIMAL(5,2) DEFAULT 0,
+    total_amount DECIMAL(10,2)
+);
+
+-- Sample data
+INSERT INTO order_line_items VALUES
+(1001, 2001, 1, 2, 100.00, 5.00, 190.00),
+(1001, 2002, 2, 1, 150.00, 0.00, 150.00),
+(1001, 2003, 3, 3, 75.00, 10.00, 202.50),
+(1002, 2001, 1, 1, 100.00, 0.00, 100.00),
+(1002, 2004, 2, 2, 200.00, 15.00, 340.00);
+        </div>
+
+        <div class="example-box">
+            <strong><span class="tamil-text">Minimal Key Analysis:</span></strong><br>
+            <strong>Test (order_id):</strong> <span class="tamil-text">1001 appears 3 times - Not unique</span><br>
+            <strong>Test (product_id):</strong> <span class="tamil-text">2001 appears 2 times - Not unique</span><br>
+            <strong>Test (order_id, product_id):</strong> <span class="tamil-text">All combinations unique - This could work</span><br>
+            <strong>Test (order_id, line_number):</strong> <span class="tamil-text">All combinations unique - This could work too</span><br>
+            <strong><span class="tamil-text">Business Decision:</span></strong> <span class="tamil-text">(order_id, line_number) is better because line_number sequence important</span>
+        </div>
+
+        <div class="sql-code">
+-- Final table with chosen minimal key
+CREATE TABLE order_line_items_final (
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    line_number INT NOT NULL,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10,2) NOT NULL,
+    discount_percent DECIMAL(5,2) DEFAULT 0,
+    total_amount DECIMAL(10,2),
+    
+    -- Minimal key as primary key
+    PRIMARY KEY (order_id, line_number),
+    
+    -- Foreign key constraints
+    -- FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    -- FOREIGN KEY (product_id) REFERENCES products(product_id),
+    
+    -- Additional indexes
+    INDEX idx_product (product_id),
+    INDEX idx_order_product (order_id, product_id),
+    
+    -- Check constraints
+    CONSTRAINT chk_quantity CHECK (quantity > 0),
+    CONSTRAINT chk_unit_price CHECK (unit_price > 0),
+    CONSTRAINT chk_discount CHECK (discount_percent >= 0 AND discount_percent <= 100),
+    CONSTRAINT chk_line_number CHECK (line_number > 0)
+);
+        </div>
+
+        <h2>🔧 Minimal Key Selection Guidelines</h2>
+
+        <div class="warning-box">
+            <h4><span class="tamil-text">Selection Criteria:</span></h4>
+            🔍 <strong><span class="tamil-text">Uniqueness Test:</span></strong> <span class="tamil-text">Combination all records uniquely identify panna venum</span><br>
+            ⚡ <strong><span class="tamil-text">Performance Impact:</span></strong> <span class="tamil-text">Fewer columns = better performance</span><br>
+            📊 <strong><span class="tamil-text">Business Logic:</span></strong> <span class="tamil-text">Business requirements satisfy panna venum</span><br>
+            🔄 <strong><span class="tamil-text">Future Proof:</span></strong> <span class="tamil-text">Data growth-ku support panna venum</span><br>
+            💾 <strong><span class="tamil-text">Storage Efficiency:</span></strong> <span class="tamil-text">Minimum columns use pannunga</span>
+        </div>
+
+        <h2>🔧 Use Cases</h2>
+
+        <div class="use-case">
+            <h4>1. <span class="tamil-text">Social Media Posts</span></h4>
+            <strong>Table:</strong> user_posts<br>
+            <strong>Possible Keys:</strong> (user_id, timestamp), (user_id, post_sequence)<br>
+            <strong>Minimal Key:</strong> <span class="tamil-text">(user_id, post_sequence) - timestamp may have duplicates</span><br>
+            <strong>Business Logic:</strong> <span class="tamil-text">User can't post multiple posts with same sequence number</span>
+        </div>
+
+        <div class="use-case">
+            <h4>2. <span class="tamil-text">Banking Transactions</span></h4>
+            <strong>Table:</strong> account_transactions<br>
+            <strong>Possible Keys:</strong> (account_id, transaction_date, amount), (transaction_id)<br>
+            <strong>Minimal Key:</strong> <span class="tamil-text">(transaction_id) - if system generated unique ID</span><br>
+            <strong>Business Logic:</strong> <span class="tamil-text">Each transaction has unique system ID</span>
+        </div>
+
+        <div class="use-case">
+            <h4>3. <span class="tamil-text">Employee Attendance</span></h4>
+            <strong>Table:</strong> daily_attendance<br>
+            <strong>Possible Keys:</strong> (employee_id, attendance_date), (employee_id, attendance_date, shift)<br>
+            <strong>Minimal Key:</strong> <span class="tamil-text">(employee_id, attendance_date, shift) - if multiple shifts possible</span><br>
+            <strong>Business Logic:</strong> <span class="tamil-text">Employee can work multiple shifts in same day</span>
+        </div>
+
+        <div class="use-case">
+            <h4>4. <span class="tamil-text">Course Enrollment</span></h4>
+            <strong>Table:</strong> student_enrollments<br>
+            <strong>Possible Keys:</strong> (student_id, course_id), (student_id, course_id, semester)<br>
+            <strong>Minimal Key:</strong> <span class="tamil-text">(student_id, course_id, semester) - if same course multiple semesters</span><br>
+            <strong>Business Logic:</strong> <span class="tamil-text">Student can take same course in different semesters</span>
+        </div>
+
+        <h2>📝 Best Practices</h2>
+
+        <div class="success-box">
+            <h4><span class="tamil-text">Minimal Key Best Practices:</span></h4>
+            ✅ <strong><span class="tamil-text">Analyze Data Patterns:</span></strong> <span class="tamil-text">Real data patterns analyze panni key decide pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Business Rules First:</span></strong> <span class="tamil-text">Technical efficiency-ku munadi business logic consider pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Future Scalability:</span></strong> <span class="tamil-text">Data volume increase aanaalum work aagura key choose pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Performance Testing:</span></strong> <span class="tamil-text">Different key options performance compare pannunga</span><br>
+            ✅ <strong><span class="tamil-text">Documentation:</span></strong> <span class="tamil-text">Key selection rationale document pannunga</span>
+        </div>
+
+        <h2>📚 Quick Reference</h2>
+        <ul>
+            <li><strong><span class="tamil-text">Definition:</span></strong> Minimum columns needed for unique identification</li>
+            <li><strong><span class="tamil-text">Test Method:</span></strong> Start with single column, increase until unique</li>
+            <li><strong><span class="tamil-text">MySQL Syntax:</span></strong> PRIMARY KEY (col1, col2, col3)</li>
+            <li><strong><span class="tamil-text">Performance:</span></strong> Fewer columns = better performance</li>
+            <li><strong><span class="tamil-text">Business Logic:</span></strong> Technical + Business requirements balance</li>
+            <li><strong><span class="tamil-text">Uniqueness:</span></strong> All records must be distinguishable</li>
+        </ul>
+    </div>
+
+    <div class="author-footer">
+        <div class="footer-title">📘 Master Database Keys with Gowtham SB</div>
+        <div class="social-links">
+            <span>🎥 Advanced Key Concepts: <strong>YouTube/dataengineeringvideos</strong></span><br>
+            <span>📱 Daily SQL Tips: <strong>Instagram/@dataengineeringtamil</strong></span><br>
+            <span>💼 Connect for Career Guidance: <strong>LinkedIn/sbgowtham</strong></span>
+        </div>
+    </div>
+</body>
+</html>

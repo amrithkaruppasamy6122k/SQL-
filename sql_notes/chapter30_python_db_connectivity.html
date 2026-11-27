@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 30: Python JDBC Connectivity - SQL Book</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .author-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .author-info a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 5px;
+        }
+        .content-box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .definition {
+            background: #e8f5e8;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .flowchart {
+            text-align: center;
+            background: #f0f8ff;
+            border: 2px dashed #4682b4;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .python-code {
+            background: #1a365d;
+            color: #63b3ed;
+        }
+        .sql-explanation {
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .use-case {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .chapter-title {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .sample-chapter {
+            background: #e7f3ff;
+            border: 2px solid #0066cc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .installation-box {
+            background: #fff5f5;
+            border: 2px solid #f56565;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="chapter-title">Chapter 30: Python JDBC Connectivity</h1>
+        <p><strong>Author:</strong> Gowtham SB</p>
+        <div class="author-info">
+            <a href="https://linkedin.com/in/sbgowtham" target="_blank">📧 LinkedIn: sbgowtham</a>
+            <a href="https://youtube.com/@dataengineeringvideos" target="_blank">🎥 YouTube: dataengineeringvideos</a>
+            <a href="https://instagram.com/dataengineeringtamil" target="_blank">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Definition (Vilakkam)</h2>
+        <div class="definition">
+            <strong>Python Database Connectivity:</strong> Python program la irundhu MySQL database ku connect panni data operations pannurathu. Ithukullu mysql-connector-python library use pannurom. Itha JDBC (Java Database Connectivity) concept Python la implement pannalam.<br><br>
+            <strong>MySQL Connector:</strong> Python and MySQL database ku naduvula bridge pola work pannum. Query execute pannalam, data retrieve pannalam, insert/update/delete operations lam pannalam.
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Flow Chart (Otta Padal)</h2>
+        <div class="flowchart">
+            <div style="margin-bottom: 20px;">
+                <strong>DATABASE CONNECTION PROCESS:</strong><br>
+                Install mysql-connector → Import Library → Create Connection → Create Cursor → Execute Query → Fetch Results → Close Connection
+            </div>
+            <div style="border-top: 2px solid #4682b4; padding-top: 15px;">
+                <strong>ERROR HANDLING FLOW:</strong><br>
+                Try Block → Database Operation → Success/Exception → Handle Error → Finally Close Connection
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Installation (Nirkuthuthal)</h2>
+        <div class="installation-box">
+            <h4>MySQL Connector Install Pannuradhu:</h4>
+            <div class="code-block">
+pip install mysql-connector-python
+            </div>
+            <div class="sql-explanation">
+                <strong>pip:</strong> Python package manager<br>
+                <strong>install:</strong> Library install panna command<br>
+                <strong>mysql-connector-python:</strong> MySQL database ku connect panna library
+            </div>
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Examples with Explanation (Udaharanangal)</h2>
+        
+        <h3>Example 1: Basic Database Connection</h3>
+        <div class="code-block python-code">
+import mysql.connector
+        </div>
+        <div class="sql-explanation">
+            <strong>import mysql.connector:</strong> MySQL connection library ah import pannurom
+        </div>
+
+        <div class="code-block python-code">
+connection = mysql.connector.connect(
+    host='localhost',
+    database='school_db',
+    user='root',
+    password='admin123'
+)
+        </div>
+        <div class="sql-explanation">
+            <strong>mysql.connector.connect():</strong> Database ku connection establish pannurom<br>
+            <strong>host='localhost':</strong> Database server address (local machine la irukku)<br>
+            <strong>database='school_db':</strong> Connect panna database name<br>
+            <strong>user='root':</strong> Database username<br>
+            <strong>password='admin123':</strong> Database login password
+        </div>
+
+        <h3>Example 2: Create Table</h3>
+        <div class="code-block python-code">
+cursor = connection.cursor()
+        </div>
+        <div class="sql-explanation">
+            <strong>cursor():</strong> SQL commands execute panna cursor object create pannurom
+        </div>
+
+        <div class="code-block python-code">
+create_table_query = """
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    age INT,
+    grade VARCHAR(10)
+)
+"""
+        </div>
+        <div class="sql-explanation">
+            <strong>CREATE TABLE:</strong> Students table create pannurom<br>
+            <strong>id INT AUTO_INCREMENT:</strong> Primary key auto increment pannurom<br>
+            <strong>name VARCHAR(100):</strong> Student name 100 characters varaikum<br>
+            <strong>age INT:</strong> Age number format la<br>
+            <strong>grade VARCHAR(10):</strong> Grade string format la
+        </div>
+
+        <div class="code-block python-code">
+cursor.execute(create_table_query)
+        </div>
+        <div class="sql-explanation">
+            <strong>cursor.execute():</strong> SQL query ah execute pannurom
+        </div>
+
+        <h3>Example 3: Insert Data</h3>
+        <div class="code-block python-code">
+insert_query = "INSERT INTO students (name, age, grade) VALUES (%s, %s, %s)"
+        </div>
+        <div class="sql-explanation">
+            <strong>INSERT INTO:</strong> Students table la data insert pannurom<br>
+            <strong>VALUES (%s, %s, %s):</strong> Placeholder values, python variables bind pannurom
+        </div>
+
+        <div class="code-block python-code">
+student_data = ("Ravi Kumar", 18, "12th")
+        </div>
+        <div class="sql-explanation">
+            <strong>student_data:</strong> Insert panna data ah tuple format la store pannurom
+        </div>
+
+        <div class="code-block python-code">
+cursor.execute(insert_query, student_data)
+        </div>
+        <div class="sql-explanation">
+            <strong>cursor.execute(query, data):</strong> Query and data rendumaayum pass pannurom
+        </div>
+
+        <div class="code-block python-code">
+connection.commit()
+        </div>
+        <div class="sql-explanation">
+            <strong>connection.commit():</strong> Changes ah database la permanently save pannurom
+        </div>
+
+        <h3>Example 4: Select Data</h3>
+        <div class="code-block python-code">
+select_query = "SELECT * FROM students WHERE age > %s"
+        </div>
+        <div class="sql-explanation">
+            <strong>SELECT * FROM students:</strong> Students table la irukka ellaa data vayum select pannurom<br>
+            <strong>WHERE age > %s:</strong> Age condition based la filter pannurom
+        </div>
+
+        <div class="code-block python-code">
+cursor.execute(select_query, (16,))
+        </div>
+        <div class="sql-explanation">
+            <strong>(16,):</strong> Age 16 ku mela irukkavangala mattum select pannurom
+        </div>
+
+        <div class="code-block python-code">
+results = cursor.fetchall()
+        </div>
+        <div class="sql-explanation">
+            <strong>cursor.fetchall():</strong> Query results ellathayum fetch panni variable la store pannurom
+        </div>
+
+        <div class="code-block python-code">
+for row in results:
+    print(f"ID: {row[0]}, Name: {row[1]}, Age: {row[2]}, Grade: {row[3]}")
+        </div>
+        <div class="sql-explanation">
+            <strong>for row in results:</strong> Ellaa rows layum loop pannurom<br>
+            <strong>print(f"..."):</strong> Each row data ah formatted ah print pannurom<br>
+            <strong>row[0], row[1]:</strong> Column index based la data access pannurom
+        </div>
+
+        <h3>Example 5: Error Handling and Connection Close</h3>
+        <div class="code-block python-code">
+try:
+    connection = mysql.connector.connect(
+        host='localhost',
+        database='school_db',
+        user='root',
+        password='admin123'
+    )
+    cursor = connection.cursor()
+    
+    query = "SELECT * FROM students"
+    cursor.execute(query)
+    results = cursor.fetchall()
+    
+    for row in results:
+        print(row)
+        
+except mysql.connector.Error as error:
+    print(f"Database error: {error}")
+    
+finally:
+    if connection.is_connected():
+        cursor.close()
+        connection.close()
+        print("Connection closed successfully")
+        </div>
+        <div class="sql-explanation">
+            <strong>try:</strong> Database operations ah try block la pannurom<br>
+            <strong>except mysql.connector.Error:</strong> MySQL specific errors ah catch pannurom<br>
+            <strong>finally:</strong> Error irundhaalum illanaalum connection close pannurom<br>
+            <strong>connection.is_connected():</strong> Connection active ah irukkanu check pannurom<br>
+            <strong>cursor.close():</strong> Cursor ah close pannurom<br>
+            <strong>connection.close():</strong> Database connection ah close pannurom
+        </div>
+    </div>
+
+    <div class="content-box">
+        <h2>Use Cases (Payan Paadu Nilai)</h2>
+        
+        <div class="use-case">
+            <h4>1. Student Management System</h4>
+            <p>College la student details add pannuradhu, marks update pannuradhu, report generate pannuradhu ellaam Python program through pannalam.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. Inventory Management</h4>
+            <p>Shop la products stock check pannuradhu, new items add pannuradhu, sales data track pannuradhu Python la automate pannalam.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Employee Attendance System</h4>
+            <p>Daily attendance mark pannuradhu, monthly report generate pannuradhu, salary calculation ellaam database connect panni pannalam.</p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. E-commerce Data Analysis</h4>
+            <p>Customer orders, product sales, revenue analysis ellaam Python la database connect panni real-time la track pannalam.</p>
+        </div>
+    </div>
+
+    <div class="sample-chapter">
+        <h2>Next Chapter Sample: Common Table Expressions (CTE)</h2>
+        
+        <h3>Definition (Vilakkam)</h3>
+        <div class="definition">
+            <strong>Common Table Expression (CTE):</strong> Temporary result set ah define pannuradhu, itha main query la use pannalam. WITH keyword use panni create pannurom. Complex queries ah simple ah readable ah write panna CTE use pannurom.
+        </div>
+
+        <h3>Basic CTE Example:</h3>
+        <div class="code-block">
+WITH student_avg AS (
+    SELECT grade, AVG(marks) as avg_marks 
+    FROM students 
+    GROUP BY grade
+)
+SELECT * FROM student_avg WHERE avg_marks > 75;
+        </div>
+        <div class="sql-explanation">
+            <strong>WITH student_avg AS:</strong> student_avg name la CTE create pannurom<br>
+            <strong>SELECT grade, AVG(marks):</strong> Grade wise average marks calculate pannurom<br>
+            <strong>FROM students GROUP BY grade:</strong> Students table la grade wise group pannurom<br>
+            <strong>SELECT * FROM student_avg:</strong> CTE result ah use panni final query run pannurom
+        </div>
+
+        <p><em>Full chapter la recursive CTE, multiple CTE, complex examples ellaam detailed ah irukum!</em></p>
+    </div>
+
+    <div class="header" style="margin-top: 30px; text-align: center;">
+        <p><strong>Connect with me:</strong></p>
+        <div class="author-info" style="justify-content: center;">
+            <a href="https://linkedin.com/in/sbgowtham" target="_blank">LinkedIn: sbgowtham</a>
+            <a href="https://youtube.com/@dataengineeringvideos" target="_blank">YouTube: dataengineeringvideos</a>
+            <a href="https://instagram.com/dataengineeringtamil" target="_blank">Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+</body>
+</html>

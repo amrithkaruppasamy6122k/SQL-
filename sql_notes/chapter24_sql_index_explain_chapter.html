@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 24: Index and Explain ANALYZE - SQL Book</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .author-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .social-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .content-section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .flowchart {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        .code-explanation {
+            background: #e6fffa;
+            padding: 10px;
+            border-left: 4px solid #38b2ac;
+            margin: 10px 0;
+        }
+        .use-case {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f56565;
+            margin: 15px 0;
+        }
+        .diagram {
+            text-align: center;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .function-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .function-table th, .function-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .function-table th {
+            background-color: #667eea;
+            color: white;
+        }
+        .types-box {
+            background: #f0fff4;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #48bb78;
+            margin: 15px 0;
+        }
+        .warning-box {
+            background: #fffaf0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ed8936;
+            margin: 15px 0;
+        }
+        .performance-box {
+            background: #f0f8ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #4169e1;
+            margin: 15px 0;
+        }
+        .tip-box {
+            background: #f5f0ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #9f7aea;
+            margin: 15px 0;
+        }
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 SQL Complete Guide</h1>
+        <h2>Chapter 24: Index and Explain ANALYZE</h2>
+        <p><em>Database Speed Ah Increase Panni Query Performance Optimize Panalam!</em></p>
+    </div>
+
+    <div class="author-info">
+        <h3 style="text-align: center; margin-bottom: 15px;">👨‍💻 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#">📺 YouTube: dataengineeringvideos</a>
+            <a href="#">💼 LinkedIn: sbgowtham</a>
+            <a href="#">📸 Instagram: dataengineeringtamil</a>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📖 Definition (Index aur Explain Analyze Enna Boss?)</h2>
+        <p><strong>Index</strong> na database table la irukra data ah quick ah find panradhu ku create pandra separate data structure thaan. Idhu library la book index maari work pannum - page number therinja udane book ah find panna mudiyum!</p>
+        
+        <p><strong>EXPLAIN ANALYZE</strong> na MySQL query execution plan ah detailed ah show panra command thaan. Idhu query epidi run aagudhu, evlo time edukudhu, enga bottleneck iruku nu ellam sollidum.</p>
+        
+        <p>Index oda mukkiya benefits:</p>
+        <ul>
+            <li><strong>Fast data retrieval:</strong> SELECT queries super fast ah execute aagum</li>
+            <li><strong>Efficient sorting:</strong> ORDER BY operations speed aagum</li>
+            <li><strong>Quick joins:</strong> Table joins performance improve aagum</li>
+            <li><strong>Unique constraint:</strong> Duplicate values prevent pannum</li>
+            <li><strong>Where filtering:</strong> WHERE conditions lightning fast ah work aagum</li>
+        </ul>
+        
+        <div class="types-box">
+            <h4>🎯 Index Basic Syntax:</h4>
+            <p><strong>CREATE INDEX index_name ON table_name (column_name);</strong></p>
+            <p>Index create pannina data search super fast ah aagum!</p>
+        </div>
+
+        <div class="performance-box">
+            <h4>🚀 Performance Impact:</h4>
+            <ul>
+                <li><strong>Without Index:</strong> Full table scan - ellam rows check pannum (slow)</li>
+                <li><strong>With Index:</strong> Direct data access - specific rows mattum access (fast)</li>
+                <li><strong>Trade-off:</strong> SELECT fast aagum but INSERT/UPDATE/DELETE slow aagum</li>
+            </ul>
+        </div>
+
+        <div class="warning-box">
+            <h4>⚠️ Kavanamaga Pananum:</h4>
+            <ul>
+                <li>Too many indexes create pannina INSERT/UPDATE slow aagum</li>
+                <li>Index maintenance overhead irukum (storage space jaasthi aagum)</li>
+                <li>Wrong columns la index create pannina benefit illa</li>
+                <li>Composite index order mukkiyam (column order matters)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🏛️ Standard (Index Types aur Avanga Velai)</h2>
+        <p>MySQL la different prakar index types use panna mudiyum:</p>
+        
+        <table class="function-table">
+            <thead>
+                <tr>
+                    <th>Index Type</th>
+                    <th>Tamil la Explanation</th>
+                    <th>Best Use Case</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Primary Index</td>
+                    <td>Primary key ku automatic ah create aagura index</td>
+                    <td>Unique identification</td>
+                </tr>
+                <tr>
+                    <td>Unique Index</td>
+                    <td>Duplicate values allow pannadha index</td>
+                    <td>Email, username columns</td>
+                </tr>
+                <tr>
+                    <td>Composite Index</td>
+                    <td>Multiple columns combine panni create pandra index</td>
+                    <td>Multiple column WHERE conditions</td>
+                </tr>
+                <tr>
+                    <td>Partial Index</td>
+                    <td>Specific condition based rows ku mattum index</td>
+                    <td>Large tables la filtered data</td>
+                </tr>
+                <tr>
+                    <td>Fulltext Index</td>
+                    <td>Text search operations ku use agura index</td>
+                    <td>Article content, descriptions</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="types-box">
+            <h4>📍 EXPLAIN ANALYZE Components:</h4>
+            <ul>
+                <li><strong>id:</strong> Query oda execution order number</li>
+                <li><strong>select_type:</strong> Query type (SIMPLE, SUBQUERY, etc.)</li>
+                <li><strong>table:</strong> Enga table la irundhu data access agudhu</li>
+                <li><strong>type:</strong> Join type (const, eq_ref, ref, range, etc.)</li>
+                <li><strong>key:</strong> Enga index use aagirudhu</li>
+                <li><strong>rows:</strong> Evlo rows examine pannirudhu</li>
+                <li><strong>Extra:</strong> Additional execution information</li>
+            </ul>
+        </div>
+
+        <div class="tip-box">
+            <h4>💡 Index Best Practices:</h4>
+            <ul>
+                <li><strong>Selective columns:</strong> High cardinality (unique values jaasthi) columns la index create pannunga</li>
+                <li><strong>WHERE clause columns:</strong> Frequently searched columns ku index vekkunga</li>
+                <li><strong>Foreign keys:</strong> Join operations ku foreign key columns la index mandatory</li>
+                <li><strong>Composite index order:</strong> Most selective column first vekkunga</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">📊 Flow Chart</h2>
+        <div class="flowchart">
+            <div class="diagram">
+                <h3>Index Creation and Query Optimization Flow</h3>
+                <pre style="font-family: monospace; text-align: left; background: white; padding: 15px; border-radius: 5px;">
+Query Performance Problem Identify Panrom
+  ↓
+EXPLAIN ANALYZE Use Panni Query Plan Check Panrom
+  ↓
+┌─────────────────────────────────────────────┐
+│  Query Plan Analysis                        │
+│  ┌─── Full Table Scan ─┐  ┌─── Index Used ─┐│
+│  │     Detected        │  │   Already       ││
+│  │  → Slow Performance │  │ → Check Better  ││
+│  └─────────────────────┘  └─────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+┌─────────────────────────────────────────────┐
+│  Index Strategy Decide Panrom               │
+│  ┌─── Single Column ──┐  ┌─── Composite ───┐│
+│  │    Index           │  │   Index         ││
+│  │ → Simple Searches  │  │ → Complex WHERE ││
+│  └────────────────────┘  └─────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+CREATE INDEX Statement Execute Panrom
+  ↓
+┌─────────────────────────────────────────────┐
+│  Index Effectiveness Test Panrom            │
+│  ┌─── Performance ────┐  ┌─── Storage ─────┐│
+│  │    Improved        │  │   Overhead      ││
+│  │ → Success          │  │ → Acceptable    ││
+│  └────────────────────┘  └─────────────────┘│
+└─────────────────────────────────────────────┘
+  ↓
+Query Performance Monitor Panrom (Ongoing)
+  ↓
+Index Maintenance (Drop unused indexes)
+  ↓
+Performance Optimization Mudinju
+                </pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🎯 Examples with Full Tamil Explanation</h2>
+        
+        <h3>1. Basic Index Creation - Single column index</h3>
+        <div class="code-block">
+-- Before index - query performance check panrom
+EXPLAIN ANALYZE
+SELECT 
+    *
+FROM 
+    employees
+WHERE 
+    employee_id = 1001;
+
+-- Index create panrom
+CREATE INDEX idx_employee_id 
+ON 
+    employees (employee_id);
+
+-- After index - performance improvement check panrom  
+EXPLAIN ANALYZE
+SELECT 
+    *
+FROM 
+    employees
+WHERE 
+    employee_id = 1001;
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>EXPLAIN ANALYZE</code> - Query execution plan detailed ah show pannum<br>
+            • <code>SELECT * FROM employees WHERE employee_id = 1001</code> - Specific employee data search panrom<br>
+            • <code>CREATE INDEX idx_employee_id</code> - 'idx_employee_id' name la index create panrom<br>
+            • <code>ON employees (employee_id)</code> - employees table oda employee_id column la index create panrom<br>
+            • <strong>Result:</strong> Index create pannina apram same query super fast ah execute aagum<br>
+            • <strong>Performance:</strong> Full table scan illa, direct row access aagum
+        </div>
+
+        <h3>2. Composite Index - Multiple columns index</h3>
+        <div class="code-block">
+-- Multi-column search query
+EXPLAIN ANALYZE
+SELECT 
+    employee_name,
+    salary
+FROM 
+    employees
+WHERE 
+    department_id = 5
+    AND 
+    hire_date >= '2020-01-01'
+    AND 
+    status = 'ACTIVE';
+
+-- Composite index create panrom
+CREATE INDEX idx_dept_hire_status 
+ON 
+    employees (department_id, hire_date, status);
+
+-- Index effectiveness check panrom
+EXPLAIN ANALYZE
+SELECT 
+    employee_name,
+    salary
+FROM 
+    employees
+WHERE 
+    department_id = 5
+    AND 
+    hire_date >= '2020-01-01'
+    AND 
+    status = 'ACTIVE';
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>EXPLAIN ANALYZE SELECT employee_name, salary</code> - Query plan detailed ah paakrom<br>
+            • <code>WHERE department_id = 5 AND hire_date >= '2020-01-01' AND status = 'ACTIVE'</code> - Moonu conditions odu filter panrom<br>
+            • <code>CREATE INDEX idx_dept_hire_status</code> - Composite index create panrom<br>
+            • <code>ON employees (department_id, hire_date, status)</code> - Moonu columns combine panni index create panrom<br>
+            • <strong>Column Order Important:</strong> Most selective column (department_id) first vechirukom<br>
+            • <strong>Benefit:</strong> Multiple WHERE conditions oda queries super fast aagum<br>
+            • <strong>Usage:</strong> Left-most prefix rule follow aagum (dept_id, dept_id+hire_date, all three)
+        </div>
+
+        <h3>3. Unique Index - Duplicate prevention</h3>
+        <div class="code-block">
+-- Unique constraint ku index create panrom
+CREATE UNIQUE INDEX idx_unique_email 
+ON 
+    customers (email_address);
+
+-- Duplicate email insert try panrom (error varum)
+INSERT INTO customers (
+    customer_name,
+    email_address,
+    phone_number
+) VALUES (
+    'Test Customer',
+    'existing@gmail.com',
+    '9876543210'
+);
+
+-- Unique emails search panradhu ku fast aagum
+EXPLAIN ANALYZE
+SELECT 
+    customer_name,
+    phone_number
+FROM 
+    customers
+WHERE 
+    email_address = 'john@gmail.com';
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>CREATE UNIQUE INDEX idx_unique_email</code> - Unique index create panrom<br>
+            • <code>ON customers (email_address)</code> - email_address column la unique constraint apply panrom<br>
+            • <code>INSERT INTO customers</code> - New customer data insert try panrom<br>
+            • <code>VALUES ('Test Customer', 'existing@gmail.com', '9876543210')</code> - Sample data with potentially duplicate email<br>
+            • <strong>Error Prevention:</strong> Duplicate email insert panna try pannina error throw aagum<br>
+            • <strong>Performance:</strong> Email based searches lightning fast aagum<br>
+            • <strong>Data Integrity:</strong> Business rule enforce aagum (unique emails only)
+        </div>
+
+        <h3>4. Index Usage Analysis - EXPLAIN output interpretation</h3>
+        <div class="code-block">
+-- Complex join query performance check panrom
+EXPLAIN ANALYZE
+SELECT 
+    e.employee_name,
+    d.department_name,
+    p.project_name,
+    e.salary
+FROM 
+    employees e
+JOIN 
+    departments d 
+ON 
+    e.department_id = d.department_id
+JOIN 
+    projects p 
+ON 
+    e.employee_id = p.assigned_employee_id
+WHERE 
+    e.salary > 50000
+    AND 
+    d.location = 'Chennai'
+    AND 
+    p.status = 'ACTIVE'
+ORDER BY 
+    e.salary DESC;
+
+-- Required indexes create panrom
+CREATE INDEX idx_employee_salary 
+ON 
+    employees (salary);
+
+CREATE INDEX idx_employee_dept 
+ON 
+    employees (department_id);
+
+CREATE INDEX idx_dept_location 
+ON 
+    departments (location);
+
+CREATE INDEX idx_project_employee 
+ON 
+    projects (assigned_employee_id);
+
+CREATE INDEX idx_project_status 
+ON 
+    projects (status);
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>EXPLAIN ANALYZE SELECT e.employee_name, d.department_name, p.project_name, e.salary</code> - Complex join query plan analyze panrom<br>
+            • <code>FROM employees e JOIN departments d ON e.department_id = d.department_id</code> - Employees aur departments join panrom<br>
+            • <code>JOIN projects p ON e.employee_id = p.assigned_employee_id</code> - Projects table kooda join panrom<br>
+            • <code>WHERE e.salary > 50000 AND d.location = 'Chennai' AND p.status = 'ACTIVE'</code> - Multiple filter conditions apply panrom<br>
+            • <code>CREATE INDEX idx_employee_salary ON employees (salary)</code> - Salary based filtering ku index<br>
+            • <code>CREATE INDEX idx_employee_dept ON employees (department_id)</code> - Join operations ku index<br>
+            • <code>CREATE INDEX idx_dept_location ON departments (location)</code> - Location filter ku index<br>
+            • <strong>EXPLAIN Output Shows:</strong> Key usage, rows examined, execution time<br>
+            • <strong>Optimization:</strong> Each filter aur join condition ku separate index create panrom
+        </div>
+
+        <h3>5. Index Maintenance - Drop unused indexes</h3>
+        <div class="code-block">
+-- Index usage statistics check panrom
+SELECT 
+    TABLE_NAME,
+    INDEX_NAME,
+    CARDINALITY
+FROM 
+    information_schema.STATISTICS
+WHERE 
+    TABLE_SCHEMA = 'company_db'
+    AND 
+    INDEX_NAME != 'PRIMARY'
+ORDER BY 
+    TABLE_NAME,
+    CARDINALITY DESC;
+
+-- Unused index identify panrom aur drop panrom
+SHOW INDEX 
+FROM 
+    employees;
+
+-- Low cardinality index drop panrom
+DROP INDEX idx_status 
+ON 
+    employees;
+
+-- Index performance test panrom
+EXPLAIN ANALYZE
+SELECT 
+    COUNT(*)
+FROM 
+    employees
+WHERE 
+    status = 'ACTIVE';
+        </div>
+        <div class="code-explanation">
+            <strong>Line-by-line Tamil Explanation:</strong><br>
+            • <code>SELECT TABLE_NAME, INDEX_NAME, CARDINALITY FROM information_schema.STATISTICS</code> - Database la irukra ellam indexes list panrom<br>
+            • <code>WHERE TABLE_SCHEMA = 'company_db' AND INDEX_NAME != 'PRIMARY'</code> - Specific database oda non-primary indexes mattum filter panrom<br>
+            • <code>ORDER BY TABLE_NAME, CARDINALITY DESC</code> - Table name aur cardinality wise sort panrom<br>
+            • <code>SHOW INDEX FROM employees</code> - employees table la irukra ellam indexes details show panrom<br>
+            • <code>DROP INDEX idx_status ON employees</code> - Unused yaa low-performance index ah remove panrom<br>
+            • <code>EXPLAIN ANALYZE SELECT COUNT(*) FROM employees WHERE status = 'ACTIVE'</code> - Index drop pannina apram query plan check panrom<br>
+            • <strong>Maintenance:</strong> Unused indexes storage space waste pannum, DROP pannunga<br>
+            • <strong>Monitoring:</strong> Regular ah index usage statistics check pananum
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2 class="section-title">🛠️ Use Cases (Real-world la Epidi Optimize Pannalam)</h2>
+        
+        <div class="use-case">
+            <h4>1. E-commerce Search Optimization</h4>
+            <p><strong>Situation:</strong> Product search page super slow ah load aagirudhu, customers frustrated aagidranga</p>
+            <div class="code-block">
+-- Slow query identify panrom
+EXPLAIN ANALYZE
+SELECT 
+    product_name,
+    price,
+    image_url,
+    rating
+FROM 
+    products
+WHERE 
+    category_id = 15
+    AND 
+    price BETWEEN 1000 AND 5000
+    AND 
+    availability_status = 'IN_STOCK'
+    AND 
+    rating >= 4.0
+ORDER BY 
+    popularity_score DESC
+LIMIT 20;
+
+-- Optimization indexes create panrom
+CREATE INDEX idx_products_search 
+ON 
+    products (category_id, availability_status, price, rating);
+
+CREATE INDEX idx_products_popularity 
+ON 
+    products (popularity_score DESC);
+            </div>
+            <p><strong>Faayda:</strong> Product search lightning fast aagum, customer experience improve aagum, sales increase aagum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>2. Financial Transaction Processing</h4>
+            <p><strong>Situation:</strong> Bank transaction history query super slow, customers account statement ku wait pannum</p>
+            <div class="code-block">
+-- Transaction history query optimization
+EXPLAIN ANALYZE
+SELECT 
+    transaction_date,
+    transaction_type,
+    amount,
+    balance_after_transaction,
+    description
+FROM 
+    account_transactions
+WHERE 
+    account_number = 'ACC123456'
+    AND 
+    transaction_date >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+ORDER BY 
+    transaction_date DESC,
+    transaction_id DESC
+LIMIT 50;
+
+-- Performance indexes create panrom
+CREATE INDEX idx_account_date 
+ON 
+    account_transactions (account_number, transaction_date DESC);
+
+CREATE INDEX idx_account_id 
+ON 
+    account_transactions (account_number, transaction_id DESC);
+            </div>
+            <p><strong>Faayda:</strong> Account statements instantly generate aagum, customer service improve aagum, server load reduce aagum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>3. Social Media Timeline Optimization</h4>
+            <p><strong>Situation:</strong> User feed loading time jaasthi aagudhu, app usage drop aagirudhu</p>
+            <div class="code-block">
+-- User timeline query performance issue
+EXPLAIN ANALYZE
+SELECT 
+    p.post_content,
+    p.posted_date,
+    u.username,
+    u.profile_picture,
+    COUNT(l.like_id) AS like_count
+FROM 
+    posts p
+JOIN 
+    users u 
+ON 
+    p.user_id = u.user_id
+LEFT JOIN 
+    likes l 
+ON 
+    p.post_id = l.post_id
+WHERE 
+    p.user_id IN (
+        SELECT friend_user_id 
+        FROM user_friends 
+        WHERE user_id = 1001
+    )
+    AND 
+    p.posted_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+GROUP BY 
+    p.post_id,
+    p.post_content,
+    p.posted_date,
+    u.username,
+    u.profile_picture
+ORDER BY 
+    p.posted_date DESC
+LIMIT 20;
+
+-- Timeline optimization indexes
+CREATE INDEX idx_posts_user_date 
+ON 
+    posts (user_id, posted_date DESC);
+
+CREATE INDEX idx_friends_lookup 
+ON 
+    user_friends (user_id, friend_user_id);
+
+CREATE INDEX idx_likes_post 
+ON 
+    likes (post_id);
+            </div>
+            <p><strong>Faayda:</strong> User timeline instant ah load aagum, app performance excellent aagum, user engagement increase aagum</p>
+        </div>
+
+        <div class="use-case">
+            <h4>4. Healthcare Patient Records Access</h4>
+            <p><strong>Situation:</strong> Doctor patient history access panradhu ku too much time edukudhu, treatment delay aagudhu</p>
+            <div class="code-block">
+-- Patient medical history slow query
+EXPLAIN ANALYZE
+SELECT 
+    visit_date,
+    diagnosis,
+    prescribed_medicines,
+    doctor_name,
+    visit_type
+FROM 
+    patient_visits
+WHERE 
+    patient_id = 'PAT001'
+    AND 
+    visit_date >= DATE_SUB(CURDATE(), INTERVAL 2 YEAR)
+    AND 
+    visit_type IN ('CONSULTATION', 'FOLLOW_UP', 'EMERGENCY')
+ORDER BY 
+    visit_date DESC;
+
+-- Medical records optimization
+CREATE INDEX idx_patient_visits 
+ON 
+    patient_visits (patient_id, visit_date DESC, visit_type);
+
+-- Additional index for doctor queries
+CREATE INDEX idx_doctor_date 
+ON 
+    patient_visits (doctor_id, visit_date DESC);
+            </div>
+            <p><strong>Faayda:</strong> Patient history instantly accessible, doctor time save aagum, better patient care provide panalam</p>
+        </div>
+
+        <div class="use-case">
+            <h4>5. Inventory Management Real-time Updates</h4>
+            <p><strong>Situation:</strong> Stock level check panradhu ku delay aagudhu, order processing slow aagudhu</p>
+            <div class="code-block">
+-- Stock availability check slow query
+EXPLAIN ANALYZE
+SELECT 
+    p.product_name,
+    i.current_stock,
+    i.reserved_stock,
+    (i.current_stock - i.reserved_stock) AS available_stock,
+    w.warehouse_location
+FROM 
+    products p
+JOIN 
+    inventory i 
+ON 
+    p.product_id = i.product_id
+JOIN 
+    warehouses w 
+ON 
+    i.warehouse_id = w.warehouse_id
+WHERE 
+    p.sku = 'PROD123'
+    AND 
+    w.is_active = 1
+    AND 
+    (i.current_stock - i.reserved_stock) > 0;
+
+-- Inventory optimization indexes
+CREATE INDEX idx_products_sku 
+ON 
+    products (sku);
+
+CREATE INDEX idx_inventory_product 
+ON 
+    inventory (product_id, warehouse_id);
+
+CREATE INDEX idx_inventory_stock 
+ON 
+    inventory (current_stock, reserved_stock);
+
+CREATE INDEX idx_warehouses_active 
+ON 
+    warehouses (is_active, warehouse_id);
+            </div>
+            <p><strong>Faayda:</strong> Real-time stock checking possible, order processing fast aagum, inventory accuracy improve aagum</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>📚 Author: Gowtham SB</h3>
+        <div class="social-links">
+            <a href="#" style="color: #64ffda;">📺 YouTube: dataengineeringvideos</a> |
+            <a href="#" style="color: #64ffda;">💼 LinkedIn: sbgowtham</a> |
+            <a href="#" style="color: #64ffda;">📸 Instagram: dataengineeringtamil</a>
+        </div>
+        <p style="margin-top: 15px;"><em>Index aur Query Optimization master aagiduvenga! Database performance ippove lightning fast aagum! ⚡🚀</em></p>
+    </div>
+</body>
+</html>
