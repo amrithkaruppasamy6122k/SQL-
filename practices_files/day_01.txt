@@ -1,1 +1,103 @@
-DAY 01 -- SQL PRACTICES
+DAY 01 -- SQL PRACTICES 
+
+
+1. Create a database named company_db.
+
+create database company_db ;
+
+use company_db ;
+
+
+2. Create a table named employees with employee_id, employee_name, age, salary, department and city columns. Choose suitable data types.
+
+create table employees(
+e_id int  ,
+e_name varchar(50),
+age int ,
+salary decimal(8,2),
+department varchar(50) ,
+city varchar(50)
+) ;
+
+ALTER table employees
+modify e_id int primary key auto_increment ;
+
+select * from employees ;
+
+
+3. Insert 5 employee records into the employees table.
+
+insert into employees (e_name, age, salary, department,city)
+values
+( "karthik",23,23000,"developer","theni"),
+( "amrith",24,23700,"developer","gudalur"),
+( "kavi",24,21200,"data analytic","cumbum"),
+( "indhiran",21,25000,"power bi","palayam"),
+( "geetha",21,23700,"advocate","cumbum"),
+( "vikram",20,21300,"support","chennai")
+;
+
+4. Display all records from the employees table.
+
+select * from employees ;
+
+5. Display only employee_name and salary from the employees table.
+
+select e_name , salary from employees ;
+
+6. Insert one additional employee record.
+
+insert into employees (e_name, age, salary, department,city)
+values ( "bharth",22,23700,"flutter","chinnamanur") ;
+
+7. Update the salary of an employee using their employee_id.
+
+update employees
+set salary = 23500 where e_id = 3 ;
+
+
+8. Change the city of a particular employee.
+
+update employees 
+set city = "megamalai"
+where	e_name = "geetha" ;
+
+
+9. Delete one employee record using employee_id.
+
+delete from employees 
+where e_name = "geetha" ;
+
+10. Add an email column to the employees table using ALTER TABLE.
+
+alter table employees 
+add email varchar(50) ;
+
+11. Modify the size of the employee_name column.
+
+alter table employees
+modify e_name varchar(70) ;
+
+12. Rename the city column to employee_city.
+
+alter table employees 
+rename column	city to Employee_city ;
+
+13. Display all column details and table structure.
+
+desc employees ;
+
+
+14. Create another table named departments with department_id and department_name.
+
+create table department_table 
+(department_name varchar(50),
+department_id varchar(20) ) ;
+
+
+15. Delete the departments table using DROP TABLE.
+
+drop table department_table ;
+
+show tables ;
+
